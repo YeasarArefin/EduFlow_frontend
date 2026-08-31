@@ -1,0 +1,11 @@
+import { redirect } from "next/navigation";
+import { AuthForm } from "@/components/auth/auth-form";
+import { getServerSession } from "@/lib/auth/server";
+import { validateSelectedPlanSlug } from "@/lib/selected-plan";
+
+export default async function SignUpPage({ searchParams }: { searchParams: Promise<{ plan?: string | string[] }> }) {
+  const rawPlan = (await searchParams).plan;
+  const selectedPlanSlug = await validateSelectedPlanSlug(typeof rawPlan === "string" ? rawPlan : undefined);
+  if (await getServerSession()) redirect(selectedPlanSlug ? `/post-auth?plan=${encodeURIComponent(selectedPlanSlug)}` : "/post-auth");
+  return <AuthForm mode="signup" selectedPlanSlug={selectedPlanSlug ?? undefined} />;
+}

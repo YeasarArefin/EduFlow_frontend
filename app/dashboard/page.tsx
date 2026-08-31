@@ -1,0 +1,1 @@
+export default function DashboardPage() { return <section className="flex min-h-[50vh] flex-col items-center justify-center gap-2 text-center"><h1 className="text-2xl font-semibold tracking-tight">Workspace overview</h1><p className="text-sm text-muted-foreground">Workspace modules will appear here.</p></section> }
