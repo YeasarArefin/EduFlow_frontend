@@ -8,15 +8,18 @@ const ThemeContext = createContext<ThemeContextValue | null>(null)
 const STORAGE_KEY = "eduflow.theme"
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("system")
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light")
+  const [theme, setTheme] = useState<Theme>("dark")
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark")
 
   useEffect(() => {
     const stored = window.localStorage.getItem(STORAGE_KEY)
     if (stored === "light" || stored === "dark" || stored === "system") {
-      // Theme preference is external browser state; hydrate it once on mount.
+      // Restore user preference from localStorage on mount.
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setTheme(stored)
+    } else {
+      // No stored preference — write the default so future visits are consistent.
+      window.localStorage.setItem(STORAGE_KEY, "dark")
     }
   }, [])
 

@@ -4,7 +4,6 @@ import { env } from "@/config/env";
 import { getPublicPlans } from "@/features/pricing/api/get-public-plans";
 import { postAuthDestinations, resolvePostAuthDestination } from "@/lib/auth/post-auth-destination";
 import { SELECTED_PLAN_COOKIE } from "@/lib/selected-plan";
-import { SELECTED_WORKSPACE_COOKIE } from "@/lib/workspace";
 
 const paymentDetailsSchema = z.object({
   paymentMethod: z.literal("bkash"),
@@ -16,24 +15,22 @@ export async function POST(request: NextRequest) {
   const parsed = paymentDetailsSchema.safeParse(await request.json().catch(() => undefined));
   if (!parsed.success) return NextResponse.json({ error: { code: "VALIDATION_ERROR", message: "Request validation failed." } }, { status: 400 });
 
-  const destination = await resolvePostAuthDestination();
+  const selectedPlanSlug = request.cookies.get(SELECTED_PLAN_COOKIE)?.value;
+  const destination = await resolvePostAuthDestination({ selectedPlanSlug });
   if (destination === "/signin") return errorResponse("UNAUTHENTICATED", "A valid authentication session is required.", 401);
   if (destination === postAuthDestinations.platform) return errorResponse("PLATFORM_OWNER_REQUIRED", "Platform Owner access must continue through the platform area.", 403);
-  if (destination !== postAuthDestinations.checkout) return errorResponse("CHECKOUT_CONTEXT_INVALID", "Your workspace and plan must be ready before submitting payment.", 409);
+  if (destination !== postAuthDestinations.checkout) return errorResponse("CHECKOUT_CONTEXT_INVALID", "Choose an active plan before submitting payment.", 400);
 
-  const workspaceId = request.cookies.get(SELECTED_WORKSPACE_COOKIE)?.value;
-  const selectedPlanSlug = request.cookies.get(SELECTED_PLAN_COOKIE)?.value;
   const plans = await getPublicPlans();
   const selectedPlan = plans?.find((plan) => plan.slug === selectedPlanSlug);
-  if (!workspaceId || !selectedPlan) return errorResponse("CHECKOUT_CONTEXT_INVALID", "Your workspace or selected plan is no longer available.", 400);
+  if (!selectedPlan) return errorResponse("CHECKOUT_CONTEXT_INVALID", "Your selected plan is no longer available.", 400);
 
-  const backendResponse = await fetch(`${env.apiBaseUrl}/payment-requests`, {
+  const backendResponse = await fetch(`${env.apiBaseUrl}/payment-requests/account`, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/json",
-      cookie: request.headers.get("cookie") ?? "",
-      "X-Workspace-Id": workspaceId
+      cookie: request.headers.get("cookie") ?? ""
     },
     body: JSON.stringify({
       planId: selectedPlan.id,

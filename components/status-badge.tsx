@@ -1,14 +1,35 @@
-import type { ReactNode } from "react"
-import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
-const statusStyles = {
-  success: "border-[var(--status-success-fg)]/20 bg-[var(--status-success-bg)] text-[var(--status-success-fg)]",
-  warning: "border-[var(--status-warning-fg)]/20 bg-[var(--status-warning-bg)] text-[var(--status-warning-fg)]",
-  danger: "border-[var(--status-danger-fg)]/20 bg-[var(--status-danger-bg)] text-[var(--status-danger-fg)]",
-  info: "border-[var(--status-info-fg)]/20 bg-[var(--status-info-bg)] text-[var(--status-info-fg)]",
-} as const
+const statusDotStyles = {
+  success: "bg-[#27c93f]",
+  warning: "bg-[#ffbd2e]",
+  danger: "bg-[#ff5f56]",
+  info: "bg-[#a3a3a3]",
+} as const;
 
-export function StatusBadge({ status, children, className }: { status: keyof typeof statusStyles; children: ReactNode; className?: string }) {
-  return <Badge className={cn("font-medium", statusStyles[status], className)}>{children}</Badge>
+export function StatusBadge({
+  status,
+  children,
+  className,
+}: {
+  status: keyof typeof statusDotStyles;
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex h-6 w-fit items-center gap-1.5 rounded-full border border-border bg-surface-soft px-2.5 py-0.5 text-xs font-medium text-foreground transition-colors",
+        className
+      )}
+    >
+      <span
+        className={cn("size-1.5 shrink-0 rounded-full", statusDotStyles[status])}
+        aria-hidden="true"
+      />
+      <span>{children}</span>
+    </span>
+  );
 }
+

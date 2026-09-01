@@ -19,9 +19,9 @@ const schema = z.object({
 
 type Values = z.infer<typeof schema>;
 
-export function ManualPaymentForm({ workspaceId }: { workspaceId: string }) {
+export function ManualPaymentForm() {
   const router = useRouter();
-  const mutation = useCreatePaymentRequest(workspaceId);
+  const mutation = useCreatePaymentRequest();
   const form = useForm<Values>({
     resolver: zodResolver(schema),
     mode: "onChange",
@@ -71,13 +71,29 @@ export function ManualPaymentForm({ workspaceId }: { workspaceId: string }) {
 }
 
 function getPaymentErrorTitle(error: unknown) {
-  return error instanceof ApiError && error.status === 409 ? "Transaction ID already submitted" : "Couldn’t submit payment";
+  if (error instanceof ApiError && error.code === "PAYMENT_TRANSACTION_ALREADY_EXISTS") {
+    return "Transaction ID already submitted";
+  }
+  return "Couldn’t submit payment";
 }
 
 function getPaymentErrorMessage(error: unknown) {
-  if (error instanceof ApiError && error.status === 409) return "Use the original transaction details or submit a different bKash transaction ID.";
-  if (error instanceof ApiError && error.code === "PAYMENT_AMOUNT_MISMATCH") return "The plan price changed. Return to pricing and choose the current plan again.";
-  if (error instanceof ApiError && error.code === "PAYMENT_PLAN_NOT_PURCHASABLE") return "This plan is no longer available. Return to pricing to choose an active plan.";
-  if (error instanceof ApiError && error.code === "VALIDATION_ERROR") return "Check the sender number and transaction ID, then try again.";
+  if (error instanceof ApiError) {
+    if (error.code === "PAYMENT_TRANSACTION_ALREADY_EXISTS") {
+      return "Use the original transaction details or submit a different bKash transaction ID.";
+    }
+    if (error.code === "PAYMENT_AMOUNT_MISMATCH") {
+      return "The plan price changed. Return to pricing and choose the current plan again.";
+    }
+    if (error.code === "PAYMENT_PLAN_NOT_PURCHASABLE") {
+      return "This plan is no longer available. Return to pricing to choose an active plan.";
+    }
+    if (error.code === "VALIDATION_ERROR") {
+      return "Check the sender number and transaction ID, then try again.";
+    }
+    if (error.message) {
+      return error.message;
+    }
+  }
   return "We couldn’t submit the payment request. Please try again.";
 }

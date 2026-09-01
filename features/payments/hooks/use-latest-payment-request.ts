@@ -6,13 +6,13 @@ import type { PaymentRequest } from "../api/create-payment-request";
 
 export const paymentKeys = {
   all: ["payment-requests"] as const,
-  latest: (workspaceId: string) => ["payment-requests", "latest", workspaceId] as const
+  latest: ["payment-requests", "latest", "account"] as const
 };
 
-export function useLatestPaymentRequest(workspaceId: string, initialPayment?: PaymentRequest | null) {
+export function useLatestPaymentRequest(initialPayment?: PaymentRequest | null) {
   return useQuery<PaymentRequest | null>({
-    queryKey: paymentKeys.latest(workspaceId),
-    queryFn: () => getLatestPaymentRequest(workspaceId),
+    queryKey: paymentKeys.latest,
+    queryFn: getLatestPaymentRequest,
     initialData: initialPayment,
     staleTime: 15_000,
     refetchOnWindowFocus: false,

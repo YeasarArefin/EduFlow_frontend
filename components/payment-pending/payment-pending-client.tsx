@@ -24,14 +24,13 @@ export type PaymentPlanContext = {
 };
 
 type PaymentPendingClientProps = {
-  workspaceId: string;
   initialPayment?: PaymentRequest | null;
   selectedPlan?: PaymentPlanContext;
 };
 
-export function PaymentPendingClient({ workspaceId, initialPayment, selectedPlan }: PaymentPendingClientProps) {
+export function PaymentPendingClient({ initialPayment, selectedPlan }: PaymentPendingClientProps) {
   const router = useRouter();
-  const paymentQuery = useLatestPaymentRequest(workspaceId, initialPayment);
+  const paymentQuery = useLatestPaymentRequest(initialPayment);
   const payment = paymentQuery.data;
 
   useEffect(() => {
@@ -62,11 +61,11 @@ export function PaymentPendingClient({ workspaceId, initialPayment, selectedPlan
         <Card>
           <CardHeader>
             <CardTitle>No payment submission found</CardTitle>
-            <CardDescription>There is no subscription payment request for this workspace yet.</CardDescription>
+            <CardDescription>There is no subscription payment request for this account yet.</CardDescription>
           </CardHeader>
           <CardContent className="flex flex-wrap gap-3">
             <Button render={<Link href="/pricing" />}>View plans</Button>
-            <Button render={<Link href="/onboarding" />} variant="outline">Back to onboarding</Button>
+            <Button render={<Link href="/account" />} variant="outline">Choose a plan</Button>
           </CardContent>
         </Card>
       </PaymentStateLayout>
@@ -116,7 +115,7 @@ function RejectedPayment({ payment, selectedPlan }: { payment: PaymentRequest; s
       </div>
       <PaymentDetails payment={payment} selectedPlan={selectedPlan} />
       <div className="mt-6 flex flex-wrap gap-3">
-        {selectedPlan && <Button render={<Link href="/checkout" />}>Try again with this plan</Button>}
+        {selectedPlan && <Button render={<Link href={`/post-auth?plan=${encodeURIComponent(selectedPlan.slug)}`} />}>Try again with this plan</Button>}
         <Button render={<Link href="/pricing" />} variant="outline">View active plans</Button>
       </div>
     </PaymentStateLayout>
@@ -133,7 +132,7 @@ function PaymentDetails({ payment, selectedPlan }: { payment: PaymentRequest; se
     <Card className="mt-10 max-w-2xl">
       <CardHeader className="border-b">
         <CardTitle>Payment details</CardTitle>
-        <CardDescription>Submission details for this workspace.</CardDescription>
+        <CardDescription>Submission details for this account.</CardDescription>
       </CardHeader>
       <CardContent className="pt-6">
         <dl className="grid gap-5 sm:grid-cols-2">

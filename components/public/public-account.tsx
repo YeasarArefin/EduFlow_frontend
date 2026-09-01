@@ -1,13 +1,43 @@
 "use client";
 
-import { LogOut } from "lucide-react";
+import { LogOut, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useSignOut } from "@/lib/auth/sign-out";
 
-export function PublicAccount({ name }: { name?: string | null }) {
+export function PublicAccount({
+  name,
+  isAdmin = false,
+}: {
+  name?: string | null;
+  isAdmin?: boolean;
+}) {
   const signOut = useSignOut();
   const displayName = name || "Account";
   const initial = displayName.slice(0, 1).toUpperCase();
 
-  return <div className="flex items-center gap-3"><span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground" aria-hidden="true">{initial}</span><span className="hidden max-w-36 truncate text-sm font-medium lg:block">{displayName}</span><Button variant="outline" size="sm" onClick={signOut}><LogOut data-icon="inline-start" /> Sign out</Button></div>;
+  return (
+    <div className="flex items-center gap-1.5 rounded-full border border-border bg-surface-soft py-1 pl-1 pr-1.5 transition-colors">
+      <span
+        className="flex size-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
+        aria-hidden="true"
+      >
+        {isAdmin ? <Shield className="size-3.5" /> : initial}
+      </span>
+      <span className="max-w-28 truncate text-xs font-medium text-foreground px-1.5">
+        {displayName}
+      </span>
+      <Button
+        variant="ghost"
+        size="icon-xs"
+        className="size-6 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground"
+        title="Sign out"
+        aria-label="Sign out"
+        onClick={signOut}
+      >
+        <LogOut className="size-3" />
+      </Button>
+    </div>
+  );
 }
+
+

@@ -8,7 +8,6 @@ import { SELECTED_PLAN_COOKIE } from "@/lib/selected-plan";
 import { cookies } from "next/headers";
 import { Button } from "@/components/ui/button";
 import { ManualPaymentForm } from "@/components/checkout/manual-payment-form";
-import { SELECTED_WORKSPACE_COOKIE } from "@/lib/workspace";
 
 function formatBdt(priceMinor: string) {
   const normalized = priceMinor.replace(/^0+(?=\d)/, "");
@@ -28,20 +27,17 @@ function findSelectedPlan(plans: PublicPlan[] | null, slug: string | undefined) 
 }
 
 export default async function CheckoutPage() {
-  const destination = await resolvePostAuthDestination();
+  const selectedPlanSlug = (await cookies()).get(SELECTED_PLAN_COOKIE)?.value;
+  const destination = await resolvePostAuthDestination({ selectedPlanSlug });
   if (destination !== postAuthDestinations.checkout) redirect(destination);
 
-  const selectedPlanSlug = (await cookies()).get(SELECTED_PLAN_COOKIE)?.value;
   const selectedPlan = findSelectedPlan(await getPublicPlans(), selectedPlanSlug);
   if (!selectedPlan) redirect(postAuthDestinations.pricing);
-  const workspaceId = (await cookies()).get(SELECTED_WORKSPACE_COOKIE)?.value;
-  if (!workspaceId) redirect(postAuthDestinations.onboarding);
-
   return (
     <PublicContainer className="flex flex-1 items-center py-16 sm:py-24">
       <div className="w-full max-w-2xl">
         <h1 className="font-heading text-3xl font-medium tracking-tight sm:text-4xl">Continue with {selectedPlan.name}</h1>
-        <p className="mt-4 max-w-xl leading-7 text-muted-foreground">Your workspace and plan are ready. Payment setup will be available here in the next step.</p>
+        <p className="mt-4 max-w-xl leading-7 text-muted-foreground">Submit your payment for verification. Workspace creation unlocks only after Platform Owner approval.</p>
         <Card className="mt-10">
           <CardHeader>
             <CardTitle>{selectedPlan.name}</CardTitle>
@@ -52,7 +48,7 @@ export default async function CheckoutPage() {
             {selectedPlan.trial.included && <p className="text-muted-foreground">Includes a {selectedPlan.trial.days}-day trial.</p>}
             <p className="text-muted-foreground">This selection is loaded from EduFlow’s current active plans.</p>
           </CardContent>
-          <CardContent><ManualPaymentForm workspaceId={workspaceId} /></CardContent>
+          <CardContent><ManualPaymentForm /></CardContent>
           <CardFooter className="gap-3"><Button render={<Link href="/pricing" />} variant="outline">Change plan</Button></CardFooter>
         </Card>
       </div>
