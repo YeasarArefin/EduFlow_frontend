@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
+import { ArrowRight, Check, LockKeyhole, Mail, UserRound } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -92,18 +92,27 @@ export function AuthForm({ mode, selectedPlanSlug }: { mode: "signin" | "signup"
             {signup ? (
               <Field data-invalid={!!form.formState.errors.name}>
                 <FieldLabel htmlFor="name">Name</FieldLabel>
-                <Input id="name" autoComplete="name" placeholder="Your name" aria-invalid={!!form.formState.errors.name} {...form.register("name")} />
+                <div className="relative">
+                  <UserRound className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                  <Input id="name" className="pl-10" autoComplete="name" placeholder="Your name" aria-invalid={!!form.formState.errors.name} {...form.register("name")} />
+                </div>
                 <FieldError>{form.formState.errors.name?.message}</FieldError>
               </Field>
             ) : null}
             <Field data-invalid={!!form.formState.errors.email}>
               <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input id="email" type="email" autoComplete="email" placeholder="you@example.com" aria-invalid={!!form.formState.errors.email} {...form.register("email")} />
+              <div className="relative">
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <Input id="email" className="pl-10" type="email" autoComplete="email" placeholder="you@example.com" aria-invalid={!!form.formState.errors.email} {...form.register("email")} />
+              </div>
               <FieldError>{form.formState.errors.email?.message}</FieldError>
             </Field>
             <Field data-invalid={!!form.formState.errors.password}>
               <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input id="password" type="password" autoComplete={signup ? "new-password" : "current-password"} placeholder={signup ? "At least 8 characters" : "Your password"} aria-invalid={!!form.formState.errors.password} {...form.register("password")} />
+              <div className="relative">
+                <LockKeyhole className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+                <Input id="password" className="pl-10" type="password" autoComplete={signup ? "new-password" : "current-password"} placeholder={signup ? "At least 8 characters" : "Your password"} aria-invalid={!!form.formState.errors.password} {...form.register("password")} />
+              </div>
               <FieldError>{form.formState.errors.password?.message}</FieldError>
             </Field>
             {error ? <Alert variant="destructive"><AlertTitle>Unable to continue</AlertTitle><AlertDescription>{error}</AlertDescription></Alert> : null}
