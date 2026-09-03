@@ -12,18 +12,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function AutomationSection() {
   return (
-    <section className="border-b border-border/80 py-20 sm:py-28 lg:py-32 bg-surface-soft/30">
+    <section className="border-b border-border bg-background-subtle py-20 sm:py-28 lg:py-32">
       <PublicContainer>
         {/* Section Header */}
         <div className="mx-auto max-w-3xl text-center">
-          <div className="mx-auto inline-flex items-center gap-1.5 rounded-full border border-border bg-background px-3 py-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            <Zap className="size-3 text-amber-500" />
+          <div className="mx-auto inline-flex items-center gap-1.5 rounded-full border border-accent-border bg-accent px-3.5 py-1 text-xs font-semibold uppercase tracking-wider text-accent-foreground">
+            <Zap className="size-3 text-accent-foreground" />
             <span>Built-In Automation</span>
           </div>
-          <h2 className="mt-4 font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
+          <h2 className="mt-4 font-heading text-3xl font-semibold tracking-[-0.03em] text-foreground sm:text-5xl">
             Less repetitive work. More time teaching.
           </h2>
-          <p className="mt-4 text-base text-muted-foreground sm:text-lg">
+          <p className="mt-4 text-base font-light text-muted-foreground sm:text-lg">
             EduFlow runs routine operations in the background so you never have to spend evenings manually
             crafting SMS alerts or reconciling receipts.
           </p>
@@ -32,14 +32,14 @@ export function AutomationSection() {
         {/* 2 Automation Pipelines */}
         <div className="mt-14 grid gap-8 lg:grid-cols-2">
           {/* Pipeline 1: Tuition Collection & Instant Receipt */}
-          <Card className="border-border/80 bg-card shadow-sm">
-            <CardHeader className="border-b border-border/80 pb-4">
+          <Card className="rounded-2xl shadow-sm">
+            <CardHeader className="border-b border-border pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <CreditCard className="size-4 text-emerald-600 dark:text-emerald-400" />
+                <CardTitle className="flex items-center gap-2 font-heading text-base font-semibold text-foreground">
+                  <CreditCard className="size-4 text-accent-foreground" />
                   <span>Fee Collection Pipeline</span>
                 </CardTitle>
-                <span className="rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="rounded-full bg-accent border border-accent-border px-2.5 py-0.5 text-[10px] font-semibold text-accent-foreground">
                   Fully Automated
                 </span>
               </div>
@@ -54,12 +54,12 @@ export function AutomationSection() {
                 const Icon = item.icon;
                 return (
                   <div key={item.step} className="flex items-start gap-3.5">
-                    <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-soft border border-border text-foreground">
+                    <span className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-border-strong bg-muted text-accent-foreground">
                       <Icon className="size-4" />
                     </span>
-                    <div className="flex-1 rounded-lg border border-border/80 bg-surface-soft p-3">
-                      <p className="text-xs font-semibold text-foreground">{item.title}</p>
-                      <p className="text-[11px] text-muted-foreground mt-0.5">{item.desc}</p>
+                    <div className="flex-1 rounded-xl border border-border bg-card p-3">
+                      <p className="font-heading text-xs font-semibold text-foreground">{item.title}</p>
+                      <p className="mt-0.5 text-[11px] font-light text-muted-foreground">{item.desc}</p>
                     </div>
                   </div>
                 );
@@ -68,14 +68,14 @@ export function AutomationSection() {
           </Card>
 
           {/* Pipeline 2: Attendance & Absence Alert */}
-          <Card className="border-border/80 bg-card shadow-sm">
-            <CardHeader className="border-b border-border/80 pb-4">
+          <Card className="rounded-2xl shadow-sm">
+            <CardHeader className="border-b border-border pb-4">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-semibold text-foreground flex items-center gap-2">
-                  <BellRing className="size-4 text-amber-500" />
+                <CardTitle className="flex items-center gap-2 font-heading text-base font-semibold text-foreground">
+                  <BellRing className="size-4 text-accent-foreground" />
                   <span>Absence Notification Pipeline</span>
                 </CardTitle>
-                <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-amber-600 dark:text-amber-400">
+                <span className="rounded-full bg-accent border border-accent-border px-2.5 py-0.5 text-[10px] font-semibold text-accent-foreground">
                   Real-Time Trigger
                 </span>
               </div>
@@ -88,12 +88,12 @@ export function AutomationSection() {
                 { step: "04", title: "Guardian Alert Sent", desc: "Bilingual SMS notice delivered to guardian's phone", icon: Send },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-3.5">
-                  <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-surface-soft border border-border text-foreground font-mono text-xs font-semibold">
+                  <span className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-border-strong bg-muted font-mono text-xs font-semibold text-accent-foreground">
                     {item.step}
                   </span>
-                  <div className="flex-1 rounded-lg border border-border/80 bg-surface-soft p-3">
-                    <p className="text-xs font-semibold text-foreground">{item.title}</p>
-                    <p className="text-[11px] text-muted-foreground mt-0.5">{item.desc}</p>
+                  <div className="flex-1 rounded-xl border border-border bg-card p-3">
+                    <p className="font-heading text-xs font-semibold text-foreground">{item.title}</p>
+                    <p className="mt-0.5 text-[11px] font-light text-muted-foreground">{item.desc}</p>
                   </div>
                 </div>
               ))}

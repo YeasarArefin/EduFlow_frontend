@@ -48,7 +48,7 @@ export function StatCard({
   status?: "success" | "warning" | "danger" | "info";
 }) {
   return (
-    <Card className="transition-colors hover:border-border/80">
+    <Card className="transition-colors hover:border-border-strong">
       <CardHeader className="pb-2">
         <CardDescription className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
           {label}
@@ -100,7 +100,7 @@ export function SectionCard({
 
 export function DataTable({ children }: { children: ReactNode }) {
   return (
-    <div className="w-full overflow-x-auto rounded-lg border border-border bg-card">
+    <div className="w-full overflow-x-auto rounded-xl border border-border bg-card">
       <table className="w-full min-w-[640px] text-sm">
         {children}
       </table>
@@ -118,7 +118,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="flex min-h-48 flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-border/80 bg-muted/10 px-6 py-12 text-center">
+    <div className="flex min-h-48 flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-border bg-muted/20 px-6 py-12 text-center">
       <Inbox className="size-8 text-muted-foreground" />
       <div>
         <h3 className="font-medium text-foreground">{title}</h3>
@@ -148,7 +148,7 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-destructive/20 bg-destructive/5 px-6 py-10 text-center">
+    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-destructive/20 bg-destructive/10 px-6 py-10 text-center">
       <AlertCircle className="size-8 text-destructive" />
       <p className="text-sm text-muted-foreground max-w-sm">{message}</p>
       {onRetry && (

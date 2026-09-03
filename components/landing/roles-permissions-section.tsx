@@ -11,67 +11,67 @@ import { Card } from "@/components/ui/card";
 const roles = [
   {
     name: "Workspace Owner",
-    badge: "Full Control",
+    badge: "Full Authority",
     icon: Crown,
-    desc: "The coaching center director or principal.",
+    desc: "Coaching center owner, founder, or managing director.",
     permissions: [
-      "View financial profit, dues, and revenue analytics",
+      "Complete visibility over fees, revenue, and finances",
+      "Configure subscription plans and SMS packages",
       "Manage staff salaries, scholarships, and fee structures",
-      "Upgrade workspace plan and manage SMS wallet",
-      "Export full student ledgers and audit records",
+      "Access immutable audit logs and workspace settings",
     ],
   },
   {
-    name: "Teacher / Instructor",
+    name: "Admin",
+    badge: "Operations Scope",
+    icon: ShieldCheck,
+    desc: "Academic coordinators and operational managers.",
+    permissions: [
+      "Manage batch creation, room allocations, and schedules",
+      "Supervise student admissions and roll allocations",
+      "Generate monthly fee invoices and overdue payment lists",
+      "Restricted from changing master workspace ownership",
+    ],
+  },
+  {
+    name: "Teacher",
     badge: "Classroom Scope",
     icon: GraduationCap,
     desc: "Subject instructors and batch tutors.",
     permissions: [
-      "Access assigned batch rosters and schedules",
-      "Mark and finalize daily student attendance",
-      "Record student progress, exam marks, and internal notes",
-      "Zero access to financial balances or system settings",
+      "View assigned batch rosters and class schedules",
+      "Mark and finalize daily student attendance in 1-click",
+      "Record internal student progress notes and marks",
+      "Zero access to financial balances or staff payroll",
     ],
   },
   {
-    name: "Front-Desk Staff",
-    badge: "Operations Scope",
+    name: "Staff",
+    badge: "Front-Desk Scope",
     icon: UserCheck,
-    desc: "Receptionists and administrative assistants.",
+    desc: "Front-desk receptionists and assistants.",
     permissions: [
-      "Enroll new students and assign roll numbers",
-      "Collect tuition payments and issue receipts",
-      "Send emergency batch announcements and notices",
-      "Restricted from altering fee policies or salaries",
-    ],
-  },
-  {
-    name: "Platform Admin",
-    badge: "Platform Scope",
-    icon: ShieldCheck,
-    desc: "EduFlow infrastructure operations.",
-    permissions: [
-      "Multi-tenant isolation and security enforcement",
-      "Manual payment verification and subscription provisioning",
-      "Entitlement overrides and system health monitoring",
-      "No unauthorized access to private student data",
+      "Collect tuition payments and issue instant digital receipts",
+      "Register new student inquiries and basic profiles",
+      "Send emergency batch notices and announcements",
+      "Restricted from altering fee policies or discount rates",
     ],
   },
 ];
 
 export function RolesPermissionsSection() {
   return (
-    <section className="border-b border-border/80 py-20 sm:py-28 lg:py-32">
+    <section className="border-b border-border py-20 sm:py-28 lg:py-32">
       <PublicContainer>
         {/* Section Header */}
         <div className="mx-auto max-w-3xl text-center">
-          <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          <p className="text-[11px] font-bold uppercase tracking-[0.20em] text-accent-foreground">
             Granular Security
           </p>
-          <h2 className="mt-3 font-heading text-3xl font-semibold tracking-tight text-foreground sm:text-5xl">
+          <h2 className="mt-3 font-heading text-3xl font-semibold tracking-[-0.03em] text-foreground sm:text-5xl">
             Everyone gets the access they need. Nothing they don&apos;t.
           </h2>
-          <p className="mt-4 text-base text-muted-foreground sm:text-lg">
+          <p className="mt-4 text-base text-muted-foreground sm:text-lg font-light">
             Protect financial data and student privacy with strict role-based access control built directly
             into every database query.
           </p>
@@ -82,13 +82,13 @@ export function RolesPermissionsSection() {
           {roles.map((role) => {
             const Icon = role.icon;
             return (
-              <Card key={role.name} className="flex flex-col justify-between border-border/80 bg-card p-5 shadow-xs hover:border-foreground/30 transition-all">
+              <Card key={role.name} className="flex flex-col justify-between rounded-2xl border border-border bg-card p-5 shadow-xs hover:border-accent-border hover:bg-accent/30 backdrop-blur-md transition-all">
                 <div>
                   <div className="flex items-center justify-between pb-3 border-b border-border">
-                    <span className="flex size-9 items-center justify-center rounded-full bg-surface-soft border border-border text-foreground">
+                    <span className="flex size-9 items-center justify-center rounded-xl bg-muted border border-border text-accent-foreground">
                       <Icon className="size-4" />
                     </span>
-                    <span className="rounded-full bg-surface-soft border border-border px-2.5 py-0.5 text-[10px] font-semibold text-foreground">
+                    <span className="rounded-full bg-muted border border-border px-2.5 py-0.5 text-[10px] font-semibold text-muted-foreground">
                       {role.badge}
                     </span>
                   </div>
@@ -96,12 +96,12 @@ export function RolesPermissionsSection() {
                   <h3 className="mt-4 text-base font-semibold text-foreground font-heading">
                     {role.name}
                   </h3>
-                  <p className="mt-1 text-xs text-muted-foreground">{role.desc}</p>
+                  <p className="mt-1 text-xs text-muted-foreground font-light">{role.desc}</p>
 
-                  <ul className="mt-4 space-y-2 border-t border-border/60 pt-4 text-xs">
+                  <ul className="mt-4 space-y-2 border-t border-border pt-4 text-xs">
                     {role.permissions.map((perm) => (
-                      <li key={perm} className="flex items-start gap-2 text-muted-foreground">
-                        <Check className="mt-0.5 size-3.5 shrink-0 text-foreground" />
+                      <li key={perm} className="flex items-start gap-2 text-muted-foreground font-light">
+                        <Check className="mt-0.5 size-3.5 shrink-0 text-accent-foreground" />
                         <span>{perm}</span>
                       </li>
                     ))}

@@ -2,10 +2,10 @@ import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const statusDotStyles = {
-  success: "bg-[#27c93f]",
-  warning: "bg-[#ffbd2e]",
-  danger: "bg-[#ff5f56]",
-  info: "bg-[#a3a3a3]",
+  success: "bg-primary shadow-[0_0_8px_var(--glow-lime)]",
+  warning: "bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]",
+  danger: "bg-destructive shadow-[0_0_8px_rgba(239,68,68,0.4)]",
+  info: "bg-emerald-500 shadow-[0_0_8px_var(--glow-emerald)]",
 } as const;
 
 export function StatusBadge({
@@ -20,7 +20,7 @@ export function StatusBadge({
   return (
     <span
       className={cn(
-        "inline-flex h-6 w-fit items-center gap-1.5 rounded-full border border-border bg-surface-soft px-2.5 py-0.5 text-xs font-medium text-foreground transition-colors",
+        "inline-flex h-6 w-fit items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-0.5 text-xs font-medium text-foreground transition-colors",
         className
       )}
     >

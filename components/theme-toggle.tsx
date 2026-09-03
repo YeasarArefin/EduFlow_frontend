@@ -1,16 +1,29 @@
 "use client"
 
-import { Monitor, Moon, Sun } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Moon, Sun } from "lucide-react"
+import { useSyncExternalStore } from "react"
 import { useTheme } from "@/components/theme-provider"
 
 export function ThemeToggle() {
-  const { theme, setTheme } = useTheme()
-  const next = theme === "light" ? "dark" : theme === "dark" ? "system" : "light"
-  const Icon = theme === "light" ? Sun : theme === "dark" ? Moon : Monitor
+  const { setTheme, resolvedTheme } = useTheme()
+  const isMounted = useSyncExternalStore(
+    () => () => undefined,
+    () => true,
+    () => false,
+  )
+
+  const isDark = isMounted ? resolvedTheme === "dark" : false
+  const nextTheme = isDark ? "light" : "dark"
+  const Icon = isDark ? Moon : Sun
+
   return (
-    <Button variant="outline" size="icon" aria-label={`Switch theme (currently ${theme})`} title={`Switch to ${next} theme`} onClick={() => setTheme(next)}>
-      <Icon data-icon="inline-start" />
-    </Button>
+    <button
+      type="button"
+      aria-label={`Switch to ${nextTheme} theme`}
+      onClick={() => setTheme(nextTheme)}
+      className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+    >
+      <Icon key={nextTheme} className="size-4 animate-in fade-in-0 zoom-in-75 duration-150" aria-hidden="true" />
+    </button>
   )
 }

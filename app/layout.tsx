@@ -1,19 +1,13 @@
+import { JetBrains_Mono, Manrope } from "next/font/google";
 import type { Metadata } from "next";
-import { Inter, JetBrains_Mono, Nunito } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import type { ReactNode } from "react";
 
-const fontSans = Inter({
-  variable: "--font-sans",
+const fontManrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
-  display: "swap",
-});
-
-const fontHeading = Nunito({
-  variable: "--font-heading",
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["300", "400", "500", "600", "700"],
   display: "swap",
 });
 
@@ -32,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${fontSans.variable} ${fontHeading.variable} ${fontMono.variable} h-full antialiased`}
+      className={`${fontManrope.variable} ${fontMono.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <head>
@@ -40,11 +34,11 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           Blocking inline script — executes before first paint.
           Reads `eduflow.theme` from localStorage and applies the correct
           class to <html> immediately so there is no flash of wrong theme.
-          Default is "dark" when no preference is stored.
+          Default follows the operating system when no preference is stored.
         */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('eduflow.theme');var d=!t||t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);if(d){document.documentElement.classList.add('dark');document.documentElement.style.colorScheme='dark';}else{document.documentElement.classList.remove('dark');document.documentElement.style.colorScheme='light';}}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('eduflow.theme');if(t!=='light'&&t!=='dark'&&t!=='system')t='system';var d=t==='dark'||(t==='system'&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=d?'dark':'light';}catch(e){}})();`,
           }}
         />
       </head>

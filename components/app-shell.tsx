@@ -52,7 +52,7 @@ export function AppShell({
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Desktop Sidebar */}
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-border bg-card lg:flex lg:flex-col">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-sidebar-border bg-sidebar lg:flex lg:flex-col">
         <ShellBrand productName={productName} isAdmin={isAdmin} />
         <div className="flex-1 overflow-y-auto px-3 py-4">{nav}</div>
         <ShellFooter user={user} isAdmin={isAdmin} />
@@ -61,7 +61,7 @@ export function AppShell({
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
-          className="fixed inset-0 z-40 bg-foreground/20 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
           aria-hidden="true"
           onClick={() => setMobileOpen(false)}
         />
@@ -70,12 +70,12 @@ export function AppShell({
       {/* Mobile Drawer */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-border bg-card transition-transform duration-200 ease-in-out lg:hidden",
+          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 ease-in-out lg:hidden",
           mobileOpen ? "translate-x-0" : "-translate-x-full"
         )}
         aria-label="Mobile navigation"
       >
-        <div className="flex h-14 items-center justify-between px-4 border-b border-border">
+        <div className="flex h-14 items-center justify-between border-b border-sidebar-border px-4">
           <ShellBrand productName={productName} isAdmin={isAdmin} />
           <Button
             variant="ghost"
@@ -93,7 +93,7 @@ export function AppShell({
 
       {/* Main Content Area */}
       <div className="lg:pl-64 flex flex-col min-h-screen">
-        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-background/95 px-4 backdrop-blur lg:px-8">
+        <header className="sticky top-0 z-20 flex h-14 items-center justify-between border-b border-border bg-nav px-4 backdrop-blur-[16px] lg:px-8">
           <Button
             variant="ghost"
             size="icon"
@@ -104,7 +104,7 @@ export function AppShell({
             <Menu className="size-4" />
           </Button>
 
-          <div className="hidden items-center gap-2 text-xs font-medium uppercase tracking-wider text-muted-foreground lg:flex">
+          <div className="hidden items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-subtle-foreground lg:flex">
             <PanelLeft className="size-3.5" />
             <span>{isAdmin ? "Platform Admin" : "Workspace"}</span>
           </div>
@@ -137,14 +137,14 @@ function ShellBrand({
   return (
     <Link
       href="/"
-      className="flex h-14 items-center gap-2.5 px-4 text-base font-semibold tracking-tight text-foreground hover:opacity-90 transition-opacity"
+      className="flex h-14 items-center gap-2.5 px-4 text-base font-semibold tracking-tight text-sidebar-foreground transition-opacity hover:opacity-90"
     >
-      <span className="flex size-7 items-center justify-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+      <span className="flex size-7 items-center justify-center rounded-full bg-sidebar-primary text-xs font-bold text-sidebar-primary-foreground">
         EF
       </span>
       <span className="font-heading">{productName}</span>
       {isAdmin && (
-        <span className="ml-auto rounded-full bg-surface-soft border border-hairline px-2 py-0.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+        <span className="ml-auto rounded-full border border-sidebar-border bg-sidebar-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-sidebar-accent-foreground">
           Admin
         </span>
       )}
@@ -164,9 +164,9 @@ function ShellNavigation({
   return (
     <nav className="flex flex-col gap-6" aria-label="Application navigation">
       {groups.map((group, i) => (
-        <div key={group.label ?? i} className="flex flex-col gap-1">
+        <div key={group.label ?? i} className="flex flex-col gap-0.5">
           {group.label && (
-            <p className="px-3.5 pb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/80">
+            <p className="px-3.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-subtle-foreground">
               {group.label}
             </p>
           )}
@@ -183,10 +183,10 @@ function ShellNavigation({
                 href={item.href}
                 onClick={onNavigate}
                 className={cn(
-                  "group flex h-9 items-center gap-3 rounded-full px-3.5 text-sm font-medium transition-all duration-150 ease-in-out",
+                  "group relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all duration-150 ease-in-out",
                   active
-                    ? "bg-primary text-primary-foreground font-semibold shadow-xs"
-                    : "text-muted-foreground hover:bg-surface-soft hover:text-foreground"
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
                 aria-current={active ? "page" : undefined}
               >
@@ -194,7 +194,7 @@ function ShellNavigation({
                   <span
                     className={cn(
                       "size-4 shrink-0 flex items-center justify-center transition-colors",
-                      active ? "text-primary-foreground" : "text-muted-foreground group-hover:text-foreground"
+                      active ? "text-sidebar-accent-foreground" : "text-subtle-foreground group-hover:text-foreground"
                     )}
                   >
                     {item.icon}
@@ -218,12 +218,12 @@ function ShellFooter({
   isAdmin?: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-3 p-4 border-t border-border">
+    <div className="flex flex-col gap-3 border-t border-sidebar-border p-4">
       {user && (
         <div className="flex items-center gap-3">
-          <span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground">
+          <span className="flex size-8 items-center justify-center rounded-full bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground">
             {isAdmin ? (
-              <Shield className="size-4 text-primary-foreground" />
+              <Shield className="size-4" />
             ) : (
               user.name.slice(0, 1).toUpperCase()
             )}
@@ -236,14 +236,14 @@ function ShellFooter({
               <p className="truncate text-xs text-muted-foreground">Super Admin</p>
             ) : null}
           </div>
-          <ChevronDown className="size-4 text-muted-foreground" />
+          <ChevronDown className="size-4 text-subtle-foreground" />
         </div>
       )}
       {user?.onSignOut && (
         <Button
           variant="ghost"
           size="sm"
-          className="justify-start rounded-full text-muted-foreground hover:text-foreground"
+          className="justify-start rounded-lg"
           onClick={user.onSignOut}
         >
           <LogOut data-icon="inline-start" /> Sign out

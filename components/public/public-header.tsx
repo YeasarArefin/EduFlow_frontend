@@ -13,7 +13,7 @@ const links = [
   { label: "Features", href: "/#features" },
   { label: "How It Works", href: "/#how-it-works" },
   { label: "Pricing", href: "/pricing" },
-  { label: "FAQ", href: "/faq" },
+  { label: "FAQ", href: "/#faq" },
 ];
 
 export async function PublicHeader() {
@@ -37,17 +37,17 @@ export async function PublicHeader() {
   const dashboardHref = isAdmin ? "/platform" : "/post-auth";
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border/80 bg-background/80 backdrop-blur-md transition-all">
+    <header className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-[20px] transition-all">
       <PublicContainer className="flex h-16 items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2 rounded-full text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          className="flex items-center gap-2.5 rounded-full text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 group"
           aria-label="EduFlow home"
         >
-          <span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-semibold tracking-tight text-primary-foreground">
+          <span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-bold tracking-tight text-primary-foreground shadow-[0_0_14px_rgba(190,242,100,0.35)] transition-transform group-hover:scale-105">
             EF
           </span>
-          <span className="text-base font-semibold tracking-tight font-heading">EduFlow</span>
+          <span className="text-base font-semibold tracking-tight text-foreground font-heading">EduFlow</span>
         </Link>
         <nav className="hidden items-center gap-1 md:flex" aria-label="Primary navigation">
           {links.map((link) => (

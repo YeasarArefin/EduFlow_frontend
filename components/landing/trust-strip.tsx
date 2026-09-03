@@ -2,28 +2,27 @@ import { PublicContainer } from "@/components/public/public-container";
 
 const capabilities = [
   "Students",
+  "Attendance",
+  "Fees",
+  "Teachers",
   "Batches",
-  "Fee Receipts",
-  "Daily Attendance",
+  "Communication",
   "Schedules",
-  "SMS Alerts",
-  "Guardian Notices",
-  "Multi-Staff Access",
 ];
 
 export function TrustStrip() {
   return (
-    <section className="border-b border-border/80 bg-surface-soft/50 py-6" aria-label="Core operational scope">
+    <section className="border-b border-border bg-background-subtle py-6" aria-label="Core operational scope">
       <PublicContainer className="flex flex-col items-center justify-between gap-4 text-center md:flex-row md:text-left">
-        <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-          Built for the everyday operations of modern coaching centers
+        <p className="text-[11px] font-bold uppercase tracking-[0.20em] text-muted-foreground">
+          Everything your coaching center needs. <span className="text-accent-foreground">One workspace.</span>
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-2 md:justify-end">
           {capabilities.map((cap) => (
             <span
               key={cap}
-              className="inline-flex items-center rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground"
+              className="inline-flex items-center rounded-full border border-border bg-card px-3.5 py-1 text-xs font-medium text-foreground-soft backdrop-blur-md"
             >
               {cap}
             </span>

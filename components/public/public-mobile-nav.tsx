@@ -7,9 +7,10 @@ import { Button } from "@/components/ui/button";
 import { useSignOut } from "@/lib/auth/sign-out";
 
 const links = [
-  { label: "Features", href: "/features" },
+  { label: "Features", href: "/#features" },
+  { label: "How It Works", href: "/#how-it-works" },
   { label: "Pricing", href: "/pricing" },
-  { label: "FAQ", href: "/faq" },
+  { label: "FAQ", href: "/#faq" },
 ];
 
 export function PublicMobileNav({
