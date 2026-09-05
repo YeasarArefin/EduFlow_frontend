@@ -113,28 +113,28 @@ export function PlatformWorkspacesPage() {
         onSearch={(search) => updateUrl({ search: search || undefined, page: undefined })}
       >
         <Select
-          items={[{ label: "All workspace states", value: null }, ...PLATFORM_WORKSPACE_STATUSES.map((value) => ({ label: workspaceStatusLabels[value], value }))]}
-          value={params.workspaceStatus ?? null}
-          onValueChange={(workspaceStatus) => updateUrl({ workspaceStatus: workspaceStatus ?? undefined, page: undefined })}
+          items={[{ label: "All workspace states", value: "all" }, ...PLATFORM_WORKSPACE_STATUSES.map((value) => ({ label: workspaceStatusLabels[value], value }))]}
+          value={params.workspaceStatus ?? "all"}
+          onValueChange={(workspaceStatus) => updateUrl({ workspaceStatus: !workspaceStatus || workspaceStatus === "all" ? undefined : workspaceStatus, page: undefined })}
         >
           <SelectTrigger aria-label="Filter by workspace status"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectGroup>{[null, ...PLATFORM_WORKSPACE_STATUSES].map((value) => <SelectItem key={value ?? "all"} value={value}>{value ? workspaceStatusLabels[value] : "All workspace states"}</SelectItem>)}</SelectGroup></SelectContent>
+          <SelectContent><SelectGroup><SelectItem value="all">All workspace states</SelectItem>{PLATFORM_WORKSPACE_STATUSES.map((value) => <SelectItem key={value} value={value}>{workspaceStatusLabels[value]}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
         <Select
-          items={[{ label: "All subscription states", value: null }, ...PLATFORM_SUBSCRIPTION_STATUSES.map((value) => ({ label: subscriptionStatusLabels[value], value }))]}
-          value={params.subscriptionStatus ?? null}
-          onValueChange={(subscriptionStatus) => updateUrl({ subscriptionStatus: subscriptionStatus ?? undefined, page: undefined })}
+          items={[{ label: "All subscription states", value: "all" }, ...PLATFORM_SUBSCRIPTION_STATUSES.map((value) => ({ label: subscriptionStatusLabels[value], value }))]}
+          value={params.subscriptionStatus ?? "all"}
+          onValueChange={(subscriptionStatus) => updateUrl({ subscriptionStatus: !subscriptionStatus || subscriptionStatus === "all" ? undefined : subscriptionStatus, page: undefined })}
         >
           <SelectTrigger aria-label="Filter by subscription status"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectGroup>{[null, ...PLATFORM_SUBSCRIPTION_STATUSES].map((value) => <SelectItem key={value ?? "all"} value={value}>{value ? subscriptionStatusLabels[value] : "All subscription states"}</SelectItem>)}</SelectGroup></SelectContent>
+          <SelectContent><SelectGroup><SelectItem value="all">All subscription states</SelectItem>{PLATFORM_SUBSCRIPTION_STATUSES.map((value) => <SelectItem key={value} value={value}>{subscriptionStatusLabels[value]}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
         <Select
-          items={[{ label: "All access states", value: null }, ...PLATFORM_ACCESS_STATUSES.map((value) => ({ label: accessStatusLabels[value], value }))]}
-          value={params.accessStatus ?? null}
-          onValueChange={(accessStatus) => updateUrl({ accessStatus: accessStatus ?? undefined, page: undefined })}
+          items={[{ label: "All access states", value: "all" }, ...PLATFORM_ACCESS_STATUSES.map((value) => ({ label: accessStatusLabels[value], value }))]}
+          value={params.accessStatus ?? "all"}
+          onValueChange={(accessStatus) => updateUrl({ accessStatus: !accessStatus || accessStatus === "all" ? undefined : accessStatus, page: undefined })}
         >
           <SelectTrigger aria-label="Filter by access status"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectGroup>{[null, ...PLATFORM_ACCESS_STATUSES].map((value) => <SelectItem key={value ?? "all"} value={value}>{value ? accessStatusLabels[value] : "All access states"}</SelectItem>)}</SelectGroup></SelectContent>
+          <SelectContent><SelectGroup><SelectItem value="all">All access states</SelectItem>{PLATFORM_ACCESS_STATUSES.map((value) => <SelectItem key={value} value={value}>{accessStatusLabels[value]}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
       </FilterToolbar>
 

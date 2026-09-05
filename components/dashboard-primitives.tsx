@@ -72,14 +72,16 @@ export function SectionCard({
   description,
   children,
   action,
+  className,
 }: {
   title: string;
   description?: string;
   children: ReactNode;
   action?: ReactNode;
+  className?: string;
 }) {
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader className="flex flex-row items-start justify-between gap-4">
         <div>
           <CardTitle className="text-lg font-semibold tracking-tight text-foreground">

@@ -144,9 +144,9 @@ export function PlatformSubscriptionsPage() {
           <SelectTrigger aria-label="Filter by subscription review group"><SelectValue /></SelectTrigger>
           <SelectContent><SelectGroup>{reviewGroups.map((item) => <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
-        <Select items={[{ label: "All access states", value: null }, ...PLATFORM_ACCESS_STATUSES.map((value) => ({ label: accessStatusLabels[value], value }))]} value={params.accessStatus ?? null} onValueChange={(accessStatus) => updateUrl({ accessStatus: accessStatus ?? undefined, page: undefined })}>
+        <Select items={[{ label: "All access states", value: "all" }, ...PLATFORM_ACCESS_STATUSES.map((value) => ({ label: accessStatusLabels[value], value }))]} value={params.accessStatus ?? "all"} onValueChange={(accessStatus) => updateUrl({ accessStatus: !accessStatus || accessStatus === "all" ? undefined : accessStatus, page: undefined })}>
           <SelectTrigger aria-label="Filter by access state"><SelectValue /></SelectTrigger>
-          <SelectContent><SelectGroup>{[null, ...PLATFORM_ACCESS_STATUSES].map((value) => <SelectItem key={value ?? "all"} value={value}>{value ? accessStatusLabels[value] : "All access states"}</SelectItem>)}</SelectGroup></SelectContent>
+          <SelectContent><SelectGroup><SelectItem value="all">All access states</SelectItem>{PLATFORM_ACCESS_STATUSES.map((value) => <SelectItem key={value} value={value}>{accessStatusLabels[value]}</SelectItem>)}</SelectGroup></SelectContent>
         </Select>
       </FilterToolbar>
 

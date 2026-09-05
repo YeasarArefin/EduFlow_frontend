@@ -4,12 +4,17 @@ import {
   LayoutDashboard,
   Settings,
   Users,
+  GraduationCap,
+  Layers3,
 } from "lucide-react";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { AppShell, type AppShellNavGroup } from "@/components/app-shell";
 import { getServerSession } from "@/lib/auth/server";
-import { postAuthDestinations, resolvePostAuthDestination } from "@/lib/auth/post-auth-destination";
+import {
+  postAuthDestinations,
+  resolvePostAuthDestination,
+} from "@/lib/auth/post-auth-destination";
 
 const navigation: AppShellNavGroup[] = [
   {
@@ -25,6 +30,12 @@ const navigation: AppShellNavGroup[] = [
         href: "/dashboard/students",
         icon: <Users className="size-4" />,
       },
+      {
+        label: "Teachers",
+        href: "/dashboard/teachers",
+        icon: <GraduationCap className="size-4" />,
+      },
+      { label: "Batches", href: "/dashboard/batches", icon: <Layers3 className="size-4" /> },
       {
         label: "Attendance",
         href: "/dashboard/attendance",
@@ -44,7 +55,11 @@ const navigation: AppShellNavGroup[] = [
   },
 ];
 
-export default async function DashboardLayout({ children }: { children: ReactNode }) {
+export default async function DashboardLayout({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [session, destination] = await Promise.all([
     getServerSession(),
     resolvePostAuthDestination(),
@@ -65,4 +80,3 @@ export default async function DashboardLayout({ children }: { children: ReactNod
     </AppShell>
   );
 }
-
