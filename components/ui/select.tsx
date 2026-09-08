@@ -7,6 +7,7 @@ import { Check, ChevronDown, ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 function Select({ items, ...props }: React.ComponentProps<typeof SelectPrimitive.Root> & { items?: unknown }) {
+  void items;
   return <SelectPrimitive.Root data-slot="select" {...props} />
 }
 

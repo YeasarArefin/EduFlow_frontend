@@ -6,6 +6,8 @@ import {
   Users,
   GraduationCap,
   Layers3,
+  Wallet,
+  ShieldCheck,
 } from "lucide-react";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
@@ -42,10 +44,21 @@ const navigation: AppShellNavGroup[] = [
         icon: <CalendarCheck className="size-4" />,
       },
       {
-        label: "Payments",
-        href: "/dashboard/payments",
+        label: "Fees & Payments",
+        href: "/dashboard/fees",
         icon: <CreditCard className="size-4" />,
       },
+      {
+        label: "Teacher Salaries",
+        href: "/dashboard/salaries",
+        icon: <Wallet className="size-4" />,
+      },
+      {
+        label: "Staff & Members",
+        href: "/dashboard/staff",
+        icon: <ShieldCheck className="size-4" />,
+      },
+
       {
         label: "Settings",
         href: "/dashboard/settings",

@@ -18,8 +18,19 @@ const nextConfig: NextConfig = {
         destination: "/dashboard/teachers",
         permanent: true,
       },
+      {
+        source: "/dashboard/fee",
+        destination: "/dashboard/fees",
+        permanent: true,
+      },
+      {
+        source: "/dashboard/payments",
+        destination: "/dashboard/fees",
+        permanent: true,
+      },
     ];
   },
 };
+
 
 export default nextConfig;

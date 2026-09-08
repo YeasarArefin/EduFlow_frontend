@@ -1,0 +1,1 @@
+import{SalariesPage}from"@/features/salaries/components/salaries-page";import{getAccountRoutingState}from"@/lib/auth/post-auth-destination";export default async function Page(){const a=await getAccountRoutingState();return a?.workspaceId?<SalariesPage workspaceId={a.workspaceId}/>:null;}

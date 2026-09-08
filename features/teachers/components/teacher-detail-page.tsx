@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Archive, ChevronLeft, Mail, Pencil, Phone, RefreshCw, User } from "lucide-react";
+import { Archive, ChevronLeft, Mail, Pencil, Phone, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import {
   ErrorState,
