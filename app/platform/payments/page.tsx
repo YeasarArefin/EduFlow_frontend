@@ -1,6 +1,6 @@
-import { Suspense } from "react";
-import { LoadingState } from "@/components/dashboard-primitives";
-import { PlatformPaymentsPage } from "@/features/platform/components/platform-payments-page";
+import { Suspense } from 'react';
+import { LoadingState } from '@/components/dashboard-primitives';
+import { PlatformPaymentsPage } from '@/features/platform/components/platform-payments-page';
 
 export default function PlatformPaymentsRoute() {
   return (

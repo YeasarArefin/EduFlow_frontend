@@ -1,17 +1,10 @@
-"use client";
+'use client';
 
-import {
-  MoreHorizontal,
-  Plus,
-  UserMinus,
-  UserRoundCheck,
-  UserRoundPen,
-  UserRoundX,
-} from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import Link from "next/link";
-import { useState } from "react";
-import { toast } from "sonner";
+import { Plus } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'sonner';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,8 +14,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardAction,
@@ -30,15 +23,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from '@/components/ui/card';
 import {
   Select,
   SelectContent,
@@ -46,7 +31,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   DataTable,
   EmptyState,
@@ -55,119 +40,49 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  MEMBER_STATUSES,
-  type MemberStatus,
-  type WorkspaceMember,
-} from "../api/members";
+} from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { MEMBER_STATUSES, type MemberStatus, type WorkspaceMember } from '../api/members';
 import {
   useRemoveMemberMutation,
   useUpdateMemberStatusMutation,
-} from "../mutations/use-member-mutations";
-import { useMembersQuery } from "../queries/use-members-query";
-import { usePermissionConfigurationQuery } from "../queries/use-permission-queries";
-import { MemberDialog } from "./member-dialog";
+} from '../mutations/use-member-mutations';
+import { useMembersQuery } from '../queries/use-members-query';
+import { usePermissionConfigurationQuery } from '../queries/use-permission-queries';
+import { MemberDialog } from './member-dialog';
+import { MemberActions } from './member-actions';
 
 function formatJoinedDate(value: string | null) {
-  if (!value) return "Not joined yet";
-  return new Intl.DateTimeFormat("en-BD", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
+  if (!value) return 'Not joined yet';
+  return new Intl.DateTimeFormat('en-BD', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
   }).format(new Date(value));
 }
 
-function statusTone(
-  status: MemberStatus,
-): "success" | "warning" | "danger" | "info" {
-  if (status === "active") return "success";
-  if (status === "suspended") return "warning";
-  if (status === "removed") return "danger";
-  return "info";
-}
-
-function MemberActions({
-  member,
-  onEdit,
-  onSuspend,
-  onReactivate,
-  onRemove,
-}: {
-  member: WorkspaceMember;
-  onEdit: () => void;
-  onSuspend: () => void;
-  onReactivate: () => void;
-  onRemove: () => void;
-}) {
-  if (member.role === "Owner")
-    return (
-      <span className="text-xs text-muted-foreground">Protected owner</span>
-    );
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger
-        render={
-          <Button
-            variant="ghost"
-            size="icon-sm"
-            aria-label={`Actions for ${member.name}`}
-          />
-        }
-      >
-        <MoreHorizontal />
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuGroup>
-          <DropdownMenuItem onClick={onEdit}>
-            <UserRoundPen /> Change role
-          </DropdownMenuItem>
-          {member.status === "active" ? (
-            <DropdownMenuItem onClick={onSuspend}>
-              <UserRoundX /> Suspend member
-            </DropdownMenuItem>
-          ) : null}
-          {member.status === "suspended" ? (
-            <DropdownMenuItem onClick={onReactivate}>
-              <UserRoundCheck /> Reactivate member
-            </DropdownMenuItem>
-          ) : null}
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem variant="destructive" onClick={onRemove}>
-            <UserMinus /> Remove member
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
+function statusTone(status: MemberStatus): 'success' | 'warning' | 'danger' | 'info' {
+  if (status === 'active') return 'success';
+  if (status === 'suspended') return 'warning';
+  if (status === 'removed') return 'danger';
+  return 'info';
 }
 
 export function StaffPage({ workspaceId }: { workspaceId: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const params = useSearchParams();
-  const [dialogMember, setDialogMember] = useState<
-    WorkspaceMember | undefined
-  >();
+  const [dialogMember, setDialogMember] = useState<WorkspaceMember | undefined>();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [pendingAction, setPendingAction] = useState<{
     member: WorkspaceMember;
-    kind: "suspend" | "reactivate" | "remove";
+    kind: 'suspend' | 'reactivate' | 'remove';
   }>();
-  const page = Number(params.get("page")) || 1;
-  const search = params.get("search") || undefined;
-  const roleId = params.get("roleId") || undefined;
-  const status = params.get("status") as MemberStatus | undefined;
+  const page = Number(params.get('page')) || 1;
+  const search = params.get('search') || undefined;
+  const roleId = params.get('roleId') || undefined;
+  const status = params.get('status') as MemberStatus | undefined;
   const query = useMembersQuery(workspaceId, {
     page,
     limit: 20,
@@ -203,27 +118,25 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
     const options = {
       onSuccess: () => {
         toast.success(
-          kind === "remove"
-            ? "Member removed from the workspace."
-            : kind === "suspend"
-              ? "Member suspended."
-              : "Member reactivated.",
+          kind === 'remove'
+            ? 'Member removed from the workspace.'
+            : kind === 'suspend'
+              ? 'Member suspended.'
+              : 'Member reactivated.'
         );
         setPendingAction(undefined);
       },
-      onError: (error: Error) =>
-        toast.error(error.message || "Could not update this member."),
+      onError: (error: Error) => toast.error(error.message || 'Could not update this member.'),
     };
-    if (kind === "remove")
-      removeMutation.mutate({ workspaceId, id: member.id }, options);
+    if (kind === 'remove') removeMutation.mutate({ workspaceId, id: member.id }, options);
     else
       statusMutation.mutate(
         {
           workspaceId,
           id: member.id,
-          status: kind === "suspend" ? "suspended" : "active",
+          status: kind === 'suspend' ? 'suspended' : 'active',
         },
-        options,
+        options
       );
   }
 
@@ -231,9 +144,9 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
     <MemberActions
       member={member}
       onEdit={() => openEditDialog(member)}
-      onSuspend={() => setPendingAction({ member, kind: "suspend" })}
-      onReactivate={() => setPendingAction({ member, kind: "reactivate" })}
-      onRemove={() => setPendingAction({ member, kind: "remove" })}
+      onSuspend={() => setPendingAction({ member, kind: 'suspend' })}
+      onReactivate={() => setPendingAction({ member, kind: 'reactivate' })}
+      onRemove={() => setPendingAction({ member, kind: 'remove' })}
     />
   );
 
@@ -244,10 +157,7 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
         description="Create member accounts and assign workspace-defined roles."
         actions={
           <div className="flex gap-2">
-            <Button
-              variant="outline"
-              render={<Link href="/dashboard/staff/permissions" />}
-            >
+            <Button variant="outline" render={<Link href="/dashboard/staff/permissions" />}>
               Roles & permissions
             </Button>
             <Button onClick={openAddDialog}>
@@ -259,15 +169,13 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
       <FilterToolbar
         placeholder="Search name or email"
         searchValue={search}
-        onSearch={(value) =>
-          update({ search: value || undefined, page: undefined })
-        }
+        onSearch={(value) => update({ search: value || undefined, page: undefined })}
       >
         <Select
-          value={roleId ?? "all"}
+          value={roleId ?? 'all'}
           onValueChange={(value) =>
             update({
-              roleId: value === "all" ? undefined : (value ?? undefined),
+              roleId: value === 'all' ? undefined : (value ?? undefined),
               page: undefined,
             })
           }
@@ -287,10 +195,10 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
           </SelectContent>
         </Select>
         <Select
-          value={status ?? "all"}
+          value={status ?? 'all'}
           onValueChange={(value) =>
             update({
-              status: value === "all" ? undefined : (value ?? undefined),
+              status: value === 'all' ? undefined : (value ?? undefined),
               page: undefined,
             })
           }
@@ -312,10 +220,7 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
       </FilterToolbar>
       {query.isPending ? <LoadingState rows={5} /> : null}
       {query.isError ? (
-        <ErrorState
-          message="Could not load workspace members."
-          onRetry={() => query.refetch()}
-        />
+        <ErrorState message="Could not load workspace members." onRetry={() => query.refetch()} />
       ) : null}
       {query.isSuccess && !query.data.data.length ? (
         <EmptyState
@@ -347,18 +252,12 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
                 {query.data.data.map((member) => (
                   <TableRow key={member.id}>
                     <TableCell>
-                      <div className="font-medium text-foreground">
-                        {member.name}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {member.email}
-                      </div>
+                      <div className="font-medium text-foreground">{member.name}</div>
+                      <div className="text-xs text-muted-foreground">{member.email}</div>
                     </TableCell>
                     <TableCell>{member.role}</TableCell>
                     <TableCell>
-                      <StatusBadge status={statusTone(member.status)}>
-                        {member.status}
-                      </StatusBadge>
+                      <StatusBadge status={statusTone(member.status)}>{member.status}</StatusBadge>
                     </TableCell>
                     <TableCell>{formatJoinedDate(member.joinedAt)}</TableCell>
                     <TableCell>{actions(member)}</TableCell>
@@ -383,16 +282,12 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
                   <div>
                     <div className="text-xs text-muted-foreground">Status</div>
                     <div className="mt-1">
-                      <StatusBadge status={statusTone(member.status)}>
-                        {member.status}
-                      </StatusBadge>
+                      <StatusBadge status={statusTone(member.status)}>{member.status}</StatusBadge>
                     </div>
                   </div>
                   <div className="col-span-2">
                     <div className="text-xs text-muted-foreground">Joined</div>
-                    <div className="mt-1 font-medium">
-                      {formatJoinedDate(member.joinedAt)}
-                    </div>
+                    <div className="mt-1 font-medium">{formatJoinedDate(member.joinedAt)}</div>
                   </div>
                 </CardContent>
               </Card>
@@ -401,9 +296,7 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
           <Pagination
             page={query.data.meta.page}
             pageCount={query.data.meta.totalPages}
-            onPageChange={(next) =>
-              update({ page: next === 1 ? undefined : String(next) })
-            }
+            onPageChange={(next) => update({ page: next === 1 ? undefined : String(next) })}
           />
         </>
       ) : null}
@@ -422,38 +315,34 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {pendingAction?.kind === "remove"
-                ? "Remove member?"
-                : pendingAction?.kind === "suspend"
-                  ? "Suspend member?"
-                  : "Reactivate member?"}
+              {pendingAction?.kind === 'remove'
+                ? 'Remove member?'
+                : pendingAction?.kind === 'suspend'
+                  ? 'Suspend member?'
+                  : 'Reactivate member?'}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {pendingAction?.kind === "remove"
+              {pendingAction?.kind === 'remove'
                 ? `${pendingAction.member.name} will lose workspace access. Their EduFlow account remains intact and can be added again later.`
-                : pendingAction?.kind === "suspend"
+                : pendingAction?.kind === 'suspend'
                   ? `${pendingAction?.member.name} will be unable to use this workspace until reactivated.`
                   : `${pendingAction?.member.name} will regain access to this workspace.`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={isActionPending}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={isActionPending}>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              variant={
-                pendingAction?.kind === "remove" ? "destructive" : "default"
-              }
+              variant={pendingAction?.kind === 'remove' ? 'destructive' : 'default'}
               disabled={isActionPending}
               onClick={confirmAction}
             >
               {isActionPending
-                ? "Saving..."
-                : pendingAction?.kind === "remove"
-                  ? "Remove member"
-                  : pendingAction?.kind === "suspend"
-                    ? "Suspend member"
-                    : "Reactivate member"}
+                ? 'Saving...'
+                : pendingAction?.kind === 'remove'
+                  ? 'Remove member'
+                  : pendingAction?.kind === 'suspend'
+                    ? 'Suspend member'
+                    : 'Reactivate member'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

@@ -6,39 +6,39 @@ import {
   Layers,
   MessageSquare,
   Users,
-} from "lucide-react";
-import { PublicContainer } from "@/components/public/public-container";
-import { Card } from "@/components/ui/card";
+} from 'lucide-react';
+import { PublicContainer } from '@/components/public/public-container';
+import { Card } from '@/components/ui/card';
 
 const workflowNodes = [
   {
-    step: "01",
-    title: "Student Enrollment",
-    desc: "Learner profiles & guardians",
+    step: '01',
+    title: 'Student Enrollment',
+    desc: 'Learner profiles & guardians',
     icon: Users,
   },
   {
-    step: "02",
-    title: "Batch & Room Scheduling",
-    desc: "Class timetables & capacities",
+    step: '02',
+    title: 'Batch & Room Scheduling',
+    desc: 'Class timetables & capacities',
     icon: CalendarDays,
   },
   {
-    step: "03",
-    title: "Daily Attendance Check-in",
-    desc: "1-click presence recording",
+    step: '03',
+    title: 'Daily Attendance Check-in',
+    desc: '1-click presence recording',
     icon: CheckCircle2,
   },
   {
-    step: "04",
-    title: "Tuition & Fee Ledger",
-    desc: "Automated billing & receipts",
+    step: '04',
+    title: 'Tuition & Fee Ledger',
+    desc: 'Automated billing & receipts',
     icon: CreditCard,
   },
   {
-    step: "05",
-    title: "Instant Guardian SMS",
-    desc: "Alerts & payment confirmations",
+    step: '05',
+    title: 'Instant Guardian SMS',
+    desc: 'Alerts & payment confirmations',
     icon: MessageSquare,
   },
 ];
@@ -56,8 +56,8 @@ export function OneWorkspaceSection() {
             One connected engine. Zero duplicate data entry.
           </h2>
           <p className="mt-4 text-base font-light text-muted-foreground sm:text-lg">
-            When a student enrolls, their profile connects directly to their batch, attendance record,
-            monthly fee ledger, and parent communication channel.
+            When a student enrolls, their profile connects directly to their batch, attendance
+            record, monthly fee ledger, and parent communication channel.
           </p>
         </div>
 
@@ -77,7 +77,9 @@ export function OneWorkspaceSection() {
                       <span className="flex size-9 items-center justify-center rounded-xl border border-border-strong bg-muted text-foreground">
                         <Icon className="size-4" />
                       </span>
-                      <p className="mt-1 font-heading text-xs font-semibold text-foreground">{node.title}</p>
+                      <p className="mt-1 font-heading text-xs font-semibold text-foreground">
+                        {node.title}
+                      </p>
                       <p className="text-[11px] font-light text-muted-foreground">{node.desc}</p>
                     </div>
                   </Card>
@@ -107,8 +109,9 @@ export function OneWorkspaceSection() {
               EduFlow Central Workspace
             </h3>
             <p className="mx-auto mt-2 max-w-xl text-xs font-light text-muted-foreground sm:text-sm">
-              All records stay synchronized in real time. Attendance updates calculate student engagement,
-              fee receipts credit the general ledger, and staff actions are tracked in the workspace audit log.
+              All records stay synchronized in real time. Attendance updates calculate student
+              engagement, fee receipts credit the general ledger, and staff actions are tracked in
+              the workspace audit log.
             </p>
           </div>
         </div>

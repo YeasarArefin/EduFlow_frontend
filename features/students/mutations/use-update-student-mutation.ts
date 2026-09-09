@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { updateStudent, type StudentInput } from "../api/students";
-import { studentKeys } from "../student-query-keys";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { updateStudent, type StudentInput } from '../api/students';
+import { studentKeys } from '../student-query-keys';
 
 export function useUpdateStudentMutation() {
   const queryClient = useQueryClient();
@@ -16,7 +16,6 @@ export function useUpdateStudentMutation() {
       studentId: string;
       input: Partial<StudentInput>;
     }) => updateStudent(workspaceId, studentId, input),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: studentKeys.all }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: studentKeys.all }),
   });
 }

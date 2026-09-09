@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { ArrowRight, Sparkles } from "lucide-react";
-import { PublicContainer } from "@/components/public/public-container";
-import { Button } from "@/components/ui/button";
-import { AmbientGlow } from "./ambient-glow";
+import Link from 'next/link';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { PublicContainer } from '@/components/public/public-container';
+import { Button } from '@/components/ui/button';
+import { AmbientGlow } from './ambient-glow';
 
 export function CtaSection() {
   return (

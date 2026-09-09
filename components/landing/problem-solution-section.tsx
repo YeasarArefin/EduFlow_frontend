@@ -1,49 +1,49 @@
-import { Check, Sparkles } from "lucide-react";
-import { PublicContainer } from "@/components/public/public-container";
+import { Check, Sparkles } from 'lucide-react';
+import { PublicContainer } from '@/components/public/public-container';
 
 const beforeFrictions = [
   {
-    title: "Scattered Student Data",
-    desc: "Profiles split across paper diaries, phone contacts, and unlinked Excel rows.",
+    title: 'Scattered Student Data',
+    desc: 'Profiles split across paper diaries, phone contacts, and unlinked Excel rows.',
   },
   {
-    title: "Manual Fee Reconciliation",
-    desc: "Partial dues, bKash screenshots, and cash slips get lost without automated receipt trails.",
+    title: 'Manual Fee Reconciliation',
+    desc: 'Partial dues, bKash screenshots, and cash slips get lost without automated receipt trails.',
   },
   {
-    title: "Late Absence Detection",
-    desc: "Absence patterns go unnoticed until exam week because attendance sheets stay in folders.",
+    title: 'Late Absence Detection',
+    desc: 'Absence patterns go unnoticed until exam week because attendance sheets stay in folders.',
   },
   {
-    title: "Exhausting Evening Messaging",
-    desc: "Staff spend hours typing repetitive individual text messages to hundreds of parents.",
+    title: 'Exhausting Evening Messaging',
+    desc: 'Staff spend hours typing repetitive individual text messages to hundreds of parents.',
   },
   {
-    title: "Zero Privacy Boundaries",
-    desc: "Staff and teachers share spreadsheet access, exposing confidential payroll and financials.",
+    title: 'Zero Privacy Boundaries',
+    desc: 'Staff and teachers share spreadsheet access, exposing confidential payroll and financials.',
   },
 ];
 
 const afterSolutions = [
   {
-    title: "Single Source of Truth",
-    desc: "Centralized student directory with guardian contacts, academic history, and batch allocation.",
+    title: 'Single Source of Truth',
+    desc: 'Centralized student directory with guardian contacts, academic history, and batch allocation.',
   },
   {
-    title: "Automated Fee Ledger",
-    desc: "Real-time payment logging, automatic invoice generation, and 1-click digital receipts.",
+    title: 'Automated Fee Ledger',
+    desc: 'Real-time payment logging, automatic invoice generation, and 1-click digital receipts.',
   },
   {
-    title: "1-Click Attendance Roll Calls",
-    desc: "Instant roll-call submission from any phone, flagging low attendance automatically.",
+    title: '1-Click Attendance Roll Calls',
+    desc: 'Instant roll-call submission from any phone, flagging low attendance automatically.',
   },
   {
-    title: "Automated Bilingual SMS",
-    desc: "Absence alerts, payment receipts, and exam schedules dispatch immediately to parents.",
+    title: 'Automated Bilingual SMS',
+    desc: 'Absence alerts, payment receipts, and exam schedules dispatch immediately to parents.',
   },
   {
-    title: "Role-Based Data Isolation",
-    desc: "Strict permissions ensure teachers and reception staff only see data within their scope.",
+    title: 'Role-Based Data Isolation',
+    desc: 'Strict permissions ensure teachers and reception staff only see data within their scope.',
   },
 ];
 
@@ -60,8 +60,9 @@ export function ProblemSolutionSection() {
             Stop running your coaching center across spreadsheets, notebooks and chat apps.
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg font-light leading-relaxed">
-            Coaching centers thrive on clear student communication and disciplined operations.
-            Here is how EduFlow eliminates administrative friction and restores calm to your daily routine.
+            Coaching centers thrive on clear student communication and disciplined operations. Here
+            is how EduFlow eliminates administrative friction and restores calm to your daily
+            routine.
           </p>
         </div>
 
@@ -97,7 +98,9 @@ export function ProblemSolutionSection() {
                     </span>
                     <div>
                       <p className="text-sm font-medium text-foreground">{item.title}</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground font-light leading-relaxed">{item.desc}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground font-light leading-relaxed">
+                        {item.desc}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -149,7 +152,9 @@ export function ProblemSolutionSection() {
                     </span>
                     <div>
                       <p className="text-sm font-medium text-foreground">{item.title}</p>
-                      <p className="mt-0.5 text-xs text-muted-foreground font-light leading-relaxed">{item.desc}</p>
+                      <p className="mt-0.5 text-xs text-muted-foreground font-light leading-relaxed">
+                        {item.desc}
+                      </p>
                     </div>
                   </div>
                 ))}
@@ -159,7 +164,8 @@ export function ProblemSolutionSection() {
             {/* Bottom State Bar */}
             <div className="mt-6 rounded-xl border border-[rgba(190,242,100,0.15)] bg-[rgba(190,242,100,0.03)] p-3 text-center">
               <span className="text-xs text-accent-foreground font-medium">
-                Result: 100% attendance visibility, timely fee collections, and relaxed coaching days.
+                Result: 100% attendance visibility, timely fee collections, and relaxed coaching
+                days.
               </span>
             </div>
           </div>

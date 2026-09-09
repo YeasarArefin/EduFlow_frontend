@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
-import { ApiError } from "@/lib/api/client";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner';
+import { ApiError } from '@/lib/api/client';
 import {
   runPlatformSubscriptionLifecycleOperation,
   type PlatformSubscriptionLifecycleOperation,
-} from "../api/subscription-lifecycle";
-import { platformWorkspaceQueryKeys } from "../workspace-query-keys";
+} from '../api/subscription-lifecycle';
+import { platformWorkspaceQueryKeys } from '../workspace-query-keys';
 
 const operationLabels: Record<PlatformSubscriptionLifecycleOperation, string> = {
-  "renewal-due": "Subscription marked as renewal due.",
-  expire: "Subscription expired.",
-  lock: "Workspace locked.",
-  unlock: "Workspace unlocked.",
-  "schedule-deletion": "Workspace deletion scheduled.",
+  'renewal-due': 'Subscription marked as renewal due.',
+  expire: 'Subscription expired.',
+  lock: 'Workspace locked.',
+  unlock: 'Workspace unlocked.',
+  'schedule-deletion': 'Workspace deletion scheduled.',
 };
 
 export function useRunPlatformSubscriptionLifecycleOperation() {
@@ -29,12 +29,7 @@ export function useRunPlatformSubscriptionLifecycleOperation() {
       workspaceId: string;
       operation: PlatformSubscriptionLifecycleOperation;
       scheduledDeleteAt?: string;
-    }) =>
-      runPlatformSubscriptionLifecycleOperation(
-        workspaceId,
-        operation,
-        scheduledDeleteAt,
-      ),
+    }) => runPlatformSubscriptionLifecycleOperation(workspaceId, operation, scheduledDeleteAt),
     onSuccess: async (_result, variables) => {
       await queryClient.invalidateQueries({
         queryKey: platformWorkspaceQueryKeys.all,
@@ -47,15 +42,13 @@ export function useRunPlatformSubscriptionLifecycleOperation() {
           queryKey: platformWorkspaceQueryKeys.all,
         });
         toast.error(
-          "This lifecycle action is no longer valid. The latest workspace state has been loaded.",
+          'This lifecycle action is no longer valid. The latest workspace state has been loaded.'
         );
         return;
       }
 
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Could not update the subscription lifecycle.",
+        error instanceof Error ? error.message : 'Could not update the subscription lifecycle.'
       );
     },
   });

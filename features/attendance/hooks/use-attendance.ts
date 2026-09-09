@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createAttendanceSession,
   finalizeAttendanceSession,
@@ -9,13 +9,13 @@ import {
   saveAttendance,
   type AttendanceRecordInput,
   type AttendanceSessionListParams,
-} from "../api/attendance";
-import { attendanceKeys } from "../attendance-query-keys";
+} from '../api/attendance';
+import { attendanceKeys } from '../attendance-query-keys';
 
 export function useAttendanceSessionsQuery(
   workspaceId: string,
   params: AttendanceSessionListParams,
-  enabled = true,
+  enabled = true
 ) {
   return useQuery({
     queryKey: attendanceKeys.list(workspaceId, params),
@@ -27,11 +27,11 @@ export function useAttendanceSessionsQuery(
 
 export function useAttendanceSessionQuery(workspaceId: string, sessionId: string | null) {
   return useQuery({
-    queryKey: sessionId ? attendanceKeys.detail(workspaceId, sessionId) : ["attendance", "disabled"],
+    queryKey: sessionId
+      ? attendanceKeys.detail(workspaceId, sessionId)
+      : ['attendance', 'disabled'],
     queryFn: ({ signal }) =>
-      sessionId
-        ? getAttendanceSession(workspaceId, sessionId, signal)
-        : Promise.resolve(null),
+      sessionId ? getAttendanceSession(workspaceId, sessionId, signal) : Promise.resolve(null),
     enabled: Boolean(workspaceId && sessionId),
     staleTime: 15_000,
   });

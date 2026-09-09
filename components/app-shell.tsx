@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { ThemeToggle } from "@/components/theme-toggle";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { ChevronDown, LogOut, Menu, PanelLeft, Shield, X } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { ThemeToggle } from '@/components/theme-toggle';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { ChevronDown, LogOut, Menu, PanelLeft, Shield, X } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useState, type ReactNode } from 'react';
 
 export type AppShellNavItem = {
   label: string;
@@ -28,7 +28,7 @@ export type AppShellUser = {
 export function AppShell({
   children,
   navigation,
-  productName = "EduFlow",
+  productName = 'EduFlow',
   isAdmin = false,
   user,
 }: {
@@ -70,8 +70,8 @@ export function AppShell({
       {/* Mobile Drawer */}
       <aside
         className={cn(
-          "fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 ease-in-out lg:hidden",
-          mobileOpen ? "translate-x-0" : "-translate-x-full"
+          'fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-sidebar-border bg-sidebar transition-transform duration-200 ease-in-out lg:hidden',
+          mobileOpen ? 'translate-x-0' : '-translate-x-full'
         )}
         aria-label="Mobile navigation"
       >
@@ -106,7 +106,7 @@ export function AppShell({
 
           <div className="hidden items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] text-subtle-foreground lg:flex">
             <PanelLeft className="size-3.5" />
-            <span>{isAdmin ? "Platform Admin" : "Workspace"}</span>
+            <span>{isAdmin ? 'Platform Admin' : 'Workspace'}</span>
           </div>
 
           <div className="ml-auto flex items-center gap-3">
@@ -119,21 +119,13 @@ export function AppShell({
           </div>
         </header>
 
-        <main className="mx-auto w-full flex-1 px-4 py-8 sm:px-6 lg:px-8">
-          {children}
-        </main>
+        <main className="mx-auto w-full flex-1 px-4 py-8 sm:px-6 lg:px-8">{children}</main>
       </div>
     </div>
   );
 }
 
-function ShellBrand({
-  productName,
-  isAdmin,
-}: {
-  productName: string;
-  isAdmin?: boolean;
-}) {
+function ShellBrand({ productName, isAdmin }: { productName: string; isAdmin?: boolean }) {
   return (
     <Link
       href="/"
@@ -172,10 +164,9 @@ function ShellNavigation({
           )}
           {group.items.map((item) => {
             const isRootSection =
-              item.href === "/platform" || item.href === "/dashboard" || item.href === "/";
+              item.href === '/platform' || item.href === '/dashboard' || item.href === '/';
             const active =
-              pathname === item.href ||
-              (!isRootSection && pathname.startsWith(`${item.href}/`));
+              pathname === item.href || (!isRootSection && pathname.startsWith(`${item.href}/`));
 
             return (
               <Link
@@ -183,18 +174,20 @@ function ShellNavigation({
                 href={item.href}
                 onClick={onNavigate}
                 className={cn(
-                  "group relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all duration-150 ease-in-out",
+                  'group relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all duration-150 ease-in-out',
                   active
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
-                aria-current={active ? "page" : undefined}
+                aria-current={active ? 'page' : undefined}
               >
                 {item.icon && (
                   <span
                     className={cn(
-                      "size-4 shrink-0 flex items-center justify-center transition-colors",
-                      active ? "text-sidebar-accent-foreground" : "text-subtle-foreground group-hover:text-foreground"
+                      'size-4 shrink-0 flex items-center justify-center transition-colors',
+                      active
+                        ? 'text-sidebar-accent-foreground'
+                        : 'text-subtle-foreground group-hover:text-foreground'
                     )}
                   >
                     {item.icon}
@@ -210,23 +203,13 @@ function ShellNavigation({
   );
 }
 
-function ShellFooter({
-  user,
-  isAdmin,
-}: {
-  user?: AppShellUser;
-  isAdmin?: boolean;
-}) {
+function ShellFooter({ user, isAdmin }: { user?: AppShellUser; isAdmin?: boolean }) {
   return (
     <div className="flex flex-col gap-3 border-t border-sidebar-border p-4">
       {user && (
         <div className="flex items-center gap-3">
           <span className="flex size-8 items-center justify-center rounded-full bg-sidebar-primary text-xs font-semibold text-sidebar-primary-foreground">
-            {isAdmin ? (
-              <Shield className="size-4" />
-            ) : (
-              user.name.slice(0, 1).toUpperCase()
-            )}
+            {isAdmin ? <Shield className="size-4" /> : user.name.slice(0, 1).toUpperCase()}
           </span>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium text-foreground">{user.name}</p>

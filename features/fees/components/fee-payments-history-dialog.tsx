@@ -1,6 +1,6 @@
-﻿"use client";
+﻿'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,41 +8,18 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Spinner } from "@/components/ui/spinner";
-import { CreditCard, Eye, History, Receipt } from "lucide-react";
-import type { StudentFee } from "../api/fees";
-import { useFeePaymentsQuery } from "../hooks/use-fees";
-
-function formatCurrency(amount?: string | number | null): string {
-  if (amount === undefined || amount === null || amount === "") return "৳0.00";
-  const num = typeof amount === "string" ? parseFloat(amount) : amount;
-  if (isNaN(num)) return "৳0.00";
-  return `৳${num.toLocaleString("en-BD", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-}
-
-function formatDate(dateStr?: string | null): string {
-  if (!dateStr) return "";
-  try {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
-    });
-  } catch {
-    return dateStr;
-  }
-}
+} from '@/components/ui/dialog';
+import { Spinner } from '@/components/ui/spinner';
+import { History, Receipt } from 'lucide-react';
+import type { StudentFee } from '../api/fees';
+import { useFeePaymentsQuery } from '../hooks/use-fees';
+import { FeePaymentHistoryItem } from './fee-payment-history-item';
 
 function formatMonth(dateStr?: string | null): string {
-  if (!dateStr) return "";
+  if (!dateStr) return '';
   try {
     const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   } catch {
     return dateStr;
   }
@@ -73,10 +50,10 @@ export function FeePaymentsHistoryDialog({
             <span>Payment History</span>
           </div>
           <DialogTitle className="text-xl font-bold font-sans">
-            Payments for {fee?.student?.fullName || "Student Fee"}
+            Payments for {fee?.student?.fullName || 'Student Fee'}
           </DialogTitle>
           <DialogDescription>
-            All recorded payment receipts for {fee ? formatMonth(fee.feeMonth) : "this fee"}.
+            All recorded payment receipts for {fee ? formatMonth(fee.feeMonth) : 'this fee'}.
           </DialogDescription>
         </DialogHeader>
 
@@ -96,59 +73,22 @@ export function FeePaymentsHistoryDialog({
             </div>
           ) : (
             <div className="space-y-3">
-              {payments.map((p) => (
-                <div
-                  key={p.id}
-                  className="space-y-2.5 rounded-xl border border-border/60 bg-card/40 p-4 transition-colors hover:border-border"
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-lime-400">
-                        #{p.receiptNumber}
-                      </span>
-                      <span className="inline-flex items-center gap-1 rounded-full border border-lime-500/20 bg-lime-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-lime-400">
-                        <CreditCard className="size-2.5" />
-                        {p.paymentMethod}
-                      </span>
-                    </div>
-                    <span className="font-mono text-base font-bold text-foreground">
-                      {formatCurrency(p.amount)}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center justify-between border-t border-border/30 pt-2 text-xs text-muted-foreground">
-                    <span>Paid on {formatDate(p.paymentDate)}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        onOpenChange(false);
-                        onViewReceipt(p.receiptNumber);
-                      }}
-                      className="h-7 gap-1 px-2 text-xs text-lime-400 hover:bg-lime-500/10 hover:text-lime-300"
-                    >
-                      <Eye className="size-3" /> View Receipt
-                    </Button>
-                  </div>
-
-                  {p.note && (
-                    <p className="rounded-lg border border-border/30 bg-background/50 p-2 text-xs text-muted-foreground">
-                      {p.note}
-                    </p>
-                  )}
-                </div>
+              {payments.map((payment) => (
+                <FeePaymentHistoryItem
+                  key={payment.id}
+                  payment={payment}
+                  onViewReceipt={(receiptNumber) => {
+                    onOpenChange(false);
+                    onViewReceipt(receiptNumber);
+                  }}
+                />
               ))}
             </div>
           )}
         </div>
 
         <DialogFooter className="border-t border-border/40 bg-muted/30 p-4 sm:flex-row sm:justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Close
           </Button>
         </DialogFooter>

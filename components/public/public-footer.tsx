@@ -1,5 +1,5 @@
-import Link from "next/link";
-import { PublicContainer } from "@/components/public/public-container";
+import Link from 'next/link';
+import { PublicContainer } from '@/components/public/public-container';
 
 export function PublicFooter() {
   return (
@@ -16,11 +16,13 @@ export function PublicFooter() {
               <span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-bold tracking-tight text-primary-foreground shadow-[0_0_14px_rgba(190,242,100,0.35)] transition-transform group-hover:scale-105">
                 EF
               </span>
-              <span className="text-lg font-semibold tracking-tight text-foreground font-heading">EduFlow</span>
+              <span className="text-lg font-semibold tracking-tight text-foreground font-heading">
+                EduFlow
+              </span>
             </Link>
             <p className="mt-4 max-w-sm text-sm text-muted-foreground font-light leading-relaxed">
-              The intelligent operating system for tutors and coaching centers. Manage students, batches,
-              attendance, fees, and guardian notifications from one synchronized workspace.
+              The intelligent operating system for tutors and coaching centers. Manage students,
+              batches, attendance, fees, and guardian notifications from one synchronized workspace.
             </p>
             <div className="mt-6 flex items-center gap-2 text-xs text-muted-foreground/70">
               <span className="size-2 rounded-full bg-primary shadow-[0_0_6px_rgba(190,242,100,0.8)]" />
@@ -30,7 +32,9 @@ export function PublicFooter() {
 
           {/* Product Column */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">Product</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+              Product
+            </p>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
                 <Link href="/#features" className="transition-colors hover:text-foreground">
@@ -57,7 +61,9 @@ export function PublicFooter() {
 
           {/* Account Column */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">Account</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+              Account
+            </p>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
                 <Link href="/signin" className="transition-colors hover:text-accent-foreground">
@@ -79,7 +85,9 @@ export function PublicFooter() {
 
           {/* Company & Legal Column */}
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">Company & Legal</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-foreground">
+              Company & Legal
+            </p>
             <ul className="mt-4 space-y-2.5 text-sm">
               <li>
                 <Link href="/pricing" className="transition-colors hover:text-foreground">
@@ -92,14 +100,10 @@ export function PublicFooter() {
                 </Link>
               </li>
               <li>
-                <span className="text-muted-foreground/50">
-                  Privacy
-                </span>
+                <span className="text-muted-foreground/50">Privacy</span>
               </li>
               <li>
-                <span className="text-muted-foreground/50">
-                  Terms
-                </span>
+                <span className="text-muted-foreground/50">Terms</span>
               </li>
             </ul>
           </div>
@@ -108,7 +112,9 @@ export function PublicFooter() {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 text-xs text-muted-foreground/70 sm:flex-row">
           <p>© {new Date().getFullYear()} EduFlow. All rights reserved.</p>
-          <p className="font-mono text-[11px] text-muted-foreground/50">Multi-tenant education operations architecture.</p>
+          <p className="font-mono text-[11px] text-muted-foreground/50">
+            Multi-tenant education operations architecture.
+          </p>
         </div>
       </PublicContainer>
     </footer>

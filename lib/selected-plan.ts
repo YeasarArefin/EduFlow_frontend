@@ -1,12 +1,12 @@
-import { getPublicPlans } from "@/features/pricing/api/get-public-plans";
+import { getPublicPlans } from '@/features/pricing/api/get-public-plans';
 
-export const SELECTED_PLAN_COOKIE = "eduflow.selectedPlanSlug";
+export const SELECTED_PLAN_COOKIE = 'eduflow.selectedPlanSlug';
 export const SELECTED_PLAN_COOKIE_OPTIONS = {
   httpOnly: true,
-  sameSite: "lax" as const,
-  secure: process.env.NODE_ENV === "production",
-  path: "/",
-  maxAge: 60 * 60 * 24 * 30
+  sameSite: 'lax' as const,
+  secure: process.env.NODE_ENV === 'production',
+  path: '/',
+  maxAge: 60 * 60 * 24 * 30,
 };
 
 export async function validateSelectedPlanSlug(slug: string | undefined) {

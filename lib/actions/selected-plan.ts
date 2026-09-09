@@ -1,7 +1,11 @@
-"use server";
+'use server';
 
-import { cookies } from "next/headers";
-import { SELECTED_PLAN_COOKIE, SELECTED_PLAN_COOKIE_OPTIONS, validateSelectedPlanSlug } from "@/lib/selected-plan";
+import { cookies } from 'next/headers';
+import {
+  SELECTED_PLAN_COOKIE,
+  SELECTED_PLAN_COOKIE_OPTIONS,
+  validateSelectedPlanSlug,
+} from '@/lib/selected-plan';
 
 export async function persistSelectedPlan(slug: string | undefined) {
   const cookieStore = await cookies();

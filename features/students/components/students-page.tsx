@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   DataTable,
@@ -8,9 +8,9 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
+} from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -18,42 +18,28 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  Archive,
-  ChevronRight,
-  Eye,
-  GraduationCap,
-  Plus,
-  UserCheck,
-  UserX
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useMemo, useState } from "react";
-import { STUDENT_STATUSES, type StudentStatus } from "../api/students";
-import { useStudentsQuery } from "../queries/use-students-query";
-import { StudentSheet } from "./student-sheet";
+} from '@/components/ui/select';
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Archive, ChevronRight, Eye, GraduationCap, Plus, UserCheck, UserX } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { STUDENT_STATUSES, type StudentStatus } from '../api/students';
+import { useStudentsQuery } from '../queries/use-students-query';
+import { StudentSheet } from './student-sheet';
 
 const pageSize = 20;
 
 const statusLabels: Record<StudentStatus, string> = {
-  active: "Active",
-  inactive: "Inactive",
-  archived: "Archived",
+  active: 'Active',
+  inactive: 'Inactive',
+  archived: 'Archived',
 };
 
-const statusVisual: Record<StudentStatus, "success" | "warning" | "info"> = {
-  active: "success",
-  inactive: "warning",
-  archived: "info",
+const statusVisual: Record<StudentStatus, 'success' | 'warning' | 'info'> = {
+  active: 'success',
+  inactive: 'warning',
+  archived: 'info',
 };
 
 function page(value: string | null) {
@@ -62,9 +48,7 @@ function page(value: string | null) {
 }
 
 function status(value: string | null): StudentStatus | undefined {
-  return STUDENT_STATUSES.includes(value as StudentStatus)
-    ? (value as StudentStatus)
-    : undefined;
+  return STUDENT_STATUSES.includes(value as StudentStatus) ? (value as StudentStatus) : undefined;
 }
 
 function initials(name: string) {
@@ -72,24 +56,24 @@ function initials(name: string) {
     .split(/\s+/)
     .slice(0, 2)
     .map((part) => part[0])
-    .join("")
+    .join('')
     .toUpperCase();
 }
 
 function formatDate(value?: string | null): string {
-  if (!value) return "—";
+  if (!value) return '—';
   try {
-    return new Intl.DateTimeFormat("en-US", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
+    return new Intl.DateTimeFormat('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
     }).format(new Date(value));
   } catch {
     return value;
   }
 }
 
-export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
+export function StudentsPage({ workspaceId }: { workspaceId: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -97,12 +81,12 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
 
   const params = useMemo(
     () => ({
-      page: page(searchParams.get("page")),
+      page: page(searchParams.get('page')),
       limit: pageSize,
-      search: searchParams.get("search") || undefined,
-      status: status(searchParams.get("status")),
+      search: searchParams.get('search') || undefined,
+      status: status(searchParams.get('status')),
     }),
-    [searchParams],
+    [searchParams]
   );
 
   const query = useStudentsQuery(workspaceId, params);
@@ -120,9 +104,9 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
     let inactive = 0;
     let archived = 0;
     for (const s of allStudentsList) {
-      if (s.status === "active") active++;
-      else if (s.status === "inactive") inactive++;
-      else if (s.status === "archived") archived++;
+      if (s.status === 'active') active++;
+      else if (s.status === 'inactive') inactive++;
+      else if (s.status === 'archived') archived++;
     }
     return {
       total: totalStudentsQuery.data?.meta.total ?? allStudentsList.length,
@@ -135,7 +119,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
   function updateUrl(updates: Record<string, string | undefined>) {
     const next = new URLSearchParams(searchParams.toString());
     Object.entries(updates).forEach(([key, value]) =>
-      value ? next.set(key, value) : next.delete(key),
+      value ? next.set(key, value) : next.delete(key)
     );
     router.replace(next.size ? `${pathname}?${next}` : pathname);
   }
@@ -146,10 +130,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
         title="Students"
         description="Manage the student directory, profiles, enrollments, and tuition fees in this workspace."
         actions={
-          <Button
-            onClick={() => setSheetOpen(true)}
-            className="rounded-full shadow-sm"
-          >
+          <Button onClick={() => setSheetOpen(true)} className="rounded-full shadow-sm">
             <Plus data-icon="inline-start" /> Add student
           </Button>
         }
@@ -165,9 +146,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
           <div className="mt-2 text-2xl font-bold tracking-tight text-foreground">
             {counts.total}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Registered coaching profiles
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">Registered coaching profiles</p>
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-4">
@@ -178,9 +157,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
           <div className="mt-2 text-2xl font-bold tracking-tight text-emerald-400">
             {counts.active}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Eligible for batch enrollments
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">Eligible for batch enrollments</p>
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-4">
@@ -191,9 +168,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
           <div className="mt-2 text-2xl font-bold tracking-tight text-amber-400">
             {counts.inactive}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Temporarily paused students
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">Temporarily paused students</p>
         </div>
 
         <div className="rounded-2xl border border-border bg-card p-4">
@@ -204,9 +179,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
           <div className="mt-2 text-2xl font-bold tracking-tight text-muted-foreground">
             {counts.archived}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Historical student records
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">Historical student records</p>
         </div>
       </div>
 
@@ -214,23 +187,18 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
       <FilterToolbar
         placeholder="Search student name, code, phone, or guardian…"
         searchValue={params.search}
-        onSearch={(search) =>
-          updateUrl({ search: search || undefined, page: undefined })
-        }
+        onSearch={(search) => updateUrl({ search: search || undefined, page: undefined })}
       >
         <Select
-          value={params.status ?? "all"}
+          value={params.status ?? 'all'}
           onValueChange={(value) =>
             updateUrl({
-              status: value === "all" ? undefined : (value ?? undefined),
+              status: value === 'all' ? undefined : (value ?? undefined),
               page: undefined,
             })
           }
         >
-          <SelectTrigger
-            aria-label="Filter students by status"
-            className="w-[160px]"
-          >
+          <SelectTrigger aria-label="Filter students by status" className="w-[160px]">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -260,15 +228,12 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
           title="No students found"
           description={
             params.search || params.status
-              ? "No student matches your current search or status filter."
-              : "Add your first student to begin building this workspace directory."
+              ? 'No student matches your current search or status filter.'
+              : 'Add your first student to begin building this workspace directory.'
           }
           action={
             !params.search && !params.status ? (
-              <Button
-                onClick={() => setSheetOpen(true)}
-                className="rounded-full shadow-sm"
-              >
+              <Button onClick={() => setSheetOpen(true)} className="rounded-full shadow-sm">
                 <Plus data-icon="inline-start" /> Add student
               </Button>
             ) : undefined
@@ -333,7 +298,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
                           {student.phone}
                         </a>
                       ) : (
-                        "—"
+                        '—'
                       )}
                     </TableCell>
 
@@ -351,9 +316,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
                       <Button
                         variant="outline"
                         size="sm"
-                        render={
-                          <Link href={`/dashboard/students/${student.id}`} />
-                        }
+                        render={<Link href={`/dashboard/students/${student.id}`} />}
                         className="h-7 rounded-full px-2.5 text-xs"
                       >
                         <Eye className="size-3" />
@@ -380,9 +343,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
                       {initials(student.fullName)}
                     </span>
                     <div>
-                      <h4 className="font-semibold text-foreground">
-                        {student.fullName}
-                      </h4>
+                      <h4 className="font-semibold text-foreground">{student.fullName}</h4>
                       <p className="font-mono text-xs text-muted-foreground">
                         {student.studentCode}
                       </p>
@@ -396,15 +357,11 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
                 <div className="grid grid-cols-2 gap-2 border-t border-border/40 pt-2.5 text-xs text-muted-foreground">
                   <div>
                     <span className="block text-[11px]">Phone</span>
-                    <span className="font-mono text-foreground">
-                      {student.phone || "—"}
-                    </span>
+                    <span className="font-mono text-foreground">{student.phone || '—'}</span>
                   </div>
                   <div>
                     <span className="block text-[11px]">Admission Date</span>
-                    <span className="text-foreground">
-                      {formatDate(student.admissionDate)}
-                    </span>
+                    <span className="text-foreground">{formatDate(student.admissionDate)}</span>
                   </div>
                 </div>
 
@@ -427,7 +384,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
       ) : null}
 
       <StudentSheet
-        key={sheetOpen ? "create-open" : "create-closed"}
+        key={sheetOpen ? 'create-open' : 'create-closed'}
         open={sheetOpen}
         onOpenChange={setSheetOpen}
         workspaceId={workspaceId}
@@ -435,4 +392,3 @@ export function StudentsPage({ workspaceId }: { workspaceId: string; }) {
     </div>
   );
 }
-

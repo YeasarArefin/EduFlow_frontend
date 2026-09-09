@@ -1,4 +1,4 @@
-import { env } from "@/config/env";
+import { env } from '@/config/env';
 
 export type PublicPlan = {
   id: string;
@@ -7,7 +7,12 @@ export type PublicPlan = {
   priceMinor: string;
   durationDays: number;
   trial: { included: boolean; days: number };
-  features: Array<{ key: string; name: string; description: string | null; defaultLimit: string | null }>;
+  features: Array<{
+    key: string;
+    name: string;
+    description: string | null;
+    defaultLimit: string | null;
+  }>;
   quotas: Record<string, string | null>;
 };
 
@@ -15,7 +20,10 @@ type PublicPlansResponse = { data: PublicPlan[] };
 
 export async function getPublicPlans(): Promise<PublicPlan[] | null> {
   try {
-    const response = await fetch(`${env.apiBaseUrl}/public/plans`, { cache: "no-store", headers: { Accept: "application/json" } });
+    const response = await fetch(`${env.apiBaseUrl}/public/plans`, {
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    });
     if (!response.ok) return null;
     const payload = (await response.json()) as PublicPlansResponse;
     return Array.isArray(payload.data) ? payload.data : null;

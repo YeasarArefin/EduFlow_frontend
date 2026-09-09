@@ -1,10 +1,17 @@
-import type { ReactNode } from "react";
-import { AlertCircle, Inbox, RefreshCw, Search } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
-import { StatusBadge } from "@/components/status-badge";
+import type { ReactNode } from 'react';
+import { AlertCircle, Inbox, RefreshCw, Search } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/lib/utils';
+
+const statStatusStyles = {
+  success: 'bg-primary',
+  warning: 'bg-amber-500',
+  danger: 'bg-destructive',
+  info: 'bg-emerald-500',
+} as const;
 
 export function PageHeader({
   title,
@@ -21,17 +28,9 @@ export function PageHeader({
         <h1 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
           {title}
         </h1>
-        {description && (
-          <p className="mt-1.5 text-sm text-muted-foreground">
-            {description}
-          </p>
-        )}
+        {description && <p className="mt-1.5 text-sm text-muted-foreground">{description}</p>}
       </div>
-      {actions && (
-        <div className="flex shrink-0 items-center gap-2.5">
-          {actions}
-        </div>
-      )}
+      {actions && <div className="flex shrink-0 items-center gap-2.5">{actions}</div>}
     </header>
   );
 }
@@ -45,7 +44,7 @@ export function StatCard({
   label: string;
   value: ReactNode;
   detail?: string;
-  status?: "success" | "warning" | "danger" | "info";
+  status?: 'success' | 'warning' | 'danger' | 'info';
 }) {
   return (
     <Card className="transition-colors hover:border-border-strong">
@@ -60,7 +59,12 @@ export function StatCard({
       {(detail || status) && (
         <CardContent className="flex items-center justify-between gap-2 pt-0 text-xs text-muted-foreground">
           {detail && <span>{detail}</span>}
-          {status && <StatusBadge status={status}>{status}</StatusBadge>}
+          {status && (
+            <span
+              className={cn('size-2 shrink-0 rounded-full', statStatusStyles[status])}
+              aria-hidden="true"
+            />
+          )}
         </CardContent>
       )}
     </Card>
@@ -103,9 +107,7 @@ export function SectionCard({
 export function DataTable({ children }: { children: ReactNode }) {
   return (
     <div className="w-full overflow-x-auto rounded-xl border border-border bg-card">
-      <table className="w-full min-w-[640px] text-sm">
-        {children}
-      </table>
+      <table className="w-full min-w-[640px] text-sm">{children}</table>
     </div>
   );
 }
@@ -143,7 +145,7 @@ export function LoadingState({ rows = 3 }: { rows?: number }) {
 }
 
 export function ErrorState({
-  message = "Something went wrong.",
+  message = 'Something went wrong.',
   onRetry,
 }: {
   message?: string;
@@ -163,7 +165,7 @@ export function ErrorState({
 }
 
 export function FilterToolbar({
-  placeholder = "Search",
+  placeholder = 'Search',
   children,
   onSearch,
   searchValue,
@@ -180,13 +182,11 @@ export function FilterToolbar({
         <Input
           className="h-9 pl-9 pr-4 text-sm"
           placeholder={placeholder}
-          value={searchValue ?? ""}
+          value={searchValue ?? ''}
           onChange={(e) => onSearch?.(e.target.value)}
         />
       </div>
-      <div className="flex flex-wrap items-center gap-2.5">
-        {children}
-      </div>
+      <div className="flex flex-wrap items-center gap-2.5">{children}</div>
     </div>
   );
 }

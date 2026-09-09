@@ -1,34 +1,34 @@
-import { apiListRequest, apiRequest } from "@/lib/api/client";
+import { apiListRequest, apiRequest } from '@/lib/api/client';
 
 export const PLATFORM_WORKSPACE_STATUSES = [
-  "pending",
-  "active",
-  "locked",
-  "suspended",
-  "scheduled_deletion",
-  "deleted",
+  'pending',
+  'active',
+  'locked',
+  'suspended',
+  'scheduled_deletion',
+  'deleted',
 ] as const;
 
 export const PLATFORM_SUBSCRIPTION_STATUSES = [
-  "trial",
-  "pending",
-  "active",
-  "renewal_due",
-  "expired",
-  "cancelled",
-  "suspended",
+  'trial',
+  'pending',
+  'active',
+  'renewal_due',
+  'expired',
+  'cancelled',
+  'suspended',
 ] as const;
 
 export const PLATFORM_ACCESS_STATUSES = [
-  "verification_pending",
-  "payment_pending",
-  "trial",
-  "active",
-  "renewal_due",
-  "subscription_expired",
-  "locked",
-  "scheduled_for_deletion",
-  "suspended",
+  'verification_pending',
+  'payment_pending',
+  'trial',
+  'active',
+  'renewal_due',
+  'subscription_expired',
+  'locked',
+  'scheduled_for_deletion',
+  'suspended',
 ] as const;
 
 export type PlatformWorkspaceListParams = {
@@ -94,9 +94,16 @@ export type PlatformWorkspaceDetail = {
     trialEndsAt: string | null;
     renewalDueAt: string | null;
     cancelledAt: string | null;
-    plan: { id: string; name: string; slug: string; priceMinor: string; durationDays: number; trialDays: number } | null;
+    plan: {
+      id: string;
+      name: string;
+      slug: string;
+      priceMinor: string;
+      durationDays: number;
+      trialDays: number;
+    } | null;
   } | null;
-  access: PlatformWorkspace["access"];
+  access: PlatformWorkspace['access'];
   subscriptionHistory: Array<{
     id: string;
     status: (typeof PLATFORM_SUBSCRIPTION_STATUSES)[number];
@@ -109,11 +116,11 @@ export type PlatformWorkspaceDetail = {
   }>;
   recentPayments: Array<{
     id: string;
-    purpose: "subscription" | "sms_credit";
+    purpose: 'subscription' | 'sms_credit';
     amountMinor: string;
-    method: "cash" | "bkash" | "nagad" | "rocket" | "other";
+    method: 'cash' | 'bkash' | 'nagad' | 'rocket' | 'other';
     transactionId: string;
-    status: "pending" | "approved" | "rejected";
+    status: 'pending' | 'approved' | 'rejected';
     reviewedAt: string | null;
     createdAt: string;
     plan: { id: string; name: string; slug: string } | null;
@@ -131,20 +138,22 @@ export type PlatformWorkspaceDetail = {
 
 export async function getPlatformWorkspaces(
   params: PlatformWorkspaceListParams,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) {
   const searchParams = new URLSearchParams({
     page: String(params.page),
     limit: String(params.limit),
   });
 
-  if (params.search) searchParams.set("search", params.search);
-  if (params.workspaceStatus) searchParams.set("workspaceStatus", params.workspaceStatus);
-  if (params.subscriptionStatus) searchParams.set("subscriptionStatus", params.subscriptionStatus);
-  if (params.accessStatus) searchParams.set("accessStatus", params.accessStatus);
-  if (params.lifecycleQueue) searchParams.set("lifecycleQueue", "true");
+  if (params.search) searchParams.set('search', params.search);
+  if (params.workspaceStatus) searchParams.set('workspaceStatus', params.workspaceStatus);
+  if (params.subscriptionStatus) searchParams.set('subscriptionStatus', params.subscriptionStatus);
+  if (params.accessStatus) searchParams.set('accessStatus', params.accessStatus);
+  if (params.lifecycleQueue) searchParams.set('lifecycleQueue', 'true');
 
-  return apiListRequest<PlatformWorkspace[], PaginationMeta>(`/workspaces?${searchParams}`, { signal });
+  return apiListRequest<PlatformWorkspace[], PaginationMeta>(`/workspaces?${searchParams}`, {
+    signal,
+  });
 }
 
 export function getPlatformWorkspaceDetail(workspaceId: string, signal?: AbortSignal) {

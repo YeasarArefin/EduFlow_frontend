@@ -1,11 +1,11 @@
-import { apiRequest } from "@/lib/api/client";
+import { apiRequest } from '@/lib/api/client';
 
 export const PLATFORM_SUBSCRIPTION_LIFECYCLE_OPERATIONS = [
-  "renewal-due",
-  "expire",
-  "lock",
-  "unlock",
-  "schedule-deletion",
+  'renewal-due',
+  'expire',
+  'lock',
+  'unlock',
+  'schedule-deletion',
 ] as const;
 
 export type PlatformSubscriptionLifecycleOperation =
@@ -19,16 +19,13 @@ export type SubscriptionLifecycleOperationResult = {
 export function runPlatformSubscriptionLifecycleOperation(
   workspaceId: string,
   operation: PlatformSubscriptionLifecycleOperation,
-  scheduledDeleteAt?: string,
+  scheduledDeleteAt?: string
 ) {
   return apiRequest<SubscriptionLifecycleOperationResult>(
     `/workspaces/${workspaceId}/subscription-operations/${operation}`,
     {
-      method: "POST",
-      body:
-        operation === "schedule-deletion"
-          ? { scheduledDeleteAt }
-          : undefined,
-    },
+      method: 'POST',
+      body: operation === 'schedule-deletion' ? { scheduledDeleteAt } : undefined,
+    }
   );
 }

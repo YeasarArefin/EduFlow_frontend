@@ -1,4 +1,4 @@
-import { apiRequest } from "@/lib/api/client";
+import { apiRequest } from '@/lib/api/client';
 
 export type Permission = {
   code: number;
@@ -18,18 +18,13 @@ export type PermissionConfiguration = {
 };
 export type MemberPermissionConfiguration = {
   member: { id: string; roleId: string; name: string; email: string };
-  permissions: Array<
-    Permission & { inheritedAllowed: boolean; overrideAllowed: boolean | null }
-  >;
+  permissions: Array<Permission & { inheritedAllowed: boolean; overrideAllowed: boolean | null }>;
 };
 
-const headers = (workspaceId: string) => ({ "X-Workspace-Id": workspaceId });
+const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
-export const getPermissionConfiguration = (
-  workspaceId: string,
-  signal?: AbortSignal,
-) =>
-  apiRequest<PermissionConfiguration>("/permission-management", {
+export const getPermissionConfiguration = (workspaceId: string, signal?: AbortSignal) =>
+  apiRequest<PermissionConfiguration>('/permission-management', {
     headers: headers(workspaceId),
     signal,
   });
@@ -39,10 +34,10 @@ export const createRole = (
     name: string;
     description?: string;
     permissions: { permissionCode: number; allowed: boolean }[];
-  },
+  }
 ) =>
-  apiRequest<WorkspaceRole>("/permission-management/roles", {
-    method: "POST",
+  apiRequest<WorkspaceRole>('/permission-management/roles', {
+    method: 'POST',
     headers: headers(workspaceId),
     body: input,
   });
@@ -53,37 +48,39 @@ export const updateRole = (
     name: string;
     description?: string;
     permissions: { permissionCode: number; allowed: boolean }[];
-  },
+  }
 ) =>
-  apiRequest<PermissionConfiguration>(
-    `/permission-management/roles/${roleId}`,
-    { method: "PATCH", headers: headers(workspaceId), body: input },
-  );
+  apiRequest<PermissionConfiguration>(`/permission-management/roles/${roleId}`, {
+    method: 'PATCH',
+    headers: headers(workspaceId),
+    body: input,
+  });
 export const deleteRole = (workspaceId: string, roleId: string) =>
   apiRequest<void>(`/permission-management/roles/${roleId}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: headers(workspaceId),
   });
 export const getMemberPermissionConfiguration = (
   workspaceId: string,
   memberId: string,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) =>
-  apiRequest<MemberPermissionConfiguration>(
-    `/permission-management/members/${memberId}`,
-    { headers: headers(workspaceId), signal },
-  );
+  apiRequest<MemberPermissionConfiguration>(`/permission-management/members/${memberId}`, {
+    headers: headers(workspaceId),
+    signal,
+  });
 export const updateMemberOverrides = (
   workspaceId: string,
   memberId: string,
-  overrides: { permissionCode: number; allowed: boolean }[],
+  overrides: { permissionCode: number; allowed: boolean }[]
 ) =>
-  apiRequest<MemberPermissionConfiguration>(
-    `/permission-management/members/${memberId}`,
-    { method: "PATCH", headers: headers(workspaceId), body: { overrides } },
-  );
+  apiRequest<MemberPermissionConfiguration>(`/permission-management/members/${memberId}`, {
+    method: 'PATCH',
+    headers: headers(workspaceId),
+    body: { overrides },
+  });
 export const resetMemberOverrides = (workspaceId: string, memberId: string) =>
-  apiRequest<MemberPermissionConfiguration>(
-    `/permission-management/members/${memberId}`,
-    { method: "DELETE", headers: headers(workspaceId) },
-  );
+  apiRequest<MemberPermissionConfiguration>(`/permission-management/members/${memberId}`, {
+    method: 'DELETE',
+    headers: headers(workspaceId),
+  });

@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import { createAuthClient } from "better-auth/react";
-import { env } from "@/config/env";
+import { createAuthClient } from 'better-auth/react';
+import { env } from '@/config/env';
 
 /** Shared Better Auth client for the backend's /api/auth endpoint. */
 export const authClient = createAuthClient({
   baseURL: env.authBaseUrl,
   fetchOptions: {
-    credentials: "include",
+    credentials: 'include',
   },
 });
 

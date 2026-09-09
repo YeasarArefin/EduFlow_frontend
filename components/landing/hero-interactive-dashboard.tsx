@@ -1,20 +1,13 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import {
-  ArrowUpRight,
-  Calendar,
-  CreditCard,
-  MessageSquare,
-  Sparkles,
-  Users,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
+import { useState } from 'react';
+import { ArrowUpRight, Calendar, CreditCard, MessageSquare, Sparkles, Users } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
-type HighlightCategory = "all" | "fees" | "attendance" | "students" | "communication";
+type HighlightCategory = 'all' | 'fees' | 'attendance' | 'students' | 'communication';
 
 export function HeroInteractiveDashboard() {
-  const [activeTab, setActiveTab] = useState<HighlightCategory>("all");
+  const [activeTab, setActiveTab] = useState<HighlightCategory>('all');
 
   return (
     <div className="relative mx-auto w-full max-w-6xl">
@@ -25,11 +18,11 @@ export function HeroInteractiveDashboard() {
           <span>Interactive Workspace:</span>
         </span>
         {[
-          { id: "all", label: "Full Pulse", icon: Sparkles },
-          { id: "fees", label: "Fee Ledger", icon: CreditCard },
-          { id: "attendance", label: "Attendance", icon: Calendar },
-          { id: "students", label: "Students", icon: Users },
-          { id: "communication", label: "SMS Alerts", icon: MessageSquare },
+          { id: 'all', label: 'Full Pulse', icon: Sparkles },
+          { id: 'fees', label: 'Fee Ledger', icon: CreditCard },
+          { id: 'attendance', label: 'Attendance', icon: Calendar },
+          { id: 'students', label: 'Students', icon: Users },
+          { id: 'communication', label: 'SMS Alerts', icon: MessageSquare },
         ].map((tab) => {
           const Icon = tab.icon;
           const isActive = activeTab === tab.id;
@@ -38,13 +31,19 @@ export function HeroInteractiveDashboard() {
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id as HighlightCategory)}
-              className={cn("inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200",
+              className={cn(
+                'inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200',
                 isActive
-                  ? "scale-105 border-primary bg-primary text-primary-foreground font-semibold shadow-[0_0_20px_var(--glow-lime)]"
-                  : "border-border bg-card text-muted-foreground hover:border-border-strong hover:text-foreground backdrop-blur-md"
+                  ? 'scale-105 border-primary bg-primary text-primary-foreground font-semibold shadow-[0_0_20px_var(--glow-lime)]'
+                  : 'border-border bg-card text-muted-foreground hover:border-border-strong hover:text-foreground backdrop-blur-md'
               )}
             >
-              <Icon className={cn("size-3.5", isActive ? "text-primary-foreground" : "text-muted-foreground")} />
+              <Icon
+                className={cn(
+                  'size-3.5',
+                  isActive ? 'text-primary-foreground' : 'text-muted-foreground'
+                )}
+              />
               <span>{tab.label}</span>
             </button>
           );
@@ -52,7 +51,10 @@ export function HeroInteractiveDashboard() {
       </div>
 
       {/* Main Dashboard Container */}
-      <div data-premium-tilt className="relative overflow-hidden rounded-[24px] border border-border bg-card p-5 shadow-[var(--shadow-elevated)] backdrop-blur-[16px] sm:p-7">
+      <div
+        data-premium-tilt
+        className="relative overflow-hidden rounded-[24px] border border-border bg-card p-5 shadow-[var(--shadow-elevated)] backdrop-blur-[16px] sm:p-7"
+      >
         {/* Top Right Atmospheric Radial Light */}
         <div
           aria-hidden="true"
@@ -78,7 +80,10 @@ export function HeroInteractiveDashboard() {
         {/* 4 KPIs Grid */}
         <div className="mt-5 grid grid-cols-2 gap-3.5 lg:grid-cols-4">
           {/* KPI 1 */}
-          <div data-premium-tilt className="relative min-h-[132px] overflow-hidden rounded-2xl border border-border bg-card-strong p-4.5 sm:p-5">
+          <div
+            data-premium-tilt
+            className="relative min-h-[132px] overflow-hidden rounded-2xl border border-border bg-card-strong p-4.5 sm:p-5"
+          >
             <span className="block text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
               Net Tuition Collected
             </span>
@@ -92,13 +97,20 @@ export function HeroInteractiveDashboard() {
             {/* Sparkline */}
             <div className="absolute right-3 bottom-3 w-[78px] h-[34px] opacity-70">
               <svg viewBox="0 0 100 40" fill="none" className="size-full text-accent-foreground">
-                <path d="M0 30 C18 31, 20 13, 38 18 S65 4, 100 8" stroke="currentColor" strokeWidth="2" />
+                <path
+                  d="M0 30 C18 31, 20 13, 38 18 S65 4, 100 8"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
               </svg>
             </div>
           </div>
 
           {/* KPI 2 */}
-          <div data-premium-tilt className="relative min-h-[132px] overflow-hidden rounded-2xl border border-border bg-card-strong p-4.5 sm:p-5">
+          <div
+            data-premium-tilt
+            className="relative min-h-[132px] overflow-hidden rounded-2xl border border-border bg-card-strong p-4.5 sm:p-5"
+          >
             <span className="block text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
               Avg Attendance Rate
             </span>
@@ -112,13 +124,20 @@ export function HeroInteractiveDashboard() {
             {/* Sparkline */}
             <div className="absolute right-3 bottom-3 w-[78px] h-[34px] opacity-70">
               <svg viewBox="0 0 100 40" fill="none" className="size-full text-accent-foreground">
-                <path d="M0 27 C16 16, 24 28, 37 20 S67 14, 100 7" stroke="currentColor" strokeWidth="2" />
+                <path
+                  d="M0 27 C16 16, 24 28, 37 20 S67 14, 100 7"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                />
               </svg>
             </div>
           </div>
 
           {/* KPI 3 */}
-          <div data-premium-tilt className="relative min-h-[132px] overflow-hidden rounded-2xl border border-border bg-card-strong p-4.5 sm:p-5">
+          <div
+            data-premium-tilt
+            className="relative min-h-[132px] overflow-hidden rounded-2xl border border-border bg-card-strong p-4.5 sm:p-5"
+          >
             <span className="block text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
               Active Enrollments
             </span>
@@ -129,7 +148,10 @@ export function HeroInteractiveDashboard() {
           </div>
 
           {/* KPI 4 */}
-          <div data-premium-tilt className="relative min-h-[132px] overflow-hidden rounded-2xl border border-border bg-card-strong p-4.5 sm:p-5">
+          <div
+            data-premium-tilt
+            className="relative min-h-[132px] overflow-hidden rounded-2xl border border-border bg-card-strong p-4.5 sm:p-5"
+          >
             <span className="block text-[11px] font-bold uppercase tracking-[0.08em] text-muted-foreground">
               Dues Status
             </span>
@@ -143,13 +165,18 @@ export function HeroInteractiveDashboard() {
         {/* Main Grid: Chart + Insights */}
         <div className="mt-3.5 grid gap-3.5 lg:grid-cols-[1.55fr_0.75fr]">
           {/* Chart Card */}
-          <div data-premium-tilt className="rounded-2xl border border-border bg-card p-5 backdrop-blur-md sm:p-6">
+          <div
+            data-premium-tilt
+            className="rounded-2xl border border-border bg-card p-5 backdrop-blur-md sm:p-6"
+          >
             <div className="flex items-start justify-between">
               <div>
                 <h3 className="font-heading text-base font-medium tracking-[-0.02em] text-foreground sm:text-lg">
                   Tuition Collection Velocity
                 </h3>
-                <p className="mt-1 text-xs text-muted-foreground">Rolling 12-day payment throughput</p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Rolling 12-day payment throughput
+                </p>
               </div>
               <span className="rounded-full border border-border bg-muted px-3 py-1 text-xs text-foreground-soft">
                 12 Days ▾
@@ -161,30 +188,30 @@ export function HeroInteractiveDashboard() {
               className="relative mt-6 h-[220px] overflow-hidden rounded-lg border-b border-l border-border sm:h-[245px]"
               style={{
                 backgroundImage:
-                  "repeating-linear-gradient(to bottom, transparent 0, transparent 48px, var(--grid-line) 49px)",
+                  'repeating-linear-gradient(to bottom, transparent 0, transparent 48px, var(--grid-line) 49px)',
               }}
             >
               <div className="absolute inset-x-4 inset-y-4 flex items-end justify-between gap-2 sm:gap-3">
                 {[
-                  { h: "35%", label: "D1" },
-                  { h: "48%", label: "D2" },
-                  { h: "42%", label: "D3" },
-                  { h: "62%", label: "D4" },
-                  { h: "57%", label: "D5" },
-                  { h: "77%", label: "D6" },
-                  { h: "68%", label: "D7" },
-                  { h: "88%", label: "D8" },
-                  { h: "81%", label: "D9" },
-                  { h: "94%", label: "D10" },
-                  { h: "85%", label: "D11" },
-                  { h: "100%", label: "D12" },
+                  { h: '35%', label: 'D1' },
+                  { h: '48%', label: 'D2' },
+                  { h: '42%', label: 'D3' },
+                  { h: '62%', label: 'D4' },
+                  { h: '57%', label: 'D5' },
+                  { h: '77%', label: 'D6' },
+                  { h: '68%', label: 'D7' },
+                  { h: '88%', label: 'D8' },
+                  { h: '81%', label: 'D9' },
+                  { h: '94%', label: 'D10' },
+                  { h: '85%', label: 'D11' },
+                  { h: '100%', label: 'D12' },
                 ].map((bar, index) => (
                   <div key={index} className="flex-1 flex flex-col items-center h-full justify-end">
                     <div
                       className={`w-full rounded-t-sm transition-all duration-700 ${
                         index % 2 === 0
-                          ? "bg-gradient-to-t from-[rgba(190,242,100,0.45)] to-[rgba(190,242,100,0.08)] border-t border-[rgba(190,242,100,0.5)] shadow-[0_-8px_24px_rgba(190,242,100,0.08)]"
-                          : "bg-gradient-to-t from-[rgba(16,185,129,0.3)] to-[rgba(16,185,129,0.05)] border-t border-[rgba(16,185,129,0.4)]"
+                          ? 'bg-gradient-to-t from-[rgba(190,242,100,0.45)] to-[rgba(190,242,100,0.08)] border-t border-[rgba(190,242,100,0.5)] shadow-[0_-8px_24px_rgba(190,242,100,0.08)]'
+                          : 'bg-gradient-to-t from-[rgba(16,185,129,0.3)] to-[rgba(16,185,129,0.05)] border-t border-[rgba(16,185,129,0.4)]'
                       }`}
                       style={{ height: bar.h }}
                     />
@@ -197,7 +224,10 @@ export function HeroInteractiveDashboard() {
           {/* Side Stack Insights */}
           <div className="grid gap-3.5 sm:grid-cols-2 lg:grid-cols-1">
             {/* Insight 1 */}
-            <div data-premium-tilt className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 backdrop-blur-md">
+            <div
+              data-premium-tilt
+              className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 backdrop-blur-md"
+            >
               {/* Glowing Orb */}
               <div
                 aria-hidden="true"
@@ -221,7 +251,10 @@ export function HeroInteractiveDashboard() {
             </div>
 
             {/* Insight 2 */}
-            <div data-premium-tilt className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 backdrop-blur-md">
+            <div
+              data-premium-tilt
+              className="relative flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-card p-5 backdrop-blur-md"
+            >
               <div>
                 <div className="flex size-11 items-center justify-center rounded-xl border border-border-strong bg-muted text-lg font-bold text-accent-foreground">
                   ◎
@@ -230,7 +263,8 @@ export function HeroInteractiveDashboard() {
                   Fee Collection Rate: 92.2%
                 </h4>
                 <p className="mt-1.5 text-xs font-light leading-relaxed text-muted-foreground">
-                  ৳385,000 cleared across SSC & HSC Physics cohorts. 14 pending dues flagged with 1-click reminders.
+                  ৳385,000 cleared across SSC & HSC Physics cohorts. 14 pending dues flagged with
+                  1-click reminders.
                 </p>
               </div>
               <div className="mt-4 flex items-center justify-between border-t border-border pt-3 text-[11px] text-subtle-foreground">

@@ -1,41 +1,37 @@
-"use client";
+'use client';
 import {
   EmptyState,
   ErrorState,
   LoadingState,
   PageHeader,
   SectionCard,
-} from "@/components/dashboard-primitives";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
+} from '@/components/dashboard-primitives';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { useState } from "react";
+} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useState } from 'react';
 import {
   useCreateRoleMutation,
   useDeleteRoleMutation,
   useUpdateRoleMutation,
-} from "../mutations/use-permission-mutations";
-import { usePermissionConfigurationQuery } from "../queries/use-permission-queries";
+} from '../mutations/use-permission-mutations';
+import { usePermissionConfigurationQuery } from '../queries/use-permission-queries';
 
-export function PermissionManagementPage({
-  workspaceId,
-}: {
-  workspaceId: string;
-}) {
+export function PermissionManagementPage({ workspaceId }: { workspaceId: string }) {
   const configuration = usePermissionConfigurationQuery(workspaceId);
   const createRole = useCreateRoleMutation();
   const updateRole = useUpdateRoleMutation();
   const deleteRole = useDeleteRoleMutation();
-  const [roleId, setRoleId] = useState("");
-  const [name, setName] = useState("");
+  const [roleId, setRoleId] = useState('');
+  const [name, setName] = useState('');
   const [values, setValues] = useState<Record<number, boolean>>({});
   if (configuration.isPending) return <LoadingState rows={6} />;
   if (configuration.isError)
@@ -48,31 +44,25 @@ export function PermissionManagementPage({
   const roles = configuration.data?.roles ?? [];
   const permissions = configuration.data?.permissions ?? [];
   const selected = roles.find((role) => role.id === roleId);
-  const groups = permissions.reduce<Record<string, typeof permissions>>(
-    (result, permission) => {
-      const moduleName = permission.module ?? "Other";
-      (result[moduleName] ??= []).push(permission);
-      return result;
-    },
-    {},
-  );
+  const groups = permissions.reduce<Record<string, typeof permissions>>((result, permission) => {
+    const moduleName = permission.module ?? 'Other';
+    (result[moduleName] ??= []).push(permission);
+    return result;
+  }, {});
   const chooseRole = (value: string) => {
-    if (value === "new") {
-      setRoleId("");
-      setName("");
+    if (value === 'new') {
+      setRoleId('');
+      setName('');
       setValues({});
       return;
     }
     const role = roles.find((item) => item.id === value);
     setRoleId(value);
-    setName(role?.name ?? "");
+    setName(role?.name ?? '');
     setValues(
       Object.fromEntries(
-        permissions.map((permission) => [
-          permission.code,
-          permission.roles[value] ?? false,
-        ]),
-      ),
+        permissions.map((permission) => [permission.code, permission.roles[value] ?? false])
+      )
     );
   };
   const payload = {
@@ -100,7 +90,7 @@ export function PermissionManagementPage({
               onChange={(event) => setName(event.target.value)}
               placeholder="Role name, e.g. Office Manager"
             />
-            <Select value={roleId || "new"} onValueChange={chooseRole}>
+            <Select value={roleId || 'new'} onValueChange={chooseRole}>
               <SelectTrigger className="sm:w-56">
                 <SelectValue />
               </SelectTrigger>
@@ -124,7 +114,7 @@ export function PermissionManagementPage({
                     })
                   : createRole.mutate(
                       { workspaceId, ...payload },
-                      { onSuccess: (role) => chooseRole(role.id) },
+                      { onSuccess: (role) => chooseRole(role.id) }
                     )
               }
             >
@@ -136,7 +126,7 @@ export function PermissionManagementPage({
                 onClick={() =>
                   deleteRole.mutate(
                     { workspaceId, roleId: selected.id },
-                    { onSuccess: () => chooseRole("new") },
+                    { onSuccess: () => chooseRole('new') }
                   )
                 }
               >
@@ -154,10 +144,7 @@ export function PermissionManagementPage({
             <SectionCard key={module} title={module}>
               <div className="grid gap-2 sm:grid-cols-2">
                 {items.map((permission) => (
-                  <label
-                    key={permission.code}
-                    className="flex gap-3 rounded-lg border p-3 text-sm"
-                  >
+                  <label key={permission.code} className="flex gap-3 rounded-lg border p-3 text-sm">
                     <Checkbox
                       checked={values[permission.code] ?? false}
                       onCheckedChange={(checked) =>

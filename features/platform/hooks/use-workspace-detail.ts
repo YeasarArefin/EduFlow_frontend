@@ -1,6 +1,6 @@
-import { queryOptions, useQuery } from "@tanstack/react-query";
-import { getPlatformWorkspaceDetail } from "../api/workspaces";
-import { platformWorkspaceQueryKeys } from "../workspace-query-keys";
+import { queryOptions, useQuery } from '@tanstack/react-query';
+import { getPlatformWorkspaceDetail } from '../api/workspaces';
+import { platformWorkspaceQueryKeys } from '../workspace-query-keys';
 
 export function platformWorkspaceDetailQueryOptions(workspaceId: string) {
   return queryOptions({

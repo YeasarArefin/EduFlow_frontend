@@ -1,18 +1,14 @@
-import { apiRequest } from "@/lib/api/client";
+import { apiRequest } from '@/lib/api/client';
 
-export const academicResources = [
-  "class-levels",
-  "mediums",
-  "academic-groups",
-] as const;
+export const academicResources = ['class-levels', 'mediums', 'academic-groups'] as const;
 export type AcademicResource = (typeof academicResources)[number];
 export type AcademicReference = { id: string; name: string; isActive: boolean };
-const headers = (workspaceId: string) => ({ "X-Workspace-Id": workspaceId });
+const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
 export function getAcademicReferences(
   workspaceId: string,
   resource: AcademicResource,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) {
   return apiRequest<AcademicReference[]>(`/academic/${resource}`, {
     headers: headers(workspaceId),
@@ -22,10 +18,10 @@ export function getAcademicReferences(
 export function createAcademicReference(
   workspaceId: string,
   resource: AcademicResource,
-  name: string,
+  name: string
 ) {
   return apiRequest<AcademicReference>(`/academic/${resource}`, {
-    method: "POST",
+    method: 'POST',
     headers: headers(workspaceId),
     body: { name },
   });
@@ -34,10 +30,10 @@ export function renameAcademicReference(
   workspaceId: string,
   resource: AcademicResource,
   id: string,
-  name: string,
+  name: string
 ) {
   return apiRequest<AcademicReference>(`/academic/${resource}/${id}`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: headers(workspaceId),
     body: { name },
   });
@@ -46,10 +42,10 @@ export function setAcademicReferenceStatus(
   workspaceId: string,
   resource: AcademicResource,
   id: string,
-  isActive: boolean,
+  isActive: boolean
 ) {
   return apiRequest<AcademicReference>(`/academic/${resource}/${id}/status`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: headers(workspaceId),
     body: { isActive },
   });

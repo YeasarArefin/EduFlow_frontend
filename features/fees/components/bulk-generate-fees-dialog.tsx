@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   AlertDialog,
@@ -8,20 +8,20 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { Calendar, CheckCircle2, Sparkles } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import type { BulkGenerateResult } from "../api/fees";
-import { useBulkGenerateFeesMutation } from "../hooks/use-fees";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Spinner } from '@/components/ui/spinner';
+import { Calendar, CheckCircle2, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import type { BulkGenerateResult } from '../api/fees';
+import { useBulkGenerateFeesMutation } from '../hooks/use-fees';
 
 function formatMonth(dateStr: string): string {
   try {
     const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   } catch {
     return dateStr;
   }
@@ -47,13 +47,13 @@ export function BulkGenerateFeesDialog({
     try {
       const res = await generateMutation.mutateAsync(feeMonth);
       setResult(res);
-      toast.success("Fee snapshot generation completed", {
+      toast.success('Fee snapshot generation completed', {
         description: `Created ${res.created} new monthly fees for ${formatMonth(res.feeMonth)}.`,
       });
     } catch (err: unknown) {
       const apiErr = err as { message?: string };
-      toast.error("Generation failed", {
-        description: apiErr?.message || "Failed to generate monthly fees.",
+      toast.error('Generation failed', {
+        description: apiErr?.message || 'Failed to generate monthly fees.',
       });
     }
   };
@@ -72,8 +72,8 @@ export function BulkGenerateFeesDialog({
           </div>
           <AlertDialogTitle>Generate Monthly Fees</AlertDialogTitle>
           <AlertDialogDescription>
-            Generate fee snapshots for all active enrolled students for the selected month.
-            Existing fees will not be duplicated.
+            Generate fee snapshots for all active enrolled students for the selected month. Existing
+            fees will not be duplicated.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
@@ -118,7 +118,7 @@ export function BulkGenerateFeesDialog({
                   const val = e.target.value;
                   if (val) {
                     // Ensure it snaps to first day of month (YYYY-MM-01)
-                    const [y, m] = val.split("-");
+                    const [y, m] = val.split('-');
                     setFeeMonth(`${y}-${m}-01`);
                   }
                 }}
@@ -126,7 +126,11 @@ export function BulkGenerateFeesDialog({
             </div>
 
             <AlertDialogFooter className="pt-2">
-              <AlertDialogCancel onClick={handleClose} disabled={generateMutation.isPending} className="rounded-full">
+              <AlertDialogCancel
+                onClick={handleClose}
+                disabled={generateMutation.isPending}
+                className="rounded-full"
+              >
                 Cancel
               </AlertDialogCancel>
               <Button

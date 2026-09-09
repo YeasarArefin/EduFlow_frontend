@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { ArrowRight, Building2, Layers, ShieldCheck } from "lucide-react";
+import Link from 'next/link';
+import { ArrowRight, Building2, Layers, ShieldCheck } from 'lucide-react';
 import {
   DataTable,
   EmptyState,
@@ -10,11 +10,11 @@ import {
   PageHeader,
   SectionCard,
   StatCard,
-} from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
-import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { usePlatformOverview } from "@/features/platform/hooks/use-overview";
+} from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
+import { Button } from '@/components/ui/button';
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { usePlatformOverview } from '@/features/platform/hooks/use-overview';
 
 export default function PlatformOverviewPage() {
   const overview = usePlatformOverview();
@@ -34,17 +34,20 @@ export default function PlatformOverviewPage() {
 
   const workspaces = overview.workspaces?.data ?? [];
   const totalWorkspaces = overview.workspaces?.meta.total ?? workspaces.length;
-  const activeWorkspaces = workspaces.filter((w) => w.access.status === "active").length;
+  const activeWorkspaces = workspaces.filter((w) => w.access.status === 'active').length;
   const lockedWorkspaces = workspaces.filter((w) =>
-    ["locked", "suspended", "scheduled_deletion", "scheduled_for_deletion"].includes(w.access.status)
+    ['locked', 'suspended', 'scheduled_deletion', 'scheduled_for_deletion'].includes(
+      w.access.status
+    )
   ).length;
-  const pendingWorkspaces = workspaces.filter((w) =>
-    ["verification_pending", "payment_pending", "pending"].includes(w.access.status) ||
-    w.workspaceStatus === "pending"
+  const pendingWorkspaces = workspaces.filter(
+    (w) =>
+      ['verification_pending', 'payment_pending', 'pending'].includes(w.access.status) ||
+      w.workspaceStatus === 'pending'
   ).length;
   const payments = overview.payments ?? [];
   const plans = overview.plans ?? [];
-  const activePlans = plans.filter((p) => p.active ?? p.status === "active").length;
+  const activePlans = plans.filter((p) => p.active ?? p.status === 'active').length;
 
   return (
     <div className="flex flex-col gap-8">
@@ -52,18 +55,41 @@ export default function PlatformOverviewPage() {
         title="Platform overview"
         description="Operational metrics, tenant access states, and pending platform reviews."
         actions={
-          <Button variant="outline" size="sm" className="rounded-full" render={<Link href="/platform/workspaces" />}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+            render={<Link href="/platform/workspaces" />}
+          >
             <Building2 data-icon="inline-start" /> Manage workspaces
           </Button>
         }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-        <StatCard label="Total workspaces" value={totalWorkspaces} detail="All registered tenants" />
+        <StatCard
+          label="Total workspaces"
+          value={totalWorkspaces}
+          detail="All registered tenants"
+        />
         <StatCard label="Active" value={activeWorkspaces} status="success" detail="Normal access" />
-        <StatCard label="Pending" value={pendingWorkspaces} status="warning" detail="Awaiting action" />
-        <StatCard label="Locked" value={lockedWorkspaces} status="danger" detail="Restricted access" />
-        <StatCard label="Active plans" value={activePlans} detail={`${plans.length} total defined`} />
+        <StatCard
+          label="Pending"
+          value={pendingWorkspaces}
+          status="warning"
+          detail="Awaiting action"
+        />
+        <StatCard
+          label="Locked"
+          value={lockedWorkspaces}
+          status="danger"
+          detail="Restricted access"
+        />
+        <StatCard
+          label="Active plans"
+          value={activePlans}
+          detail={`${plans.length} total defined`}
+        />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -72,7 +98,12 @@ export default function PlatformOverviewPage() {
           description="Payment requests awaiting Platform Owner verification."
           action={
             payments.length > 0 ? (
-              <Button variant="outline" size="sm" className="rounded-full" render={<Link href="/platform/workspaces" />}>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+                render={<Link href="/platform/workspaces" />}
+              >
                 Review
               </Button>
             ) : undefined
@@ -91,14 +122,18 @@ export default function PlatformOverviewPage() {
                 <TableBody>
                   {payments.slice(0, 5).map((payment) => (
                     <TableRow key={payment.id}>
-                      <TableCell className="font-mono text-xs text-muted-foreground">{payment.id}</TableCell>
+                      <TableCell className="font-mono text-xs text-muted-foreground">
+                        {payment.id}
+                      </TableCell>
                       <TableCell>
                         <StatusBadge status="warning">Pending review</StatusBadge>
                       </TableCell>
                       <TableCell className="text-muted-foreground">
                         {payment.createdAt
-                          ? new Intl.DateTimeFormat(undefined, { dateStyle: "medium" }).format(new Date(payment.createdAt))
-                          : "—"}
+                          ? new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(
+                              new Date(payment.createdAt)
+                            )
+                          : '—'}
                       </TableCell>
                     </TableRow>
                   ))}
@@ -133,7 +168,9 @@ export default function PlatformOverviewPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-foreground">Tenant Workspaces</p>
-                  <p className="text-xs text-muted-foreground">Search, filter, and inspect tenant lifecycle states</p>
+                  <p className="text-xs text-muted-foreground">
+                    Search, filter, and inspect tenant lifecycle states
+                  </p>
                 </div>
               </div>
               <ArrowRight className="size-4 text-muted-foreground" />
@@ -149,7 +186,9 @@ export default function PlatformOverviewPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-foreground">Subscription Plans</p>
-                  <p className="text-xs text-muted-foreground">Manage feature packages, pricing, and quota limits</p>
+                  <p className="text-xs text-muted-foreground">
+                    Manage feature packages, pricing, and quota limits
+                  </p>
                 </div>
               </div>
               <ArrowRight className="size-4 text-muted-foreground" />
@@ -165,7 +204,9 @@ export default function PlatformOverviewPage() {
                 </div>
                 <div>
                   <p className="text-sm font-medium text-foreground">Entitlement Overrides</p>
-                  <p className="text-xs text-muted-foreground">Configure tenant-specific quota allowances and overrides</p>
+                  <p className="text-xs text-muted-foreground">
+                    Configure tenant-specific quota allowances and overrides
+                  </p>
                 </div>
               </div>
               <ArrowRight className="size-4 text-muted-foreground" />
@@ -176,4 +217,3 @@ export default function PlatformOverviewPage() {
     </div>
   );
 }
-

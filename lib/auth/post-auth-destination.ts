@@ -1,20 +1,20 @@
-import { headers } from "next/headers";
-import { env } from "@/config/env";
-import { validateSelectedPlanSlug } from "@/lib/selected-plan";
-import { getServerSession } from "@/lib/auth/server";
+import { headers } from 'next/headers';
+import { env } from '@/config/env';
+import { validateSelectedPlanSlug } from '@/lib/selected-plan';
+import { getServerSession } from '@/lib/auth/server';
 
 export const postAuthDestinations = {
-  platform: "/platform",
-  onboarding: "/onboarding",
-  checkout: "/checkout",
-  pricing: "/pricing",
-  account: "/account",
-  paymentPending: "/payment-pending",
-  dashboard: "/dashboard"
+  platform: '/platform',
+  onboarding: '/onboarding',
+  checkout: '/checkout',
+  pricing: '/pricing',
+  account: '/account',
+  paymentPending: '/payment-pending',
+  dashboard: '/dashboard',
 } as const;
 
 export type AccountRoutingState = {
-  route: "dashboard" | "workspace_creation" | "payment_pending" | "account";
+  route: 'dashboard' | 'workspace_creation' | 'payment_pending' | 'account';
   workspaceId?: string;
 };
 
@@ -22,8 +22,8 @@ export async function getAccountRoutingState(): Promise<AccountRoutingState | nu
   const requestHeaders = await headers();
   try {
     const response = await fetch(`${env.apiBaseUrl}/account/state`, {
-      headers: { cookie: requestHeaders.get("cookie") ?? "" },
-      cache: "no-store"
+      headers: { cookie: requestHeaders.get('cookie') ?? '' },
+      cache: 'no-store',
     });
     if (!response.ok) return null;
     const payload = (await response.json()) as { data?: AccountRoutingState };
@@ -34,18 +34,18 @@ export async function getAccountRoutingState(): Promise<AccountRoutingState | nu
 }
 
 export async function resolvePostAuthDestination({
-  selectedPlanSlug
+  selectedPlanSlug,
 }: {
   selectedPlanSlug?: string;
 } = {}): Promise<string> {
   const session = await getServerSession();
-  if (!session?.user?.id) return "/signin";
+  if (!session?.user?.id) return '/signin';
 
   const requestHeaders = await headers();
   try {
     const platformAccess = await fetch(`${env.apiBaseUrl}/plans`, {
-      headers: { cookie: requestHeaders.get("cookie") ?? "" },
-      cache: "no-store"
+      headers: { cookie: requestHeaders.get('cookie') ?? '' },
+      cache: 'no-store',
     });
     if (platformAccess.ok) return postAuthDestinations.platform;
   } catch {
@@ -54,9 +54,9 @@ export async function resolvePostAuthDestination({
 
   const state = await getAccountRoutingState();
   if (!state) return postAuthDestinations.account;
-  if (state.route === "dashboard") return postAuthDestinations.dashboard;
-  if (state.route === "workspace_creation") return postAuthDestinations.onboarding;
-  if (state.route === "payment_pending") return postAuthDestinations.paymentPending;
+  if (state.route === 'dashboard') return postAuthDestinations.dashboard;
+  if (state.route === 'workspace_creation') return postAuthDestinations.onboarding;
+  if (state.route === 'payment_pending') return postAuthDestinations.paymentPending;
 
   const validPlanSlug = await validateSelectedPlanSlug(selectedPlanSlug);
   return validPlanSlug ? postAuthDestinations.checkout : postAuthDestinations.account;

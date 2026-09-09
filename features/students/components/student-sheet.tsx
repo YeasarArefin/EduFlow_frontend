@@ -1,13 +1,8 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldError,
-  FieldGroup,
-  FieldLabel
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
+import { Field, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -15,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
@@ -23,71 +18,65 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Spinner } from "@/components/ui/spinner";
-import { Textarea } from "@/components/ui/textarea";
-import { ApiError } from "@/lib/api/client";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm, useWatch } from "react-hook-form";
-import { toast } from "sonner";
-import { z } from "zod";
-import type { Student, StudentInput } from "../api/students";
-import { useCreateStudentMutation } from "../mutations/use-create-student-mutation";
-import { useUpdateStudentMutation } from "../mutations/use-update-student-mutation";
+} from '@/components/ui/sheet';
+import { Spinner } from '@/components/ui/spinner';
+import { Textarea } from '@/components/ui/textarea';
+import { ApiError } from '@/lib/api/client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect } from 'react';
+import { useForm, useWatch } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import type { Student, StudentInput } from '../api/students';
+import { useCreateStudentMutation } from '../mutations/use-create-student-mutation';
+import { useUpdateStudentMutation } from '../mutations/use-update-student-mutation';
 
 const phone = /^(?:\+8801\d{9}|01\d{9})$/;
 const schema = z.object({
-  studentCode: z.string().trim().min(1, "Student code is required.").max(30),
-  fullName: z.string().trim().min(1, "Full name is required.").max(150),
+  studentCode: z.string().trim().min(1, 'Student code is required.').max(30),
+  fullName: z.string().trim().min(1, 'Full name is required.').max(150),
   phone: z
     .string()
     .trim()
-    .refine(
-      (value) => !value || phone.test(value),
-      "Enter a valid Bangladeshi mobile number.",
-    ),
+    .refine((value) => !value || phone.test(value), 'Enter a valid Bangladeshi mobile number.'),
   guardianName: z.string().trim().max(150),
   guardianPhone: z
     .string()
     .trim()
-    .refine(
-      (value) => !value || phone.test(value),
-      "Enter a valid Bangladeshi mobile number.",
-    ),
+    .refine((value) => !value || phone.test(value), 'Enter a valid Bangladeshi mobile number.'),
   address: z.string().trim().max(2000),
-  gender: z.enum(["male", "female", "other", ""]),
+  gender: z.enum(['male', 'female', 'other', '']),
   admissionDate: z.string(),
-  status: z.enum(["active", "inactive", "archived"]),
+  status: z.enum(['active', 'inactive', 'archived']),
   notes: z.string().trim().max(5000),
 });
 type Values = z.infer<typeof schema>;
 const emptyValues: Values = {
-  studentCode: "",
-  fullName: "",
-  phone: "",
-  guardianName: "",
-  guardianPhone: "",
-  address: "",
-  gender: "",
-  admissionDate: "",
-  status: "active",
-  notes: "",
+  studentCode: '',
+  fullName: '',
+  phone: '',
+  guardianName: '',
+  guardianPhone: '',
+  address: '',
+  gender: '',
+  admissionDate: '',
+  status: 'active',
+  notes: '',
 };
 function valuesFromStudent(student?: Student | null): Values {
   return student
     ? {
-      studentCode: student.studentCode,
-      fullName: student.fullName,
-      phone: student.phone ?? "",
-      guardianName: student.guardianName ?? "",
-      guardianPhone: student.guardianPhone ?? "",
-      address: student.address ?? "",
-      gender: student.gender ?? "",
-      admissionDate: student.admissionDate ?? "",
-      status: student.status,
-      notes: student.notes ?? "",
-    }
+        studentCode: student.studentCode,
+        fullName: student.fullName,
+        phone: student.phone ?? '',
+        guardianName: student.guardianName ?? '',
+        guardianPhone: student.guardianPhone ?? '',
+        address: student.address ?? '',
+        gender: student.gender ?? '',
+        admissionDate: student.admissionDate ?? '',
+        status: student.status,
+        notes: student.notes ?? '',
+      }
     : emptyValues;
 }
 function toInput(values: Values): StudentInput {
@@ -124,38 +113,29 @@ export function StudentSheet({
   const updateMutation = useUpdateStudentMutation();
   const isEditing = Boolean(student);
   const pending = createMutation.isPending || updateMutation.isPending;
-  const gender = useWatch({ control: form.control, name: "gender" });
-  const studentStatus = useWatch({ control: form.control, name: "status" });
+  const gender = useWatch({ control: form.control, name: 'gender' });
+  const studentStatus = useWatch({ control: form.control, name: 'status' });
   useEffect(() => {
     if (open) form.reset(valuesFromStudent(student));
   }, [form, open, student]);
   function submit(values: Values) {
-    form.clearErrors("root");
+    form.clearErrors('root');
     const input = toInput(values);
     const options = {
       onSuccess: () => {
-        toast.success(
-          isEditing
-            ? "Student record updated."
-            : "Student created successfully.",
-        );
+        toast.success(isEditing ? 'Student record updated.' : 'Student created successfully.');
         onOpenChange(false);
       },
       onError: (error: Error) => {
         const message =
-          error instanceof ApiError &&
-            error.code === "STUDENT_CODE_ALREADY_EXISTS"
-            ? "This student code is already used in this workspace."
-            : "Could not save the student. Please try again.";
-        form.setError("root", { message });
+          error instanceof ApiError && error.code === 'STUDENT_CODE_ALREADY_EXISTS'
+            ? 'This student code is already used in this workspace.'
+            : 'Could not save the student. Please try again.';
+        form.setError('root', { message });
         toast.error(message);
       },
     };
-    if (isEditing)
-      updateMutation.mutate(
-        { workspaceId, studentId: student!.id, input },
-        options,
-      );
+    if (isEditing) updateMutation.mutate({ workspaceId, studentId: student!.id, input }, options);
     else createMutation.mutate({ workspaceId, input }, options);
   }
 
@@ -163,17 +143,14 @@ export function StudentSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-2xl lg:max-w-3xl data-[side=right]:w-full data-[side=right]:sm:max-w-2xl data-[side=right]:lg:max-w-3xl">
         <SheetHeader className="border-b border-border/40 pb-4 pr-12">
-          <SheetTitle>{isEditing ? "Edit student" : "Add student"}</SheetTitle>
+          <SheetTitle>{isEditing ? 'Edit student' : 'Add student'}</SheetTitle>
           <SheetDescription>
             {isEditing
               ? "Update this student's profile, contact details, and academic status."
-              : "Create a new student profile in this coaching workspace."}
+              : 'Create a new student profile in this coaching workspace.'}
           </SheetDescription>
         </SheetHeader>
-        <form
-          onSubmit={form.handleSubmit(submit)}
-          className="flex min-h-0 flex-1 flex-col"
-        >
+        <form onSubmit={form.handleSubmit(submit)} className="flex min-h-0 flex-1 flex-col">
           <div className="flex-1 overflow-y-auto px-5 py-5">
             <FieldGroup className="gap-5">
               {/* Identity Details */}
@@ -183,7 +160,7 @@ export function StudentSheet({
                   <Input
                     id="student-code"
                     placeholder="e.g. STU-001"
-                    {...form.register("studentCode")}
+                    {...form.register('studentCode')}
                     aria-invalid={Boolean(form.formState.errors.studentCode)}
                   />
                   <FieldError
@@ -200,7 +177,7 @@ export function StudentSheet({
                   <Input
                     id="student-name"
                     placeholder="e.g. Tanvir Ahmed"
-                    {...form.register("fullName")}
+                    {...form.register('fullName')}
                     aria-invalid={Boolean(form.formState.errors.fullName)}
                   />
                   <FieldError
@@ -221,7 +198,7 @@ export function StudentSheet({
                     type="tel"
                     inputMode="tel"
                     placeholder="01XXXXXXXXX"
-                    {...form.register("phone")}
+                    {...form.register('phone')}
                     aria-invalid={Boolean(form.formState.errors.phone)}
                   />
                   <FieldError
@@ -240,7 +217,7 @@ export function StudentSheet({
                     type="tel"
                     inputMode="tel"
                     placeholder="01XXXXXXXXX"
-                    {...form.register("guardianPhone")}
+                    {...form.register('guardianPhone')}
                     aria-invalid={Boolean(form.formState.errors.guardianPhone)}
                   />
                   <FieldError
@@ -258,7 +235,7 @@ export function StudentSheet({
                 <Input
                   id="guardian-name"
                   placeholder="e.g. Rafiqul Islam"
-                  {...form.register("guardianName")}
+                  {...form.register('guardianName')}
                   aria-invalid={Boolean(form.formState.errors.guardianName)}
                 />
                 <FieldError
@@ -276,7 +253,7 @@ export function StudentSheet({
                   <Input
                     id="admission-date"
                     type="date"
-                    {...form.register("admissionDate")}
+                    {...form.register('admissionDate')}
                     aria-invalid={Boolean(form.formState.errors.admissionDate)}
                   />
                   <FieldError
@@ -293,7 +270,7 @@ export function StudentSheet({
                   <Select
                     value={studentStatus}
                     onValueChange={(value) =>
-                      form.setValue("status", value as Values["status"], {
+                      form.setValue('status', value as Values['status'], {
                         shouldDirty: true,
                       })
                     }
@@ -323,14 +300,12 @@ export function StudentSheet({
                 <Field data-invalid={Boolean(form.formState.errors.gender)}>
                   <FieldLabel htmlFor="student-gender">Gender</FieldLabel>
                   <Select
-                    value={gender || "unspecified"}
+                    value={gender || 'unspecified'}
                     onValueChange={(value) =>
                       form.setValue(
-                        "gender",
-                        (value === "unspecified"
-                          ? ""
-                          : (value ?? "")) as Values["gender"],
-                        { shouldDirty: true },
+                        'gender',
+                        (value === 'unspecified' ? '' : (value ?? '')) as Values['gender'],
+                        { shouldDirty: true }
                       )
                     }
                   >
@@ -360,7 +335,7 @@ export function StudentSheet({
                   <Input
                     id="student-address"
                     placeholder="e.g. Dhanmondi, Dhaka"
-                    {...form.register("address")}
+                    {...form.register('address')}
                     aria-invalid={Boolean(form.formState.errors.address)}
                   />
                   <FieldError
@@ -379,7 +354,7 @@ export function StudentSheet({
                   id="student-notes"
                   placeholder="Internal coaching remarks, previous institution, etc."
                   rows={3}
-                  {...form.register("notes")}
+                  {...form.register('notes')}
                   aria-invalid={Boolean(form.formState.errors.notes)}
                 />
                 <FieldError
@@ -410,12 +385,9 @@ export function StudentSheet({
             >
               Cancel
             </Button>
-            <Button
-              type="submit"
-              disabled={pending || (isEditing && !form.formState.isDirty)}
-            >
+            <Button type="submit" disabled={pending || (isEditing && !form.formState.isDirty)}>
               {pending && <Spinner data-icon="inline-start" />}
-              {isEditing ? "Save changes" : "Create student"}
+              {isEditing ? 'Save changes' : 'Create student'}
             </Button>
           </SheetFooter>
         </form>

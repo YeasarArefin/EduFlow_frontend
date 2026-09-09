@@ -1,8 +1,8 @@
-"use client";
-import Link from "next/link";
-import { Plus } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+'use client';
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import {
   DataTable,
   EmptyState,
@@ -11,9 +11,9 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
+} from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -21,21 +21,15 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { TEACHER_STATUSES, type TeacherStatus } from "../api/teachers";
-import { useTeachersQuery } from "../queries/use-teachers-query";
-import { TeacherSheet } from "./teacher-sheet";
+} from '@/components/ui/select';
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TEACHER_STATUSES, type TeacherStatus } from '../api/teachers';
+import { useTeachersQuery } from '../queries/use-teachers-query';
+import { TeacherSheet } from './teacher-sheet';
 const money = (value: string) =>
-  new Intl.NumberFormat("en-BD", {
-    style: "currency",
-    currency: "BDT",
+  new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
     maximumFractionDigits: 2,
   }).format(Number(value) / 100);
 export function TeachersPage({ workspaceId }: { workspaceId: string }) {
@@ -43,9 +37,9 @@ export function TeachersPage({ workspaceId }: { workspaceId: string }) {
     router = useRouter(),
     params = useSearchParams(),
     [open, setOpen] = useState(false);
-  const page = Number(params.get("page")) || 1,
-    status = params.get("status") as TeacherStatus | undefined,
-    search = params.get("search") || undefined;
+  const page = Number(params.get('page')) || 1,
+    status = params.get('status') as TeacherStatus | undefined,
+    search = params.get('search') || undefined;
   const query = useTeachersQuery(workspaceId, {
     page,
     limit: 20,
@@ -55,7 +49,7 @@ export function TeachersPage({ workspaceId }: { workspaceId: string }) {
   const update = (values: Record<string, string | undefined>) => {
     const next = new URLSearchParams(params);
     Object.entries(values).forEach(([key, value]) =>
-      value ? next.set(key, value) : next.delete(key),
+      value ? next.set(key, value) : next.delete(key)
     );
     router.replace(next.size ? `${path}?${next}` : path);
   };
@@ -73,15 +67,13 @@ export function TeachersPage({ workspaceId }: { workspaceId: string }) {
       <FilterToolbar
         placeholder="Search name, code, phone, or specialty"
         searchValue={search}
-        onSearch={(value) =>
-          update({ search: value || undefined, page: undefined })
-        }
+        onSearch={(value) => update({ search: value || undefined, page: undefined })}
       >
         <Select
-          value={status ?? "all"}
+          value={status ?? 'all'}
           onValueChange={(value) =>
             update({
-              status: value === "all" ? undefined : (value ?? undefined),
+              status: value === 'all' ? undefined : (value ?? undefined),
               page: undefined,
             })
           }
@@ -103,10 +95,7 @@ export function TeachersPage({ workspaceId }: { workspaceId: string }) {
       </FilterToolbar>
       {query.isPending ? <LoadingState rows={5} /> : null}
       {query.isError ? (
-        <ErrorState
-          message="Could not load teachers."
-          onRetry={() => query.refetch()}
-        />
+        <ErrorState message="Could not load teachers." onRetry={() => query.refetch()} />
       ) : null}
       {query.isSuccess && !query.data.data.length ? (
         <EmptyState
@@ -144,17 +133,17 @@ export function TeachersPage({ workspaceId }: { workspaceId: string }) {
                     </Link>
                   </TableCell>
                   <TableCell>{t.teacherCode}</TableCell>
-                  <TableCell>{t.phone ?? "—"}</TableCell>
-                  <TableCell>{t.subjectSpecialty ?? "—"}</TableCell>
+                  <TableCell>{t.phone ?? '—'}</TableCell>
+                  <TableCell>{t.subjectSpecialty ?? '—'}</TableCell>
                   <TableCell>{money(t.defaultSalaryMinor)}</TableCell>
                   <TableCell>
                     <StatusBadge
                       status={
-                        t.status === "active"
-                          ? "success"
-                          : t.status === "inactive"
-                            ? "warning"
-                            : "info"
+                        t.status === 'active'
+                          ? 'success'
+                          : t.status === 'inactive'
+                            ? 'warning'
+                            : 'info'
                       }
                     >
                       {t.status}
@@ -167,17 +156,11 @@ export function TeachersPage({ workspaceId }: { workspaceId: string }) {
           <Pagination
             page={query.data.meta.page}
             pageCount={query.data.meta.totalPages}
-            onPageChange={(next) =>
-              update({ page: next === 1 ? undefined : String(next) })
-            }
+            onPageChange={(next) => update({ page: next === 1 ? undefined : String(next) })}
           />
         </>
       ) : null}
-      <TeacherSheet
-        open={open}
-        onOpenChange={setOpen}
-        workspaceId={workspaceId}
-      />
+      <TeacherSheet open={open} onOpenChange={setOpen} workspaceId={workspaceId} />
     </div>
   );
 }

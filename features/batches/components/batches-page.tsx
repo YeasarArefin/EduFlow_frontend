@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import Link from "next/link";
-import { Plus } from "lucide-react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import Link from 'next/link';
+import { Plus } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useState } from 'react';
 import {
   DataTable,
   EmptyState,
@@ -12,9 +12,9 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
-import { Button } from "@/components/ui/button";
+} from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -22,22 +22,16 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import {
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { BATCH_STATUSES, type BatchStatus } from "../api/batches";
-import { useBatchesQuery } from "../hooks/use-batches-query";
-import { BatchSheet } from "./batch-sheet";
+} from '@/components/ui/select';
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { BATCH_STATUSES, type BatchStatus } from '../api/batches';
+import { useBatchesQuery } from '../hooks/use-batches-query';
+import { BatchSheet } from './batch-sheet';
 
 const money = (value: string) =>
-  new Intl.NumberFormat("en-BD", {
-    style: "currency",
-    currency: "BDT",
+  new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
     maximumFractionDigits: 2,
   }).format(Number(value) / 100);
 
@@ -47,16 +41,16 @@ export function BatchesPage({ workspaceId }: { workspaceId: string }) {
   const params = useSearchParams();
   const [open, setOpen] = useState(false);
 
-  const page = Number(params.get("page")) || 1;
-  const status = params.get("status") as BatchStatus | undefined;
-  const search = params.get("search") || undefined;
+  const page = Number(params.get('page')) || 1;
+  const status = params.get('status') as BatchStatus | undefined;
+  const search = params.get('search') || undefined;
 
   const query = useBatchesQuery(workspaceId, { page, limit: 20, search, status });
 
   const update = (values: Record<string, string | undefined>) => {
     const next = new URLSearchParams(params);
     Object.entries(values).forEach(([key, value]) =>
-      value ? next.set(key, value) : next.delete(key),
+      value ? next.set(key, value) : next.delete(key)
     );
     router.replace(next.size ? `${path}?${next}` : path);
   };
@@ -78,10 +72,10 @@ export function BatchesPage({ workspaceId }: { workspaceId: string }) {
         onSearch={(value) => update({ search: value || undefined, page: undefined })}
       >
         <Select
-          value={status ?? "all"}
+          value={status ?? 'all'}
           onValueChange={(value) =>
             update({
-              status: value === "all" ? undefined : (value ?? undefined),
+              status: value === 'all' ? undefined : (value ?? undefined),
               page: undefined,
             })
           }
@@ -142,19 +136,19 @@ export function BatchesPage({ workspaceId }: { workspaceId: string }) {
                   <TableCell>
                     <StatusBadge
                       status={
-                        batch.status === "active"
-                          ? "success"
-                          : batch.status === "inactive"
-                            ? "warning"
-                            : "info"
+                        batch.status === 'active'
+                          ? 'success'
+                          : batch.status === 'inactive'
+                            ? 'warning'
+                            : 'info'
                       }
                     >
                       {batch.status}
                     </StatusBadge>
                   </TableCell>
                   <TableCell>
-                    {new Intl.DateTimeFormat("en-BD", { dateStyle: "medium" }).format(
-                      new Date(batch.updatedAt),
+                    {new Intl.DateTimeFormat('en-BD', { dateStyle: 'medium' }).format(
+                      new Date(batch.updatedAt)
                     )}
                   </TableCell>
                 </TableRow>
@@ -164,14 +158,12 @@ export function BatchesPage({ workspaceId }: { workspaceId: string }) {
           <Pagination
             page={query.data.meta.page}
             pageCount={query.data.meta.totalPages}
-            onPageChange={(next) =>
-              update({ page: next === 1 ? undefined : String(next) })
-            }
+            onPageChange={(next) => update({ page: next === 1 ? undefined : String(next) })}
           />
         </>
       ) : null}
       <BatchSheet
-        key={open ? "create-open" : "create-closed"}
+        key={open ? 'create-open' : 'create-closed'}
         open={open}
         onOpenChange={setOpen}
         workspaceId={workspaceId}

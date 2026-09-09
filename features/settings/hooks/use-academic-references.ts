@@ -1,22 +1,18 @@
-"use client";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+'use client';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   createAcademicReference,
   getAcademicReferences,
   renameAcademicReference,
   setAcademicReferenceStatus,
   type AcademicResource,
-} from "../api/academic-references";
+} from '../api/academic-references';
 const key = (workspaceId: string, resource: AcademicResource) =>
-  ["academic-references", workspaceId, resource] as const;
-export function useAcademicReferences(
-  workspaceId: string,
-  resource: AcademicResource,
-) {
+  ['academic-references', workspaceId, resource] as const;
+export function useAcademicReferences(workspaceId: string, resource: AcademicResource) {
   return useQuery({
     queryKey: key(workspaceId, resource),
-    queryFn: ({ signal }) =>
-      getAcademicReferences(workspaceId, resource, signal),
+    queryFn: ({ signal }) => getAcademicReferences(workspaceId, resource, signal),
     enabled: Boolean(workspaceId),
     staleTime: 30_000,
   });
@@ -38,8 +34,7 @@ export function useCreateAcademicReference() {
       resource: AcademicResource;
       name: string;
     }) => createAcademicReference(workspaceId, resource, name),
-    onSuccess: (_, variables) =>
-      invalidate(variables.workspaceId, variables.resource),
+    onSuccess: (_, variables) => invalidate(variables.workspaceId, variables.resource),
   });
 }
 export function useRenameAcademicReference() {
@@ -56,8 +51,7 @@ export function useRenameAcademicReference() {
       id: string;
       name: string;
     }) => renameAcademicReference(workspaceId, resource, id, name),
-    onSuccess: (_, variables) =>
-      invalidate(variables.workspaceId, variables.resource),
+    onSuccess: (_, variables) => invalidate(variables.workspaceId, variables.resource),
   });
 }
 export function useSetAcademicReferenceStatus() {
@@ -74,7 +68,6 @@ export function useSetAcademicReferenceStatus() {
       id: string;
       isActive: boolean;
     }) => setAcademicReferenceStatus(workspaceId, resource, id, isActive),
-    onSuccess: (_, variables) =>
-      invalidate(variables.workspaceId, variables.resource),
+    onSuccess: (_, variables) => invalidate(variables.workspaceId, variables.resource),
   });
 }

@@ -1,17 +1,10 @@
-"use client";
+'use client';
 
-import { useQuery } from "@tanstack/react-query";
-import {
-  getStudent,
-  getStudents,
-  type StudentListParams,
-} from "../api/students";
-import { studentKeys } from "../student-query-keys";
+import { useQuery } from '@tanstack/react-query';
+import { getStudent, getStudents, type StudentListParams } from '../api/students';
+import { studentKeys } from '../student-query-keys';
 
-export function useStudentsQuery(
-  workspaceId: string,
-  params: StudentListParams,
-) {
+export function useStudentsQuery(workspaceId: string, params: StudentListParams) {
   return useQuery({
     queryKey: studentKeys.list(workspaceId, params),
     queryFn: ({ signal }) => getStudents(workspaceId, params, signal),

@@ -1,6 +1,6 @@
-﻿"use client";
+﻿'use client';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -8,40 +8,40 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Spinner } from "@/components/ui/spinner";
-import { CheckCircle2, CreditCard, Printer, User, Wallet } from "lucide-react";
-import type { ReceiptDetail } from "../api/fees";
-import { useReceiptQuery } from "../hooks/use-fees";
+} from '@/components/ui/dialog';
+import { Spinner } from '@/components/ui/spinner';
+import { CheckCircle2, CreditCard, Printer, User, Wallet } from 'lucide-react';
+import type { ReceiptDetail } from '../api/fees';
+import { useReceiptQuery } from '../hooks/use-fees';
 
 function formatCurrency(amount?: string | number | null): string {
-  if (amount === undefined || amount === null || amount === "") return "৳0.00";
-  const num = typeof amount === "string" ? parseFloat(amount) : amount;
-  if (isNaN(num)) return "৳0.00";
-  return `৳${num.toLocaleString("en-BD", {
+  if (amount === undefined || amount === null || amount === '') return '৳0.00';
+  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+  if (isNaN(num)) return '৳0.00';
+  return `৳${num.toLocaleString('en-BD', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
 }
 
 function formatMonth(dateStr?: string | null): string {
-  if (!dateStr) return "";
+  if (!dateStr) return '';
   try {
     const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
   } catch {
     return dateStr;
   }
 }
 
 function formatDate(dateStr?: string | null): string {
-  if (!dateStr) return "";
+  if (!dateStr) return '';
   try {
     const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
+    return d.toLocaleDateString('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
     });
   } catch {
     return dateStr;
@@ -77,11 +77,9 @@ export function ReceiptDialog({
             <span>Money Receipt</span>
           </div>
           <DialogTitle className="text-xl font-bold font-sans">
-            Receipt #{receiptNumber || data?.receiptNumber || "—"}
+            Receipt #{receiptNumber || data?.receiptNumber || '—'}
           </DialogTitle>
-          <DialogDescription>
-            Official coaching tuition payment record.
-          </DialogDescription>
+          <DialogDescription>Official coaching tuition payment record.</DialogDescription>
         </DialogHeader>
 
         <div className="max-h-[70vh] overflow-y-auto px-6 py-4">
@@ -125,10 +123,10 @@ export function ReceiptDialog({
                       <User className="size-3.5" /> Student
                     </span>
                     <p className="text-sm font-semibold text-foreground">
-                      {data.student?.fullName || "—"}
+                      {data.student?.fullName || '—'}
                     </p>
                     <span className="font-mono text-[11px] text-muted-foreground">
-                      {data.student?.studentCode || "—"}
+                      {data.student?.studentCode || '—'}
                     </span>
                   </div>
 
@@ -177,8 +175,8 @@ export function ReceiptDialog({
                       <span
                         className={`font-mono ${
                           Number(data.fee.dueAmount) > 0
-                            ? "text-amber-400 font-bold"
-                            : "text-lime-400 font-bold"
+                            ? 'text-amber-400 font-bold'
+                            : 'text-lime-400 font-bold'
                         }`}
                       >
                         {formatCurrency(data.fee.dueAmount)}
@@ -190,9 +188,7 @@ export function ReceiptDialog({
                 {/* Transaction note if present */}
                 {data.note && (
                   <div className="border-t border-border/30 pt-2.5 text-xs text-muted-foreground">
-                    <span className="mb-0.5 block font-medium text-foreground">
-                      Note:
-                    </span>
+                    <span className="mb-0.5 block font-medium text-foreground">Note:</span>
                     {data.note}
                   </div>
                 )}
@@ -202,18 +198,10 @@ export function ReceiptDialog({
         </div>
 
         <DialogFooter className="border-t border-border/40 bg-muted/30 p-4 sm:flex-row sm:justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-          >
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
             Close
           </Button>
-          <Button
-            type="button"
-            onClick={handlePrint}
-            disabled={!data}
-          >
+          <Button type="button" onClick={handlePrint} disabled={!data}>
             <Printer data-icon="inline-start" className="size-4" />
             Print Receipt
           </Button>

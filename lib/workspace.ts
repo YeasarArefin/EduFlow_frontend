@@ -1,4 +1,4 @@
-export const SELECTED_WORKSPACE_COOKIE = "eduflow.workspaceId";
+export const SELECTED_WORKSPACE_COOKIE = 'eduflow.workspaceId';
 
 export function clearSelectedWorkspace() {
   window.localStorage.removeItem(SELECTED_WORKSPACE_COOKIE);

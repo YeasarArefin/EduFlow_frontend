@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import { LayoutDashboard, LogOut, Menu, Shield, X } from "lucide-react";
-import Link from "next/link";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useSignOut } from "@/lib/auth/sign-out";
+import { LayoutDashboard, LogOut, Menu, Shield, X } from 'lucide-react';
+import Link from 'next/link';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { useSignOut } from '@/lib/auth/sign-out';
 
 const links = [
-  { label: "Features", href: "/#features" },
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "Pricing", href: "/pricing" },
-  { label: "FAQ", href: "/#faq" },
+  { label: 'Features', href: '/#features' },
+  { label: 'How It Works', href: '/#how-it-works' },
+  { label: 'Pricing', href: '/pricing' },
+  { label: 'FAQ', href: '/#faq' },
 ];
 
 export function PublicMobileNav({
   user,
   isAdmin = false,
-  dashboardHref = "/post-auth",
+  dashboardHref = '/post-auth',
 }: {
   user?: { name?: string | null };
   isAdmin?: boolean;
@@ -24,7 +24,7 @@ export function PublicMobileNav({
 }) {
   const [open, setOpen] = useState(false);
   const signOut = useSignOut();
-  const displayName = user?.name || "Account";
+  const displayName = user?.name || 'Account';
   const initial = displayName.slice(0, 1).toUpperCase();
 
   return (
@@ -33,7 +33,7 @@ export function PublicMobileNav({
         variant="ghost"
         size="icon"
         className="rounded-full"
-        aria-label={open ? "Close menu" : "Open menu"}
+        aria-label={open ? 'Close menu' : 'Open menu'}
         aria-expanded={open}
         onClick={() => setOpen((value) => !value)}
       >
@@ -113,4 +113,3 @@ export function PublicMobileNav({
     </div>
   );
 }
-

@@ -1,14 +1,10 @@
-"use client";
+'use client';
 
-import { Pencil, Plus, Power } from "lucide-react";
-import { useState } from "react";
-import { toast } from "sonner";
-import {
-  ErrorState,
-  LoadingState,
-  SectionCard,
-} from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
+import { Pencil, Plus, Power } from 'lucide-react';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -18,32 +14,27 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/lib/utils";
-import type {
-  AcademicResource,
-  AcademicReference,
-} from "../api/academic-references";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Spinner } from '@/components/ui/spinner';
+import { cn } from '@/lib/utils';
+import type { AcademicResource, AcademicReference } from '../api/academic-references';
 import {
   useAcademicReferences,
   useCreateAcademicReference,
   useRenameAcademicReference,
   useSetAcademicReferenceStatus,
-} from "../hooks/use-academic-references";
+} from '../hooks/use-academic-references';
 
 function message(error: unknown) {
-  return (
-    (error as { message?: string })?.message ?? "Could not save this reference."
-  );
+  return (error as { message?: string })?.message ?? 'Could not save this reference.';
 }
 
 const shortUnitLabels: Record<AcademicResource, { singular: string; plural: string }> = {
-  "class-levels": { singular: "Class", plural: "Classes" },
-  "mediums": { singular: "Medium", plural: "Mediums" },
-  "academic-groups": { singular: "Group", plural: "Groups" },
+  'class-levels': { singular: 'Class', plural: 'Classes' },
+  mediums: { singular: 'Medium', plural: 'Mediums' },
+  'academic-groups': { singular: 'Group', plural: 'Groups' },
 };
 
 export function AcademicReferenceCard({
@@ -61,12 +52,13 @@ export function AcademicReferenceCard({
   const create = useCreateAcademicReference();
   const rename = useRenameAcademicReference();
   const status = useSetAcademicReferenceStatus();
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
   const [editing, setEditing] = useState<AcademicReference | null>(null);
-  const [editName, setEditName] = useState("");
+  const [editName, setEditName] = useState('');
   const [confirming, setConfirming] = useState<AcademicReference | null>(null);
 
-  const singularTitle = shortUnitLabels[resource]?.singular ?? (title.endsWith("s") ? title.slice(0, -1) : title);
+  const singularTitle =
+    shortUnitLabels[resource]?.singular ?? (title.endsWith('s') ? title.slice(0, -1) : title);
   const pluralTitle = shortUnitLabels[resource]?.plural ?? title;
 
   function add() {
@@ -76,13 +68,13 @@ export function AcademicReferenceCard({
       { workspaceId, resource, name: value },
       {
         onSuccess: () => {
-          setName("");
+          setName('');
           toast.success(`${singularTitle} "${value}" added successfully.`);
         },
         onError: (err) => {
           toast.error(message(err));
         },
-      },
+      }
     );
   }
 
@@ -99,7 +91,7 @@ export function AcademicReferenceCard({
         onError: (err) => {
           toast.error(message(err));
         },
-      },
+      }
     );
   }
 
@@ -115,13 +107,13 @@ export function AcademicReferenceCard({
         onSuccess: () => {
           setConfirming(null);
           toast.success(
-            `${item.name} ${item.isActive ? "deactivated" : "reactivated"} successfully.`,
+            `${item.name} ${item.isActive ? 'deactivated' : 'reactivated'} successfully.`
           );
         },
         onError: (err) => {
           toast.error(message(err));
         },
-      },
+      }
     );
   }
 
@@ -147,7 +139,7 @@ export function AcademicReferenceCard({
             className="h-10 rounded-full bg-input/60 border-input-border px-4 text-sm"
             disabled={create.isPending}
             onKeyDown={(event) => {
-              if (event.key === "Enter") {
+              if (event.key === 'Enter') {
                 event.preventDefault();
                 add();
               }
@@ -175,10 +167,7 @@ export function AcademicReferenceCard({
         {query.isPending ? <LoadingState rows={2} /> : null}
 
         {query.isError ? (
-          <ErrorState
-            message="Could not load reference data."
-            onRetry={() => query.refetch()}
-          />
+          <ErrorState message="Could not load reference data." onRetry={() => query.refetch()} />
         ) : null}
 
         {query.isSuccess && !query.data.length ? (
@@ -206,10 +195,10 @@ export function AcademicReferenceCard({
                       disabled={rename.isPending}
                       className="h-9 rounded-full bg-input border-input-border px-3.5 text-sm flex-1"
                       onKeyDown={(event) => {
-                        if (event.key === "Enter") {
+                        if (event.key === 'Enter') {
                           event.preventDefault();
                           saveRename();
-                        } else if (event.key === "Escape") {
+                        } else if (event.key === 'Escape') {
                           setEditing(null);
                         }
                       }}
@@ -246,24 +235,24 @@ export function AcademicReferenceCard({
                   <div className="flex min-w-0 items-center gap-2.5">
                     <span
                       className={cn(
-                        "size-1.5 rounded-full shrink-0",
-                        item.isActive ? "bg-primary" : "bg-muted-foreground/50",
+                        'size-1.5 rounded-full shrink-0',
+                        item.isActive ? 'bg-primary' : 'bg-muted-foreground/50'
                       )}
                     />
                     <span
                       className={cn(
-                        "truncate text-sm font-medium",
+                        'truncate text-sm font-medium',
                         item.isActive
-                          ? "text-foreground"
-                          : "text-muted-foreground line-through opacity-80",
+                          ? 'text-foreground'
+                          : 'text-muted-foreground line-through opacity-80'
                       )}
                     >
                       {item.name}
                     </span>
                   </div>
                   <div className="flex items-center gap-1.5 shrink-0">
-                    <StatusBadge status={item.isActive ? "success" : "info"}>
-                      {item.isActive ? "Active" : "Inactive"}
+                    <StatusBadge status={item.isActive ? 'success' : 'info'}>
+                      {item.isActive ? 'Active' : 'Inactive'}
                     </StatusBadge>
                     <Button
                       size="icon"
@@ -282,13 +271,13 @@ export function AcademicReferenceCard({
                       size="icon"
                       variant="ghost"
                       className={cn(
-                        "size-8 rounded-full transition-colors",
+                        'size-8 rounded-full transition-colors',
                         item.isActive
-                          ? "text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                          : "text-muted-foreground hover:text-primary hover:bg-primary/10",
+                          ? 'text-muted-foreground hover:text-destructive hover:bg-destructive/10'
+                          : 'text-muted-foreground hover:text-primary hover:bg-primary/10'
                       )}
-                      aria-label={`${item.isActive ? "Deactivate" : "Reactivate"} ${item.name}`}
-                      title={`${item.isActive ? "Deactivate" : "Reactivate"} ${item.name}`}
+                      aria-label={`${item.isActive ? 'Deactivate' : 'Reactivate'} ${item.name}`}
+                      title={`${item.isActive ? 'Deactivate' : 'Reactivate'} ${item.name}`}
                       onClick={() => setConfirming(item)}
                     >
                       <Power className="size-3.5" />
@@ -305,41 +294,34 @@ export function AcademicReferenceCard({
         ) : null}
       </div>
 
-      <AlertDialog
-        open={Boolean(confirming)}
-        onOpenChange={(open) => !open && setConfirming(null)}
-      >
+      <AlertDialog open={Boolean(confirming)} onOpenChange={(open) => !open && setConfirming(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {confirming?.isActive ? "Deactivate" : "Reactivate"}{" "}
-              {confirming?.name}?
+              {confirming?.isActive ? 'Deactivate' : 'Reactivate'} {confirming?.name}?
             </AlertDialogTitle>
             <AlertDialogDescription>
               {confirming?.isActive
-                ? "Existing records will preserve this reference historically, but it cannot be selected for new records."
-                : "This reference will become available for new records again."}
+                ? 'Existing records will preserve this reference historically, but it cannot be selected for new records.'
+                : 'This reference will become available for new records again.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel
-              disabled={status.isPending}
-              className="rounded-full"
-            >
+            <AlertDialogCancel disabled={status.isPending} className="rounded-full">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               disabled={status.isPending}
               className={cn(
-                "rounded-full font-semibold shadow-sm",
+                'rounded-full font-semibold shadow-sm',
                 confirming?.isActive
-                  ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                  : "bg-primary text-primary-foreground hover:bg-primary-hover",
+                  ? 'bg-destructive text-destructive-foreground hover:bg-destructive/90'
+                  : 'bg-primary text-primary-foreground hover:bg-primary-hover'
               )}
               onClick={() => confirming && toggleStatus(confirming)}
             >
               {status.isPending && <Spinner data-icon="inline-start" />}
-              {confirming?.isActive ? "Deactivate" : "Reactivate"}
+              {confirming?.isActive ? 'Deactivate' : 'Reactivate'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

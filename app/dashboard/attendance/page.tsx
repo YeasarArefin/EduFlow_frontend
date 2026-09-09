@@ -1,5 +1,5 @@
-import { AttendancePage } from "@/features/attendance/components/attendance-page";
-import { getAccountRoutingState } from "@/lib/auth/post-auth-destination";
+import { AttendancePage } from '@/features/attendance/components/attendance-page';
+import { getAccountRoutingState } from '@/lib/auth/post-auth-destination';
 
 export default async function AttendanceRoute() {
   const account = await getAccountRoutingState();

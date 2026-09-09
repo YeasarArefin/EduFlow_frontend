@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { ArrowRight, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import Link from 'next/link';
+import { ArrowRight, Check } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -8,21 +8,21 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import type { PublicPlan } from "@/features/pricing/api/get-public-plans";
+} from '@/components/ui/card';
+import type { PublicPlan } from '@/features/pricing/api/get-public-plans';
 
 /* ─── helpers ─────────────────────────────────────────────────── */
 
 export function formatBdt(priceMinor: string) {
-  const normalized = priceMinor.replace(/^0+(?=\d)/, "");
-  const whole = normalized.length > 2 ? normalized.slice(0, -2) : "0";
-  const poisha = normalized.slice(-2).padStart(2, "0");
+  const normalized = priceMinor.replace(/^0+(?=\d)/, '');
+  const whole = normalized.length > 2 ? normalized.slice(0, -2) : '0';
+  const poisha = normalized.slice(-2).padStart(2, '0');
   return `৳${whole}.${poisha}`;
 }
 
 export function durationLabel(days: number) {
-  if (days === 365) return "year";
-  if (days === 30) return "month";
+  if (days === 365) return 'year';
+  if (days === 30) return 'month';
   return `${days} days`;
 }
 
@@ -40,53 +40,53 @@ export interface StaticTier {
 
 export const STATIC_TIERS: StaticTier[] = [
   {
-    name: "Starter",
-    badge: "14-Day Free Trial",
-    price: "৳1,500",
-    period: "per month",
-    desc: "Ideal for individual tutors and private batch instructors.",
+    name: 'Starter',
+    badge: '14-Day Free Trial',
+    price: '৳1,500',
+    period: 'per month',
+    desc: 'Ideal for individual tutors and private batch instructors.',
     highlight: false,
     features: [
-      "Up to 50 Active Students",
-      "Up to 4 Batches",
-      "1 Staff Seat (Owner)",
-      "Daily Attendance & Reports",
-      "500 Free SMS / month",
-      "Email & Community Support",
+      'Up to 50 Active Students',
+      'Up to 4 Batches',
+      '1 Staff Seat (Owner)',
+      'Daily Attendance & Reports',
+      '500 Free SMS / month',
+      'Email & Community Support',
     ],
   },
   {
-    name: "Standard",
-    badge: "Most Popular",
-    price: "৳3,500",
-    period: "per month",
-    desc: "For growing coaching centers with multiple instructors.",
+    name: 'Standard',
+    badge: 'Most Popular',
+    price: '৳3,500',
+    period: 'per month',
+    desc: 'For growing coaching centers with multiple instructors.',
     highlight: true,
     features: [
-      "Up to 200 Active Students",
-      "Unlimited Batches & Schedules",
-      "5 Staff & Teacher Seats",
-      "Automated Fee Receipts & Dues",
-      "2,000 Free SMS / month",
-      "Bilingual Parent SMS Templates",
-      "Priority WhatsApp Support",
+      'Up to 200 Active Students',
+      'Unlimited Batches & Schedules',
+      '5 Staff & Teacher Seats',
+      'Automated Fee Receipts & Dues',
+      '2,000 Free SMS / month',
+      'Bilingual Parent SMS Templates',
+      'Priority WhatsApp Support',
     ],
   },
   {
-    name: "Pro",
-    badge: "Maximum Scale",
-    price: "৳7,000",
-    period: "per month",
-    desc: "For established institutes needing full operational automation.",
+    name: 'Pro',
+    badge: 'Maximum Scale',
+    price: '৳7,000',
+    period: 'per month',
+    desc: 'For established institutes needing full operational automation.',
     highlight: false,
     features: [
-      "Unlimited Students",
-      "Unlimited Batches & Branches",
-      "Unlimited Staff & Instructors",
-      "Advanced Fee & Salary Payroll",
-      "5,000 Free SMS / month",
-      "Custom SMS Sender ID",
-      "Dedicated Account Manager",
+      'Unlimited Students',
+      'Unlimited Batches & Branches',
+      'Unlimited Staff & Instructors',
+      'Advanced Fee & Salary Payroll',
+      '5,000 Free SMS / month',
+      'Custom SMS Sender ID',
+      'Dedicated Account Manager',
     ],
   },
 ];
@@ -119,8 +119,8 @@ function PricingCardShell({
       data-premium-tilt
       className={`relative flex flex-col justify-between rounded-2xl transition-all duration-300 ${
         isPopular
-          ? "border-accent-border bg-gradient-to-b from-accent/30 to-transparent backdrop-blur-md shadow-[0_0_40px_rgba(190,242,100,0.12)] scale-[1.02]"
-          : "border-border bg-card backdrop-blur-md shadow-xs hover:border-border-strong"
+          ? 'border-accent-border bg-gradient-to-b from-accent/30 to-transparent backdrop-blur-md shadow-[0_0_40px_rgba(190,242,100,0.12)] scale-[1.02]'
+          : 'border-border bg-card backdrop-blur-md shadow-xs hover:border-border-strong'
       }`}
     >
       <CardHeader className="p-6 sm:p-8">
@@ -129,8 +129,8 @@ function PricingCardShell({
           <span
             className={`shrink-0 rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
               isPopular
-                ? "bg-primary text-primary-foreground shadow-[0_0_10px_var(--glow-lime)]"
-                : "bg-muted border border-border text-muted-foreground"
+                ? 'bg-primary text-primary-foreground shadow-[0_0_10px_var(--glow-lime)]'
+                : 'bg-muted border border-border text-muted-foreground'
             }`}
           >
             {badge}
@@ -170,9 +170,9 @@ function PricingCardShell({
         <Button
           size="lg"
           className={`w-full rounded-full cursor-pointer font-semibold ${
-            isPopular ? "shadow-[0_0_20px_rgba(190,242,100,0.25)]" : ""
+            isPopular ? 'shadow-[0_0_20px_rgba(190,242,100,0.25)]' : ''
           }`}
-          variant={isPopular ? "default" : "glass"}
+          variant={isPopular ? 'default' : 'glass'}
           render={<Link href={ctaHref} />}
         >
           <span>{ctaLabel}</span>
@@ -194,10 +194,7 @@ export function LivePricingCard({
   index: number;
   isAuthenticated: boolean;
 }) {
-  const isPopular =
-    index === 1 ||
-    plan.slug.includes("standard") ||
-    plan.slug.includes("basic");
+  const isPopular = index === 1 || plan.slug.includes('standard') || plan.slug.includes('basic');
 
   const href = isAuthenticated
     ? `/post-auth?plan=${encodeURIComponent(plan.slug)}`
@@ -210,8 +207,8 @@ export function LivePricingCard({
         plan.trial.included
           ? `${plan.trial.days}-Day Trial`
           : isPopular
-          ? "Recommended"
-          : "Active Plan"
+            ? 'Recommended'
+            : 'Active Plan'
       }
       desc="For coaching centers building a dependable daily rhythm."
       priceDisplay={formatBdt(plan.priceMinor)}
@@ -246,7 +243,7 @@ export function StaticPricingCard({
       periodDisplay={tier.period}
       features={tier.features.map((f) => ({ key: f, label: f }))}
       isPopular={tier.highlight ?? false}
-      ctaHref={isAuthenticated ? "/post-auth" : "/signup"}
+      ctaHref={isAuthenticated ? '/post-auth' : '/signup'}
       ctaLabel="Start Free Trial"
     />
   );

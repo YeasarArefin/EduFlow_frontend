@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import Link from "next/link";
+import Link from 'next/link';
 import {
   Archive,
   Calculator,
@@ -12,16 +12,16 @@ import {
   Search,
   UserCheck,
   UserMinus,
-} from "lucide-react";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
+} from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import {
   EmptyState,
   ErrorState,
   LoadingState,
   SectionCard,
-} from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
+} from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,16 +31,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -48,7 +42,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
@@ -56,32 +50,33 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Spinner } from "@/components/ui/spinner";
-import { useStudentsQuery } from "@/features/students/queries/use-students-query";
-import type { Enrollment } from "../api/batch-enrollments";
+} from '@/components/ui/sheet';
+import { Spinner } from '@/components/ui/spinner';
+import { useStudentsQuery } from '@/features/students/queries/use-students-query';
+import { BatchEnrollStudentSheet } from './batch-enroll-student-sheet';
+import type { Enrollment } from '../api/batch-enrollments';
 import {
   useArchiveEnrollment,
   useBatchEnrollments,
   useEnrollStudent,
   useReactivateEnrollment,
   useUnenrollStudent,
-} from "../hooks/use-batch-enrollments";
+} from '../hooks/use-batch-enrollments';
 
 const money = (value: string | number | null | undefined) => {
-  if (value === null || value === undefined || value === "") return "—";
-  const num = typeof value === "number" ? value : Number(value) / 100;
-  return new Intl.NumberFormat("en-BD", {
-    style: "currency",
-    currency: "BDT",
+  if (value === null || value === undefined || value === '') return '—';
+  const num = typeof value === 'number' ? value : Number(value) / 100;
+  return new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
     maximumFractionDigits: 2,
   }).format(num);
 };
 
 const formatDate = (value: string | null | undefined) => {
-  if (!value) return "Not recorded";
-  return new Intl.DateTimeFormat("en-BD", { dateStyle: "medium" }).format(
-    new Date(`${value}T00:00:00`),
+  if (!value) return 'Not recorded';
+  return new Intl.DateTimeFormat('en-BD', { dateStyle: 'medium' }).format(
+    new Date(`${value}T00:00:00`)
   );
 };
 
@@ -100,7 +95,7 @@ export function BatchStudentsCard({
   const studentsQuery = useStudentsQuery(workspaceId, {
     page: 1,
     limit: 100,
-    status: "active",
+    status: 'active',
   });
   const enrollMutation = useEnrollStudent();
   const archiveMutation = useArchiveEnrollment();
@@ -108,7 +103,7 @@ export function BatchStudentsCard({
   const unenrollMutation = useUnenrollStudent();
 
   const [enrollSheetOpen, setEnrollSheetOpen] = useState(false);
-  const [searchRoster, setSearchRoster] = useState("");
+  const [searchRoster, setSearchRoster] = useState('');
   const [archiving, setArchiving] = useState<Enrollment | null>(null);
   const [unenrolling, setUnenrolling] = useState<Enrollment | null>(null);
 
@@ -127,13 +122,13 @@ export function BatchStudentsCard({
       (item) =>
         item.name.toLowerCase().includes(q) ||
         item.studentCode.toLowerCase().includes(q) ||
-        (item.phone && item.phone.includes(q)),
+        (item.phone && item.phone.includes(q))
     );
   }, [enrollmentsQuery.data, searchRoster]);
 
   const activeCount = useMemo(
-    () => (enrollmentsQuery.data ?? []).filter((x) => x.status === "active").length,
-    [enrollmentsQuery.data],
+    () => (enrollmentsQuery.data ?? []).filter((x) => x.status === 'active').length,
+    [enrollmentsQuery.data]
   );
 
   function handleArchive() {
@@ -146,9 +141,9 @@ export function BatchStudentsCard({
           setArchiving(null);
         },
         onError: (err: Error) => {
-          toast.error(err.message || "Could not archive enrollment.");
+          toast.error(err.message || 'Could not archive enrollment.');
         },
-      },
+      }
     );
   }
 
@@ -162,9 +157,9 @@ export function BatchStudentsCard({
           setUnenrolling(null);
         },
         onError: (err: Error) => {
-          toast.error(err.message || "Could not unenroll student.");
+          toast.error(err.message || 'Could not unenroll student.');
         },
-      },
+      }
     );
   }
 
@@ -176,9 +171,9 @@ export function BatchStudentsCard({
           toast.success(`${enrollment.name} has been reactivated in ${batchName}.`);
         },
         onError: (err: Error) => {
-          toast.error(err.message || "Could not reactivate enrollment.");
+          toast.error(err.message || 'Could not reactivate enrollment.');
         },
-      },
+      }
     );
   }
 
@@ -187,10 +182,7 @@ export function BatchStudentsCard({
       title="Enrolled Students"
       description="Manage active student enrollments, customized fees, and batch roster history."
       action={
-        <Button
-          onClick={() => setEnrollSheetOpen(true)}
-          className="rounded-full shadow-sm"
-        >
+        <Button onClick={() => setEnrollSheetOpen(true)} className="rounded-full shadow-sm">
           <Plus data-icon="inline-start" /> Enroll student
         </Button>
       }
@@ -209,7 +201,7 @@ export function BatchStudentsCard({
               />
             </div>
             <span className="inline-flex shrink-0 items-center whitespace-nowrap rounded-full bg-muted/60 px-3 py-1 text-xs font-medium text-muted-foreground border border-border/60">
-              {activeCount} active {activeCount === 1 ? "student" : "students"}
+              {activeCount} active {activeCount === 1 ? 'student' : 'students'}
             </span>
           </div>
         ) : null}
@@ -228,10 +220,7 @@ export function BatchStudentsCard({
             title="No students enrolled yet"
             description="Enroll an active student from your directory to begin building this batch roster."
             action={
-              <Button
-                onClick={() => setEnrollSheetOpen(true)}
-                className="rounded-full shadow-sm"
-              >
+              <Button onClick={() => setEnrollSheetOpen(true)} className="rounded-full shadow-sm">
                 <Plus data-icon="inline-start" /> Enroll student
               </Button>
             }
@@ -251,12 +240,11 @@ export function BatchStudentsCard({
         {/* Student Roster List */}
         <div className="divide-y divide-border/40 rounded-2xl border border-border/80 bg-card/40 overflow-hidden backdrop-blur-xs">
           {filteredRoster.map((enrollment) => {
-            const baseFeeMinor =
-              enrollment.feeOverrideMinor ?? defaultMonthlyFeeMinor;
-            const discountMinor = enrollment.discountMinor ?? "0";
+            const baseFeeMinor = enrollment.feeOverrideMinor ?? defaultMonthlyFeeMinor;
+            const discountMinor = enrollment.discountMinor ?? '0';
             const netFeeMinor = Math.max(
               0,
-              Number(baseFeeMinor) - Number(discountMinor),
+              Number(baseFeeMinor) - Number(discountMinor)
             ).toString();
 
             return (
@@ -277,11 +265,11 @@ export function BatchStudentsCard({
                     </span>
                     <StatusBadge
                       status={
-                        enrollment.status === "active"
-                          ? "success"
-                          : enrollment.status === "inactive"
-                            ? "warning"
-                            : "info"
+                        enrollment.status === 'active'
+                          ? 'success'
+                          : enrollment.status === 'inactive'
+                            ? 'warning'
+                            : 'info'
                       }
                     >
                       {enrollment.status}
@@ -326,7 +314,7 @@ export function BatchStudentsCard({
                 </div>
 
                 <div className="flex items-center gap-1.5 shrink-0">
-                  {enrollment.status === "archived" ? (
+                  {enrollment.status === 'archived' ? (
                     <Button
                       variant="outline"
                       size="sm"
@@ -370,7 +358,7 @@ export function BatchStudentsCard({
       </div>
 
       {/* Enroll Student Sheet */}
-      <EnrollStudentSheet
+      <BatchEnrollStudentSheet
         open={enrollSheetOpen}
         onOpenChange={setEnrollSheetOpen}
         workspaceId={workspaceId}
@@ -383,25 +371,17 @@ export function BatchStudentsCard({
       />
 
       {/* Archive Enrollment Confirmation Dialog */}
-      <AlertDialog
-        open={Boolean(archiving)}
-        onOpenChange={(open) => !open && setArchiving(null)}
-      >
+      <AlertDialog open={Boolean(archiving)} onOpenChange={(open) => !open && setArchiving(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              Archive enrollment for {archiving?.name}?
-            </AlertDialogTitle>
+            <AlertDialogTitle>Archive enrollment for {archiving?.name}?</AlertDialogTitle>
             <AlertDialogDescription>
-              {archiving?.name} will remain in this batch&apos;s historical tuition and attendance records,
-              but will no longer be listed as an actively enrolled student.
+              {archiving?.name} will remain in this batch&apos;s historical tuition and attendance
+              records, but will no longer be listed as an actively enrolled student.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel
-              disabled={archiveMutation.isPending}
-              className="rounded-full"
-            >
+            <AlertDialogCancel disabled={archiveMutation.isPending} className="rounded-full">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
@@ -427,15 +407,12 @@ export function BatchStudentsCard({
               Unenroll {unenrolling?.name} from {batchName}?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This will completely remove {unenrolling?.name}&apos;s enrollment record from this batch.
-              Use Archive if you wish to preserve historical records instead.
+              This will completely remove {unenrolling?.name}&apos;s enrollment record from this
+              batch. Use Archive if you wish to preserve historical records instead.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel
-              disabled={unenrollMutation.isPending}
-              className="rounded-full"
-            >
+            <AlertDialogCancel disabled={unenrollMutation.isPending} className="rounded-full">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
@@ -456,7 +433,7 @@ export function BatchStudentsCard({
 // -------------------------------------------------------------
 // Sub-component: Enroll Student Sheet with Intuitive User Flow
 // -------------------------------------------------------------
-function EnrollStudentSheet({
+function LegacyEnrollStudentSheet({
   open,
   onOpenChange,
   workspaceId,
@@ -486,51 +463,44 @@ function EnrollStudentSheet({
 }) {
   const enrollMutation = useEnrollStudent();
 
-  const [studentSearch, setStudentSearch] = useState("");
-  const [selectedStudentId, setSelectedStudentId] = useState("");
-  const [joinedAt, setJoinedAt] = useState(() =>
-    new Date().toISOString().split("T")[0],
-  );
-  const [feeOverrideTaka, setFeeOverrideTaka] = useState("");
-  const [discountTaka, setDiscountTaka] = useState("");
+  const [studentSearch, setStudentSearch] = useState('');
+  const [selectedStudentId, setSelectedStudentId] = useState('');
+  const [joinedAt, setJoinedAt] = useState(() => new Date().toISOString().split('T')[0]);
+  const [feeOverrideTaka, setFeeOverrideTaka] = useState('');
+  const [discountTaka, setDiscountTaka] = useState('');
   const [submitted, setSubmitted] = useState(false);
 
   // Filter available students (exclude actively assigned)
   const availableStudents = useMemo(() => {
     const assignedIds = new Set(
-      existingEnrollments
-        .filter((e) => e.status === "active")
-        .map((e) => e.studentId),
+      existingEnrollments.filter((e) => e.status === 'active').map((e) => e.studentId)
     );
     return allStudents.filter(
       (s) =>
         !assignedIds.has(s.id) &&
-        s.status === "active" &&
+        s.status === 'active' &&
         (!studentSearch.trim() ||
-          `${s.fullName} ${s.studentCode} ${s.phone ?? ""}`
+          `${s.fullName} ${s.studentCode} ${s.phone ?? ''}`
             .toLowerCase()
-            .includes(studentSearch.toLowerCase())),
+            .includes(studentSearch.toLowerCase()))
     );
   }, [allStudents, existingEnrollments, studentSearch]);
 
   const selectedStudent = useMemo(
     () => allStudents.find((s) => s.id === selectedStudentId),
-    [allStudents, selectedStudentId],
+    [allStudents, selectedStudentId]
   );
 
   // Net calculation in Taka
   const defaultFeeTaka = Number(defaultMonthlyFeeMinor || 0) / 100;
-  const effectiveBaseTaka = feeOverrideTaka.trim()
-    ? Number(feeOverrideTaka) || 0
-    : defaultFeeTaka;
+  const effectiveBaseTaka = feeOverrideTaka.trim() ? Number(feeOverrideTaka) || 0 : defaultFeeTaka;
   const discountAmountTaka = Number(discountTaka) || 0;
   const netMonthlyTaka = Math.max(0, effectiveBaseTaka - discountAmountTaka);
 
   const isFeeValid =
     (!feeOverrideTaka.trim() ||
       (!isNaN(Number(feeOverrideTaka)) && Number(feeOverrideTaka) >= 0)) &&
-    (!discountTaka.trim() ||
-      (!isNaN(Number(discountTaka)) && Number(discountTaka) >= 0));
+    (!discountTaka.trim() || (!isNaN(Number(discountTaka)) && Number(discountTaka) >= 0));
 
   function handleEnroll(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -544,9 +514,7 @@ function EnrollStudentSheet({
       feeOverrideMinor: feeOverrideTaka.trim()
         ? Math.round(Number(feeOverrideTaka) * 100).toString()
         : null,
-      discountMinor: discountTaka.trim()
-        ? Math.round(Number(discountTaka) * 100).toString()
-        : null,
+      discountMinor: discountTaka.trim() ? Math.round(Number(discountTaka) * 100).toString() : null,
     };
 
     enrollMutation.mutate(
@@ -554,19 +522,19 @@ function EnrollStudentSheet({
       {
         onSuccess: () => {
           toast.success(
-            `${selectedStudent?.fullName ?? "Student"} enrolled in ${batchName} successfully.`,
+            `${selectedStudent?.fullName ?? 'Student'} enrolled in ${batchName} successfully.`
           );
           onOpenChange(false);
-          setSelectedStudentId("");
-          setFeeOverrideTaka("");
-          setDiscountTaka("");
-          setStudentSearch("");
+          setSelectedStudentId('');
+          setFeeOverrideTaka('');
+          setDiscountTaka('');
+          setStudentSearch('');
           setSubmitted(false);
         },
         onError: (err: Error) => {
-          toast.error(err.message || "Could not enroll student in this batch.");
+          toast.error(err.message || 'Could not enroll student in this batch.');
         },
-      },
+      }
     );
   }
 
@@ -576,7 +544,8 @@ function EnrollStudentSheet({
         <SheetHeader className="border-b border-border/40 pb-4 pr-12">
           <SheetTitle>Enroll Student in Batch</SheetTitle>
           <SheetDescription>
-            Assign an active student to <strong className="text-foreground">{batchName}</strong> and configure their tuition fees.
+            Assign an active student to <strong className="text-foreground">{batchName}</strong> and
+            configure their tuition fees.
           </SheetDescription>
         </SheetHeader>
 
@@ -585,9 +554,7 @@ function EnrollStudentSheet({
             <FieldGroup className="gap-5">
               {/* Step 1: Student Selection */}
               <Field data-invalid={submitted && !selectedStudentId}>
-                <FieldLabel htmlFor="select-student">
-                  Select Active Student *
-                </FieldLabel>
+                <FieldLabel htmlFor="select-student">Select Active Student *</FieldLabel>
 
                 {/* Filter / Search input if many students exist */}
                 <div className="relative mb-2">
@@ -602,17 +569,17 @@ function EnrollStudentSheet({
 
                 <Select
                   value={selectedStudentId}
-                  onValueChange={(val) => setSelectedStudentId(val ?? "")}
+                  onValueChange={(val) => setSelectedStudentId(val ?? '')}
                   disabled={isLoadingStudents || enrollMutation.isPending}
                 >
                   <SelectTrigger id="select-student" className="w-full">
                     <SelectValue
                       placeholder={
                         isLoadingStudents
-                          ? "Loading student directory…"
+                          ? 'Loading student directory…'
                           : availableStudents.length
-                            ? "Choose student from list"
-                            : "No eligible students available"
+                            ? 'Choose student from list'
+                            : 'No eligible students available'
                       }
                     />
                   </SelectTrigger>
@@ -620,8 +587,7 @@ function EnrollStudentSheet({
                     <SelectGroup>
                       {availableStudents.map((s) => (
                         <SelectItem key={s.id} value={s.id}>
-                          {s.fullName} ({s.studentCode})
-                          {s.phone ? ` · ${s.phone}` : ""}
+                          {s.fullName} ({s.studentCode}){s.phone ? ` · ${s.phone}` : ''}
                         </SelectItem>
                       ))}
                     </SelectGroup>
@@ -629,9 +595,7 @@ function EnrollStudentSheet({
                 </Select>
 
                 {submitted && !selectedStudentId && (
-                  <FieldError
-                    errors={[{ message: "Please select a student to enroll." }]}
-                  />
+                  <FieldError errors={[{ message: 'Please select a student to enroll.' }]} />
                 )}
               </Field>
 
@@ -643,14 +607,25 @@ function EnrollStudentSheet({
                       <UserCheck className="size-5" />
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="font-semibold text-foreground">
-                        {selectedStudent.fullName}
-                      </p>
+                      <p className="font-semibold text-foreground">{selectedStudent.fullName}</p>
                       <div className="mt-1 grid gap-1 text-xs text-muted-foreground sm:grid-cols-2">
-                        <span>Code: <strong className="text-foreground">{selectedStudent.studentCode}</strong></span>
-                        <span>Phone: <strong className="text-foreground">{selectedStudent.phone ?? "None"}</strong></span>
+                        <span>
+                          Code:{' '}
+                          <strong className="text-foreground">{selectedStudent.studentCode}</strong>
+                        </span>
+                        <span>
+                          Phone:{' '}
+                          <strong className="text-foreground">
+                            {selectedStudent.phone ?? 'None'}
+                          </strong>
+                        </span>
                         {selectedStudent.guardianName && (
-                          <span className="sm:col-span-2">Guardian: <strong className="text-foreground">{selectedStudent.guardianName}</strong></span>
+                          <span className="sm:col-span-2">
+                            Guardian:{' '}
+                            <strong className="text-foreground">
+                              {selectedStudent.guardianName}
+                            </strong>
+                          </span>
                         )}
                       </div>
                     </div>
@@ -660,9 +635,7 @@ function EnrollStudentSheet({
 
               {/* Step 2: Joined Date */}
               <Field>
-                <FieldLabel htmlFor="enroll-joined-date">
-                  Enrollment / Joining Date
-                </FieldLabel>
+                <FieldLabel htmlFor="enroll-joined-date">Enrollment / Joining Date</FieldLabel>
                 <Input
                   id="enroll-joined-date"
                   type="date"
@@ -670,9 +643,7 @@ function EnrollStudentSheet({
                   onChange={(e) => setJoinedAt(e.target.value)}
                   className="h-10 rounded-full"
                 />
-                <FieldDescription>
-                  Date the student started attending this batch.
-                </FieldDescription>
+                <FieldDescription>Date the student started attending this batch.</FieldDescription>
               </Field>
 
               {/* Step 3: Fee Configuration & Customization */}
@@ -685,15 +656,13 @@ function EnrollStudentSheet({
                 <div className="rounded-xl border border-border/60 bg-muted/30 p-3 text-xs text-muted-foreground flex items-center justify-between">
                   <span>Standard Batch Fee:</span>
                   <strong className="text-sm font-bold text-foreground">
-                    ৳{defaultFeeTaka.toLocaleString("en-BD", { minimumFractionDigits: 2 })} / month
+                    ৳{defaultFeeTaka.toLocaleString('en-BD', { minimumFractionDigits: 2 })} / month
                   </strong>
                 </div>
 
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Field>
-                    <FieldLabel htmlFor="enroll-fee-override">
-                      Custom Base Fee (BDT ৳)
-                    </FieldLabel>
+                    <FieldLabel htmlFor="enroll-fee-override">Custom Base Fee (BDT ৳)</FieldLabel>
                     <Input
                       id="enroll-fee-override"
                       type="text"
@@ -701,22 +670,18 @@ function EnrollStudentSheet({
                       value={feeOverrideTaka}
                       onChange={(e) => {
                         const v = e.target.value;
-                        if (v === "" || /^\d*\.?\d{0,2}$/.test(v)) {
+                        if (v === '' || /^\d*\.?\d{0,2}$/.test(v)) {
                           setFeeOverrideTaka(v);
                         }
                       }}
                       placeholder={`e.g. ${defaultFeeTaka}`}
                       className="h-10 rounded-full"
                     />
-                    <FieldDescription>
-                      Leave blank to use standard fee.
-                    </FieldDescription>
+                    <FieldDescription>Leave blank to use standard fee.</FieldDescription>
                   </Field>
 
                   <Field>
-                    <FieldLabel htmlFor="enroll-discount">
-                      Monthly Discount (BDT ৳)
-                    </FieldLabel>
+                    <FieldLabel htmlFor="enroll-discount">Monthly Discount (BDT ৳)</FieldLabel>
                     <Input
                       id="enroll-discount"
                       type="text"
@@ -724,16 +689,14 @@ function EnrollStudentSheet({
                       value={discountTaka}
                       onChange={(e) => {
                         const v = e.target.value;
-                        if (v === "" || /^\d*\.?\d{0,2}$/.test(v)) {
+                        if (v === '' || /^\d*\.?\d{0,2}$/.test(v)) {
                           setDiscountTaka(v);
                         }
                       }}
                       placeholder="e.g. 500"
                       className="h-10 rounded-full"
                     />
-                    <FieldDescription>
-                      Scholarship or waiver amount.
-                    </FieldDescription>
+                    <FieldDescription>Scholarship or waiver amount.</FieldDescription>
                   </Field>
                 </div>
 
@@ -745,7 +708,7 @@ function EnrollStudentSheet({
                   </div>
                   <div className="text-right">
                     <span className="text-base font-bold text-primary">
-                      ৳{netMonthlyTaka.toLocaleString("en-BD", { minimumFractionDigits: 2 })}
+                      ৳{netMonthlyTaka.toLocaleString('en-BD', { minimumFractionDigits: 2 })}
                     </span>
                     <span className="text-xs text-muted-foreground"> / month</span>
                   </div>
@@ -778,3 +741,5 @@ function EnrollStudentSheet({
     </Sheet>
   );
 }
+
+void LegacyEnrollStudentSheet;

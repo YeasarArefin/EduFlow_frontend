@@ -1,9 +1,13 @@
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
-import { PublicContainer } from "@/components/public/public-container";
-import { Button } from "@/components/ui/button";
-import { LivePricingCard, StaticPricingCard, STATIC_TIERS } from "@/components/pricing/pricing-card";
-import type { PublicPlan } from "@/features/pricing/api/get-public-plans";
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
+import { PublicContainer } from '@/components/public/public-container';
+import { Button } from '@/components/ui/button';
+import {
+  LivePricingCard,
+  StaticPricingCard,
+  STATIC_TIERS,
+} from '@/components/pricing/pricing-card';
+import type { PublicPlan } from '@/features/pricing/api/get-public-plans';
 
 interface PricingPreviewProps {
   plans?: PublicPlan[] | null;
@@ -25,7 +29,8 @@ export function PricingPreviewSection({ plans, isAuthenticated = false }: Pricin
             Transparent plans for coaching centers of any size.
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg font-light">
-            Start with our full-featured 14-day trial. Upgrade only when you are ready to expand your batches.
+            Start with our full-featured 14-day trial. Upgrade only when you are ready to expand
+            your batches.
           </p>
         </div>
 
@@ -44,11 +49,7 @@ export function PricingPreviewSection({ plans, isAuthenticated = false }: Pricin
         ) : (
           <div className="mt-16 grid gap-8 lg:grid-cols-3">
             {STATIC_TIERS.map((tier) => (
-              <StaticPricingCard
-                key={tier.name}
-                tier={tier}
-                isAuthenticated={isAuthenticated}
-              />
+              <StaticPricingCard key={tier.name} tier={tier} isAuthenticated={isAuthenticated} />
             ))}
           </div>
         )}

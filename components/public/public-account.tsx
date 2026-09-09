@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { LogOut, Shield } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useSignOut } from "@/lib/auth/sign-out";
+import { LogOut, Shield } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { useSignOut } from '@/lib/auth/sign-out';
 
 export function PublicAccount({
   name,
@@ -12,7 +12,7 @@ export function PublicAccount({
   isAdmin?: boolean;
 }) {
   const signOut = useSignOut();
-  const displayName = name || "Account";
+  const displayName = name || 'Account';
   const initial = displayName.slice(0, 1).toUpperCase();
 
   return (
@@ -39,5 +39,3 @@ export function PublicAccount({
     </div>
   );
 }
-
-

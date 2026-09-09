@@ -1,5 +1,5 @@
-import { StaffPage } from "@/features/staff/components/staff-page";
-import { getAccountRoutingState } from "@/lib/auth/post-auth-destination";
+import { StaffPage } from '@/features/staff/components/staff-page';
+import { getAccountRoutingState } from '@/lib/auth/post-auth-destination';
 
 export default async function Page() {
   const account = await getAccountRoutingState();

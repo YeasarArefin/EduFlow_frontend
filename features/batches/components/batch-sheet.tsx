@@ -1,14 +1,8 @@
-"use client";
+'use client';
 
-import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Button } from '@/components/ui/button';
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -16,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
@@ -24,16 +18,13 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Spinner } from "@/components/ui/spinner";
-import { useAcademicReferences } from "@/features/settings/hooks/use-academic-references";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import type { Batch, BatchStatus } from "../api/batches";
-import {
-  useCreateBatchMutation,
-  useUpdateBatchMutation,
-} from "../hooks/use-batch-mutations";
+} from '@/components/ui/sheet';
+import { Spinner } from '@/components/ui/spinner';
+import { useAcademicReferences } from '@/features/settings/hooks/use-academic-references';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import type { Batch, BatchStatus } from '../api/batches';
+import { useCreateBatchMutation, useUpdateBatchMutation } from '../hooks/use-batch-mutations';
 
 type Values = {
   name: string;
@@ -42,39 +33,39 @@ type Values = {
   academicGroupId: string;
   startDate: string;
   monthlyFee: string;
-  status: Exclude<BatchStatus, "archived">;
+  status: Exclude<BatchStatus, 'archived'>;
 };
 
 function takaFromBatch(batch?: Batch): string {
-  if (!batch) return "";
+  if (!batch) return '';
   if (batch.monthlyFee !== undefined && batch.monthlyFee !== null) {
     return batch.monthlyFee;
   }
   const minor = Number(batch.monthlyFeeMinor || 0);
-  if (isNaN(minor) || minor === 0) return "0";
-  return (minor / 100).toFixed(2).replace(/\.00$/, "");
+  if (isNaN(minor) || minor === 0) return '0';
+  return (minor / 100).toFixed(2).replace(/\.00$/, '');
 }
 
 function formatTakaPreview(taka: string): string {
   const clean = taka.trim();
   const num = Number(clean || 0);
-  if (isNaN(num) || num < 0) return "৳ 0.00";
-  return new Intl.NumberFormat("en-BD", {
-    style: "currency",
-    currency: "BDT",
+  if (isNaN(num) || num < 0) return '৳ 0.00';
+  return new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(num);
 }
 
 const initialValues = (batch?: Batch): Values => ({
-  name: batch?.name ?? "",
-  classLevelId: batch?.classLevelId ?? "",
-  mediumId: batch?.mediumId ?? "",
-  academicGroupId: batch?.academicGroupId ?? "",
-  startDate: batch?.startDate ?? "",
+  name: batch?.name ?? '',
+  classLevelId: batch?.classLevelId ?? '',
+  mediumId: batch?.mediumId ?? '',
+  academicGroupId: batch?.academicGroupId ?? '',
+  startDate: batch?.startDate ?? '',
   monthlyFee: takaFromBatch(batch),
-  status: batch?.status === "inactive" ? "inactive" : "active",
+  status: batch?.status === 'inactive' ? 'inactive' : 'active',
 });
 
 export function BatchSheet({
@@ -91,23 +82,21 @@ export function BatchSheet({
   const [values, setValues] = useState<Values>(() => initialValues(batch));
   const [submitted, setSubmitted] = useState(false);
 
-  const classLevels = useAcademicReferences(workspaceId, "class-levels");
-  const mediums = useAcademicReferences(workspaceId, "mediums");
-  const groups = useAcademicReferences(workspaceId, "academic-groups");
+  const classLevels = useAcademicReferences(workspaceId, 'class-levels');
+  const mediums = useAcademicReferences(workspaceId, 'mediums');
+  const groups = useAcademicReferences(workspaceId, 'academic-groups');
 
   const create = useCreateBatchMutation();
   const update = useUpdateBatchMutation();
 
   const isEditing = Boolean(batch);
   const pending = create.isPending || update.isPending;
-  const loading =
-    classLevels.isPending || mediums.isPending || groups.isPending;
+  const loading = classLevels.isPending || mediums.isPending || groups.isPending;
 
-  const active = (items: typeof classLevels.data) =>
-    (items ?? []).filter((item) => item.isActive);
+  const active = (items: typeof classLevels.data) => (items ?? []).filter((item) => item.isActive);
 
   const isFeeValid =
-    values.monthlyFee.trim() !== "" &&
+    values.monthlyFee.trim() !== '' &&
     !isNaN(Number(values.monthlyFee)) &&
     Number(values.monthlyFee) >= 0;
 
@@ -147,15 +136,11 @@ export function BatchSheet({
 
     const options = {
       onSuccess: () => {
-        toast.success(
-          isEditing
-            ? "Batch profile updated."
-            : "Batch created successfully.",
-        );
+        toast.success(isEditing ? 'Batch profile updated.' : 'Batch created successfully.');
         onOpenChange(false);
       },
       onError: (error: Error) => {
-        toast.error(error.message || "Could not save batch. Please try again.");
+        toast.error(error.message || 'Could not save batch. Please try again.');
       },
     };
 
@@ -170,11 +155,11 @@ export function BatchSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-2xl lg:max-w-3xl data-[side=right]:w-full data-[side=right]:sm:max-w-2xl data-[side=right]:lg:max-w-3xl">
         <SheetHeader className="border-b border-border/40 pb-4 pr-12">
-          <SheetTitle>{isEditing ? "Edit batch" : "Create batch"}</SheetTitle>
+          <SheetTitle>{isEditing ? 'Edit batch' : 'Create batch'}</SheetTitle>
           <SheetDescription>
             {isEditing
-              ? "Update academic parameters, schedule, and monthly fees for this batch."
-              : "Set up the batch profile. Student and teacher assignments will be added later."}
+              ? 'Update academic parameters, schedule, and monthly fees for this batch.'
+              : 'Set up the batch profile. Student and teacher assignments will be added later.'}
           </SheetDescription>
         </SheetHeader>
 
@@ -199,7 +184,7 @@ export function BatchSheet({
                   aria-invalid={submitted && !values.name.trim()}
                 />
                 {submitted && !values.name.trim() && (
-                  <FieldError errors={[{ message: "Batch name is required." }]} />
+                  <FieldError errors={[{ message: 'Batch name is required.' }]} />
                 )}
               </Field>
 
@@ -210,16 +195,14 @@ export function BatchSheet({
                   onValueChange={(classLevelId) =>
                     setValues((current) => ({
                       ...current,
-                      classLevelId: classLevelId ?? "",
+                      classLevelId: classLevelId ?? '',
                     }))
                   }
                   disabled={loading}
                 >
                   <SelectTrigger id="batch-class-level" className="w-full">
                     <SelectValue
-                      placeholder={
-                        loading ? "Loading class levels…" : "Select class level"
-                      }
+                      placeholder={loading ? 'Loading class levels…' : 'Select class level'}
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -238,9 +221,7 @@ export function BatchSheet({
                   </FieldDescription>
                 ) : null}
                 {submitted && !values.classLevelId && (
-                  <FieldError
-                    errors={[{ message: "Please select a class level." }]}
-                  />
+                  <FieldError errors={[{ message: 'Please select a class level.' }]} />
                 )}
               </Field>
 
@@ -248,17 +229,17 @@ export function BatchSheet({
                 <Field>
                   <FieldLabel htmlFor="batch-medium">Medium</FieldLabel>
                   <Select
-                    value={values.mediumId || "none"}
+                    value={values.mediumId || 'none'}
                     onValueChange={(mediumId) =>
                       setValues((current) => ({
                         ...current,
-                        mediumId: mediumId === "none" ? "" : mediumId ?? "",
+                        mediumId: mediumId === 'none' ? '' : (mediumId ?? ''),
                       }))
                     }
                     disabled={loading}
                   >
                     <SelectTrigger id="batch-medium" className="w-full">
-                      <SelectValue placeholder={loading ? "Loading…" : "Not set"} />
+                      <SelectValue placeholder={loading ? 'Loading…' : 'Not set'} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -274,22 +255,19 @@ export function BatchSheet({
                 </Field>
 
                 <Field>
-                  <FieldLabel htmlFor="batch-academic-group">
-                    Academic Group
-                  </FieldLabel>
+                  <FieldLabel htmlFor="batch-academic-group">Academic Group</FieldLabel>
                   <Select
-                    value={values.academicGroupId || "none"}
+                    value={values.academicGroupId || 'none'}
                     onValueChange={(academicGroupId) =>
                       setValues((current) => ({
                         ...current,
-                        academicGroupId:
-                          academicGroupId === "none" ? "" : academicGroupId ?? "",
+                        academicGroupId: academicGroupId === 'none' ? '' : (academicGroupId ?? ''),
                       }))
                     }
                     disabled={loading}
                   >
                     <SelectTrigger id="batch-academic-group" className="w-full">
-                      <SelectValue placeholder={loading ? "Loading…" : "Not set"} />
+                      <SelectValue placeholder={loading ? 'Loading…' : 'Not set'} />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
@@ -307,9 +285,7 @@ export function BatchSheet({
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field>
-                  <FieldLabel htmlFor="batch-start-date">
-                    Batch Start Date
-                  </FieldLabel>
+                  <FieldLabel htmlFor="batch-start-date">Batch Start Date</FieldLabel>
                   <Input
                     id="batch-start-date"
                     type="date"
@@ -330,7 +306,7 @@ export function BatchSheet({
                     onValueChange={(status) =>
                       setValues((current) => ({
                         ...current,
-                        status: status as Values["status"],
+                        status: status as Values['status'],
                       }))
                     }
                   >
@@ -347,12 +323,8 @@ export function BatchSheet({
                 </Field>
               </div>
 
-              <Field
-                data-invalid={submitted && !isFeeValid}
-              >
-                <FieldLabel htmlFor="batch-monthly-fee">
-                  Monthly Fee (BDT ৳) *
-                </FieldLabel>
+              <Field data-invalid={submitted && !isFeeValid}>
+                <FieldLabel htmlFor="batch-monthly-fee">Monthly Fee (BDT ৳) *</FieldLabel>
                 <Input
                   id="batch-monthly-fee"
                   type="text"
@@ -360,7 +332,7 @@ export function BatchSheet({
                   value={values.monthlyFee}
                   onChange={(event) => {
                     const val = event.target.value;
-                    if (val === "" || /^\d*\.?\d{0,2}$/.test(val)) {
+                    if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
                       setValues((current) => ({
                         ...current,
                         monthlyFee: val,
@@ -374,12 +346,10 @@ export function BatchSheet({
                 <FieldDescription>
                   {values.monthlyFee.trim() && !isNaN(Number(values.monthlyFee))
                     ? `Per student fee: ${formatTakaPreview(values.monthlyFee)} / month`
-                    : "Enter the monthly tuition fee in Taka (e.g. 2000)."}
+                    : 'Enter the monthly tuition fee in Taka (e.g. 2000).'}
                 </FieldDescription>
                 {submitted && !isFeeValid && (
-                  <FieldError
-                    errors={[{ message: "Enter a valid monthly fee amount in Taka." }]}
-                  />
+                  <FieldError errors={[{ message: 'Enter a valid monthly fee amount in Taka.' }]} />
                 )}
               </Field>
             </FieldGroup>
@@ -406,7 +376,7 @@ export function BatchSheet({
               }
             >
               {pending && <Spinner data-icon="inline-start" />}
-              {isEditing ? "Save changes" : "Create batch"}
+              {isEditing ? 'Save changes' : 'Create batch'}
             </Button>
           </SheetFooter>
         </form>

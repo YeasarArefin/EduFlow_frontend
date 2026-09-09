@@ -7,7 +7,7 @@ export function LandingBackdrop() {
         className="pointer-events-none fixed inset-0 m-auto z-0 h-[52vw] w-[52vw] max-h-[680px] max-w-[680px] rounded-full blur-[70px] sm:blur-[100px] animate-glow-breathe motion-reduce:animate-none"
         style={{
           background:
-            "radial-gradient(circle at center, var(--glow-lime) 0%, var(--glow-emerald) 38%, transparent 68%)",
+            'radial-gradient(circle at center, var(--glow-lime) 0%, var(--glow-emerald) 38%, transparent 68%)',
         }}
       />
 
@@ -17,10 +17,10 @@ export function LandingBackdrop() {
         className="pointer-events-none fixed inset-0 z-0 opacity-[0.45]"
         style={{
           backgroundImage:
-            "linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-          maskImage: "radial-gradient(ellipse 70% 55% at 50% 35%, #000 30%, transparent 80%)",
-          WebkitMaskImage: "radial-gradient(ellipse 70% 55% at 50% 35%, #000 30%, transparent 80%)",
+            'linear-gradient(to right, var(--grid-line) 1px, transparent 1px), linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+          maskImage: 'radial-gradient(ellipse 70% 55% at 50% 35%, #000 30%, transparent 80%)',
+          WebkitMaskImage: 'radial-gradient(ellipse 70% 55% at 50% 35%, #000 30%, transparent 80%)',
         }}
       />
 

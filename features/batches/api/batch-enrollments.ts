@@ -1,4 +1,4 @@
-import { apiRequest } from "@/lib/api/client";
+import { apiRequest } from '@/lib/api/client';
 
 export type Enrollment = {
   id: string;
@@ -7,20 +7,16 @@ export type Enrollment = {
   name: string;
   phone: string | null;
   joinedAt: string;
-  status: "active" | "inactive" | "completed" | "cancelled" | "archived";
+  status: 'active' | 'inactive' | 'completed' | 'cancelled' | 'archived';
   feeOverrideMinor: string | null;
   discountMinor: string | null;
   createdAt: string;
   updatedAt: string;
 };
 
-const headers = (workspaceId: string) => ({ "X-Workspace-Id": workspaceId });
+const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
-export const getEnrollments = (
-  workspaceId: string,
-  batchId: string,
-  signal?: AbortSignal,
-) =>
+export const getEnrollments = (workspaceId: string, batchId: string, signal?: AbortSignal) =>
   apiRequest<Enrollment[]>(`/batches/${batchId}/students`, {
     headers: headers(workspaceId),
     signal,
@@ -34,10 +30,10 @@ export const enroll = (
     joinedAt?: string;
     feeOverrideMinor?: string | null;
     discountMinor?: string | null;
-  },
+  }
 ) =>
   apiRequest<Enrollment[]>(`/batches/${batchId}/students`, {
-    method: "POST",
+    method: 'POST',
     headers: headers(workspaceId),
     body: input,
   });
@@ -46,37 +42,22 @@ export const updateEnrollment = (
   workspaceId: string,
   batchId: string,
   id: string,
-  input: Partial<
-    Pick<
-      Enrollment,
-      "status" | "joinedAt" | "feeOverrideMinor" | "discountMinor"
-    >
-  >,
+  input: Partial<Pick<Enrollment, 'status' | 'joinedAt' | 'feeOverrideMinor' | 'discountMinor'>>
 ) =>
   apiRequest<Enrollment[]>(`/batches/${batchId}/students/${id}`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: headers(workspaceId),
     body: input,
   });
 
-export const unenrollStudent = (
-  workspaceId: string,
-  batchId: string,
-  id: string,
-) =>
+export const unenrollStudent = (workspaceId: string, batchId: string, id: string) =>
   apiRequest<Enrollment[]>(`/batches/${batchId}/students/${id}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: headers(workspaceId),
   });
 
-export const archiveEnrollment = (
-  workspaceId: string,
-  batchId: string,
-  id: string,
-) => updateEnrollment(workspaceId, batchId, id, { status: "archived" });
+export const archiveEnrollment = (workspaceId: string, batchId: string, id: string) =>
+  updateEnrollment(workspaceId, batchId, id, { status: 'archived' });
 
-export const reactivateEnrollment = (
-  workspaceId: string,
-  batchId: string,
-  id: string,
-) => updateEnrollment(workspaceId, batchId, id, { status: "active" });
+export const reactivateEnrollment = (workspaceId: string, batchId: string, id: string) =>
+  updateEnrollment(workspaceId, batchId, id, { status: 'active' });

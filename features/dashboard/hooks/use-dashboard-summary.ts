@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { useQuery } from "@tanstack/react-query";
-import { getDashboardSummary, type DashboardSummary } from "../api/get-dashboard-summary";
-import { dashboardKeys } from "../dashboard-query-keys";
+import { useQuery } from '@tanstack/react-query';
+import { getDashboardSummary, type DashboardSummary } from '../api/get-dashboard-summary';
+import { dashboardKeys } from '../dashboard-query-keys';
 
 export function useDashboardSummary(workspaceId: string, initialData?: DashboardSummary | null) {
   return useQuery({

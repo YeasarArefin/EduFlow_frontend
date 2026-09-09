@@ -1,4 +1,4 @@
-import { Layers } from "lucide-react";
+import { Layers } from 'lucide-react';
 
 export default async function PlatformSectionPage({
   params,
@@ -6,7 +6,7 @@ export default async function PlatformSectionPage({
   params: Promise<{ section: string }>;
 }) {
   const { section } = await params;
-  const sectionTitle = section.replace("-", " ");
+  const sectionTitle = section.replace('-', ' ');
 
   return (
     <section className="flex min-h-[50vh] flex-col items-center justify-center gap-3 text-center px-4">
@@ -22,4 +22,3 @@ export default async function PlatformSectionPage({
     </section>
   );
 }
-

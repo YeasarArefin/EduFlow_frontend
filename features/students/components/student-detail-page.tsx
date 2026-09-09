@@ -1,11 +1,7 @@
-"use client";
+'use client';
 
-import {
-  ErrorState,
-  LoadingState,
-  SectionCard,
-} from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
+import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,15 +11,10 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -31,7 +22,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 import {
   Sheet,
   SheetContent,
@@ -39,8 +30,8 @@ import {
   SheetFooter,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet";
-import { Spinner } from "@/components/ui/spinner";
+} from '@/components/ui/sheet';
+import { Spinner } from '@/components/ui/spinner';
 import {
   Table,
   TableBody,
@@ -48,15 +39,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useEnrollStudent } from "@/features/batches/hooks/use-batch-enrollments";
-import { useBatchesQuery } from "@/features/batches/hooks/use-batches-query";
-import type { FeeStatus, StudentFee } from "@/features/fees/api/fees";
-import { CollectPaymentSheet } from "@/features/fees/components/collect-payment-sheet";
-import { FeePaymentsHistoryDialog } from "@/features/fees/components/fee-payments-history-dialog";
-import { ReceiptDialog } from "@/features/fees/components/receipt-dialog";
-import { useStudentFeesQuery } from "@/features/fees/hooks/use-fees";
-import { cn } from "@/lib/utils";
+} from '@/components/ui/table';
+import { useEnrollStudent } from '@/features/batches/hooks/use-batch-enrollments';
+import { useBatchesQuery } from '@/features/batches/hooks/use-batches-query';
+import type { FeeStatus, StudentFee } from '@/features/fees/api/fees';
+import { CollectPaymentSheet } from '@/features/fees/components/collect-payment-sheet';
+import { FeePaymentsHistoryDialog } from '@/features/fees/components/fee-payments-history-dialog';
+import { ReceiptDialog } from '@/features/fees/components/receipt-dialog';
+import { useStudentFeesQuery } from '@/features/fees/hooks/use-fees';
+import { cn } from '@/lib/utils';
 import {
   Archive,
   BookOpen,
@@ -72,56 +63,54 @@ import {
   User,
   Users,
   Wallet,
-} from "lucide-react";
-import Link from "next/link";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import { useArchiveStudentMutation } from "../mutations/use-archive-student-mutation";
-import { useUpdateStudentMutation } from "../mutations/use-update-student-mutation";
-import { useStudentEnrollments } from "../queries/use-student-enrollments";
-import { useStudentQuery } from "../queries/use-students-query";
-import { StudentSheet } from "./student-sheet";
+} from 'lucide-react';
+import Link from 'next/link';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { useArchiveStudentMutation } from '../mutations/use-archive-student-mutation';
+import { useUpdateStudentMutation } from '../mutations/use-update-student-mutation';
+import { useStudentEnrollments } from '../queries/use-student-enrollments';
+import { useStudentQuery } from '../queries/use-students-query';
+import { StudentProfileSection } from './student-profile-section';
+import { StudentSheet } from './student-sheet';
 
 const statusLabels: Record<string, string> = {
-  active: "Active",
-  inactive: "Inactive",
-  archived: "Archived",
+  active: 'Active',
+  inactive: 'Inactive',
+  archived: 'Archived',
 };
 
-const statusVisuals: Record<string, "success" | "warning" | "info"> = {
-  active: "success",
-  inactive: "warning",
-  archived: "info",
+const statusVisuals: Record<string, 'success' | 'warning' | 'info'> = {
+  active: 'success',
+  inactive: 'warning',
+  archived: 'info',
 };
 
 const feeStatusLabels: Record<FeeStatus, string> = {
-  unpaid: "Unpaid",
-  partially_paid: "Partially Paid",
-  paid: "Paid",
-  overpaid: "Overpaid",
-  waived: "Waived",
-  overdue: "Overdue",
+  unpaid: 'Unpaid',
+  partially_paid: 'Partially Paid',
+  paid: 'Paid',
+  overpaid: 'Overpaid',
+  waived: 'Waived',
+  overdue: 'Overdue',
 };
 
-const feeStatusVisuals: Record<
-  FeeStatus,
-  "success" | "warning" | "danger" | "info"
-> = {
-  paid: "success",
-  overpaid: "success",
-  partially_paid: "warning",
-  overdue: "danger",
-  unpaid: "info",
-  waived: "info",
+const feeStatusVisuals: Record<FeeStatus, 'success' | 'warning' | 'danger' | 'info'> = {
+  paid: 'success',
+  overpaid: 'success',
+  partially_paid: 'warning',
+  overdue: 'danger',
+  unpaid: 'info',
+  waived: 'info',
 };
 
 function formatDate(value?: string | null): string {
-  if (!value) return "Not recorded";
+  if (!value) return 'Not recorded';
   try {
-    return new Intl.DateTimeFormat("en-US", {
-      day: "numeric",
-      month: "short",
-      year: "numeric",
+    return new Intl.DateTimeFormat('en-US', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
     }).format(new Date(value));
   } catch {
     return value;
@@ -129,30 +118,30 @@ function formatDate(value?: string | null): string {
 }
 
 function formatMonth(dateStr?: string | null): string {
-  if (!dateStr) return "—";
+  if (!dateStr) return '—';
   try {
     const d = new Date(dateStr);
-    return d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
   } catch {
     return dateStr;
   }
 }
 
 function formatCurrency(amount?: string | number | null): string {
-  if (amount === undefined || amount === null || amount === "") return "৳0.00";
-  const num = typeof amount === "string" ? parseFloat(amount) : amount;
-  if (isNaN(num)) return "৳0.00";
-  return `৳${num.toLocaleString("en-BD", {
+  if (amount === undefined || amount === null || amount === '') return '৳0.00';
+  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
+  if (isNaN(num)) return '৳0.00';
+  return `৳${num.toLocaleString('en-BD', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
 }
 
 function formatTakaMinor(minor: string | null): string {
-  if (minor === null || minor === undefined) return "—";
+  if (minor === null || minor === undefined) return '—';
   const num = Number(minor);
-  if (isNaN(num)) return "—";
-  return `৳${(num / 100).toLocaleString("en-BD", {
+  if (isNaN(num)) return '—';
+  return `৳${(num / 100).toLocaleString('en-BD', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   })}`;
@@ -163,7 +152,7 @@ function getInitials(name: string): string {
     .split(/\s+/)
     .slice(0, 2)
     .map((part) => part[0])
-    .join("")
+    .join('')
     .toUpperCase();
 }
 
@@ -174,30 +163,22 @@ export function StudentDetailPage({
   workspaceId: string;
   studentId: string;
 }) {
-  const [activeTab, setActiveTab] = useState<"fees" | "enrollments" | "profile">(
-    "fees",
-  );
+  const [activeTab, setActiveTab] = useState<'fees' | 'enrollments' | 'profile'>('fees');
   const [editOpen, setEditOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);
   const [enrollOpen, setEnrollOpen] = useState(false);
 
   // Fee action sheets / modals
-  const [selectedFeeForPayment, setSelectedFeeForPayment] =
-    useState<StudentFee | null>(null);
-  const [selectedFeeForHistory, setSelectedFeeForHistory] =
-    useState<StudentFee | null>(null);
-  const [activeReceiptNumber, setActiveReceiptNumber] = useState<string | null>(
-    null,
-  );
+  const [selectedFeeForPayment, setSelectedFeeForPayment] = useState<StudentFee | null>(null);
+  const [selectedFeeForHistory, setSelectedFeeForHistory] = useState<StudentFee | null>(null);
+  const [activeReceiptNumber, setActiveReceiptNumber] = useState<string | null>(null);
 
   // Enrollment form state
-  const [batchId, setBatchId] = useState("");
-  const [batchSearch, setBatchSearch] = useState("");
-  const [joinedAt, setJoinedAt] = useState(
-    new Date().toISOString().slice(0, 10),
-  );
-  const [feeOverrideTaka, setFeeOverrideTaka] = useState("");
-  const [discountTaka, setDiscountTaka] = useState("");
+  const [batchId, setBatchId] = useState('');
+  const [batchSearch, setBatchSearch] = useState('');
+  const [joinedAt, setJoinedAt] = useState(new Date().toISOString().slice(0, 10));
+  const [feeOverrideTaka, setFeeOverrideTaka] = useState('');
+  const [discountTaka, setDiscountTaka] = useState('');
 
   const studentQuery = useStudentQuery(workspaceId, studentId);
   const enrollmentsQuery = useStudentEnrollments(workspaceId, studentId);
@@ -205,7 +186,7 @@ export function StudentDetailPage({
   const batchesQuery = useBatchesQuery(workspaceId, {
     page: 1,
     limit: 100,
-    status: "active",
+    status: 'active',
   });
 
   const archiveMutation = useArchiveStudentMutation();
@@ -231,10 +212,10 @@ export function StudentDetailPage({
     let paid = 0;
     let due = 0;
     for (const f of fees) {
-      const exp = parseFloat(f.expectedAmount || "0");
-      const disc = parseFloat(f.discountAmount || "0");
-      const p = parseFloat(f.paidAmount || "0");
-      const d = parseFloat(f.dueAmount || "0");
+      const exp = parseFloat(f.expectedAmount || '0');
+      const disc = parseFloat(f.discountAmount || '0');
+      const p = parseFloat(f.paidAmount || '0');
+      const d = parseFloat(f.dueAmount || '0');
       billed += Math.max(0, exp - disc);
       paid += p;
       due += d;
@@ -243,29 +224,29 @@ export function StudentDetailPage({
       totalBilled: billed,
       totalPaid: paid,
       totalDue: due,
-      activeBatches: enrollments.filter((e) => e.status === "active").length,
+      activeBatches: enrollments.filter((e) => e.status === 'active').length,
     };
   }, [fees, enrollments]);
 
   const activeBatchesList = useMemo(() => {
     return (batchesQuery.data?.data ?? []).filter((batch) =>
-      batch.name.toLowerCase().includes(batchSearch.toLowerCase()),
+      batch.name.toLowerCase().includes(batchSearch.toLowerCase())
     );
   }, [batchesQuery.data?.data, batchSearch]);
 
   const closeEnrollment = () => {
     setEnrollOpen(false);
-    setBatchId("");
-    setBatchSearch("");
+    setBatchId('');
+    setBatchSearch('');
     setJoinedAt(new Date().toISOString().slice(0, 10));
-    setFeeOverrideTaka("");
-    setDiscountTaka("");
+    setFeeOverrideTaka('');
+    setDiscountTaka('');
   };
 
   const handleEnrollSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!batchId) {
-      toast.error("Please select an active batch.");
+      toast.error('Please select an active batch.');
       return;
     }
 
@@ -287,14 +268,13 @@ export function StudentDetailPage({
           discountMinor: discountMinor,
         },
       });
-      toast.success("Student enrolled into batch successfully.");
+      toast.success('Student enrolled into batch successfully.');
       closeEnrollment();
       enrollmentsQuery.refetch();
     } catch (err: unknown) {
-      const apiErr = err as { message?: string; };
-      toast.error("Enrollment failed", {
-        description:
-          apiErr?.message || "Student may already be enrolled in this batch.",
+      const apiErr = err as { message?: string };
+      toast.error('Enrollment failed', {
+        description: apiErr?.message || 'Student may already be enrolled in this batch.',
       });
     }
   };
@@ -332,13 +312,13 @@ export function StudentDetailPage({
             <Pencil data-icon="inline-start" /> Edit Profile
           </Button>
           <Button
-            variant={student.status === "archived" ? "outline" : "destructive"}
+            variant={student.status === 'archived' ? 'outline' : 'destructive'}
             size="sm"
             onClick={() => setArchiveOpen(true)}
             className="rounded-full shadow-xs"
           >
             <Archive data-icon="inline-start" />
-            {student.status === "archived" ? "Reactivate" : "Archive"}
+            {student.status === 'archived' ? 'Reactivate' : 'Archive'}
           </Button>
         </div>
       </div>
@@ -403,7 +383,7 @@ export function StudentDetailPage({
           <div className="flex flex-wrap items-center gap-2">
             <Button
               onClick={() => setEnrollOpen(true)}
-              disabled={student.status !== "active"}
+              disabled={student.status !== 'active'}
               className="rounded-full shadow-sm"
             >
               <Plus data-icon="inline-start" /> Enroll in Batch
@@ -454,10 +434,9 @@ export function StudentDetailPage({
           <p className="mt-1 text-xs text-muted-foreground">
             {financialTotals.totalBilled > 0
               ? `${Math.round(
-                (financialTotals.totalPaid / financialTotals.totalBilled) *
-                100,
-              )}% of billed amount settled`
-              : "No billed dues recorded"}
+                  (financialTotals.totalPaid / financialTotals.totalBilled) * 100
+                )}% of billed amount settled`
+              : 'No billed dues recorded'}
           </p>
         </div>
 
@@ -466,24 +445,22 @@ export function StudentDetailPage({
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-medium">Due Balance</span>
             <CreditCard
-              className={`size-4 ${financialTotals.totalDue > 0
-                ? "text-amber-400"
-                : "text-lime-400"
-                }`}
+              className={`size-4 ${
+                financialTotals.totalDue > 0 ? 'text-amber-400' : 'text-lime-400'
+              }`}
             />
           </div>
           <div
-            className={`mt-2 font-mono text-2xl font-bold tracking-tight ${financialTotals.totalDue > 0
-              ? "text-amber-400"
-              : "text-foreground"
-              }`}
+            className={`mt-2 font-mono text-2xl font-bold tracking-tight ${
+              financialTotals.totalDue > 0 ? 'text-amber-400' : 'text-foreground'
+            }`}
           >
             {formatCurrency(financialTotals.totalDue)}
           </div>
           <p className="mt-1 text-xs text-muted-foreground">
             {financialTotals.totalDue > 0
-              ? "Pending fee collection"
-              : "All monthly fees fully settled"}
+              ? 'Pending fee collection'
+              : 'All monthly fees fully settled'}
           </p>
         </div>
       </div>
@@ -496,22 +473,22 @@ export function StudentDetailPage({
         <div className="flex gap-2 min-w-max">
           <button
             type="button"
-            onClick={() => setActiveTab("fees")}
+            onClick={() => setActiveTab('fees')}
             className={cn(
-              "flex items-center gap-2 h-10 border-b-2 px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 -mb-[1px] cursor-pointer",
-              activeTab === "fees"
-                ? "border-primary text-foreground font-semibold"
-                : "border-transparent text-muted-foreground hover:text-foreground",
+              'flex items-center gap-2 h-10 border-b-2 px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 -mb-[1px] cursor-pointer',
+              activeTab === 'fees'
+                ? 'border-primary text-foreground font-semibold'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
             )}
           >
             <CreditCard className="size-4" />
             Fee & Payment History
             <span
               className={cn(
-                "rounded-full px-2 py-0.5 text-xs font-mono font-medium",
-                activeTab === "fees"
-                  ? "bg-primary/20 text-primary border border-primary/30"
-                  : "bg-muted text-muted-foreground border border-border/50",
+                'rounded-full px-2 py-0.5 text-xs font-mono font-medium',
+                activeTab === 'fees'
+                  ? 'bg-primary/20 text-primary border border-primary/30'
+                  : 'bg-muted text-muted-foreground border border-border/50'
               )}
             >
               {fees.length}
@@ -520,22 +497,22 @@ export function StudentDetailPage({
 
           <button
             type="button"
-            onClick={() => setActiveTab("enrollments")}
+            onClick={() => setActiveTab('enrollments')}
             className={cn(
-              "flex items-center gap-2 h-10 border-b-2 px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 -mb-[1px] cursor-pointer",
-              activeTab === "enrollments"
-                ? "border-primary text-foreground font-semibold"
-                : "border-transparent text-muted-foreground hover:text-foreground",
+              'flex items-center gap-2 h-10 border-b-2 px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 -mb-[1px] cursor-pointer',
+              activeTab === 'enrollments'
+                ? 'border-primary text-foreground font-semibold'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
             )}
           >
             <BookOpen className="size-4" />
             Batch Enrollments
             <span
               className={cn(
-                "rounded-full px-2 py-0.5 text-xs font-mono font-medium",
-                activeTab === "enrollments"
-                  ? "bg-primary/20 text-primary border border-primary/30"
-                  : "bg-muted text-muted-foreground border border-border/50",
+                'rounded-full px-2 py-0.5 text-xs font-mono font-medium',
+                activeTab === 'enrollments'
+                  ? 'bg-primary/20 text-primary border border-primary/30'
+                  : 'bg-muted text-muted-foreground border border-border/50'
               )}
             >
               {enrollments.length}
@@ -544,12 +521,12 @@ export function StudentDetailPage({
 
           <button
             type="button"
-            onClick={() => setActiveTab("profile")}
+            onClick={() => setActiveTab('profile')}
             className={cn(
-              "flex items-center gap-2 h-10 border-b-2 px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 -mb-[1px] cursor-pointer",
-              activeTab === "profile"
-                ? "border-primary text-foreground font-semibold"
-                : "border-transparent text-muted-foreground hover:text-foreground",
+              'flex items-center gap-2 h-10 border-b-2 px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 -mb-[1px] cursor-pointer',
+              activeTab === 'profile'
+                ? 'border-primary text-foreground font-semibold'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
             )}
           >
             <User className="size-4" />
@@ -559,7 +536,7 @@ export function StudentDetailPage({
       </nav>
 
       {/* Tab 1: Fee & Payment History */}
-      {activeTab === "fees" && (
+      {activeTab === 'fees' && (
         <div className="space-y-4">
           <SectionCard
             title="Tuition Fee Ledger"
@@ -579,8 +556,8 @@ export function StudentDetailPage({
                   No monthly fee records found
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Fees will appear here after monthly fee snapshots are
-                  generated for the student&apos;s enrolled batches.
+                  Fees will appear here after monthly fee snapshots are generated for the
+                  student&apos;s enrolled batches.
                 </p>
                 <Button
                   variant="outline"
@@ -596,23 +573,33 @@ export function StudentDetailPage({
                 <Table>
                   <TableHeader>
                     <TableRow className="border-border/60 bg-muted/20 hover:bg-muted/20">
-                      <TableHead className="w-[130px] font-medium text-foreground">Fee Month</TableHead>
+                      <TableHead className="w-[130px] font-medium text-foreground">
+                        Fee Month
+                      </TableHead>
                       <TableHead className="font-medium text-foreground">Batch</TableHead>
-                      <TableHead className="text-right font-medium text-foreground">Expected</TableHead>
-                      <TableHead className="text-right font-medium text-foreground">Discount</TableHead>
+                      <TableHead className="text-right font-medium text-foreground">
+                        Expected
+                      </TableHead>
+                      <TableHead className="text-right font-medium text-foreground">
+                        Discount
+                      </TableHead>
                       <TableHead className="text-right font-medium text-foreground">Paid</TableHead>
-                      <TableHead className="text-right font-medium text-foreground">Due Balance</TableHead>
-                      <TableHead className="text-center font-medium text-foreground">Status</TableHead>
+                      <TableHead className="text-right font-medium text-foreground">
+                        Due Balance
+                      </TableHead>
+                      <TableHead className="text-center font-medium text-foreground">
+                        Status
+                      </TableHead>
                       <TableHead className="font-medium text-foreground">Due Date</TableHead>
-                      <TableHead className="text-right font-medium text-foreground">Actions</TableHead>
+                      <TableHead className="text-right font-medium text-foreground">
+                        Actions
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {fees.map((fee: StudentFee) => {
                       const batchName =
-                        fee.batch?.name ||
-                        enrollmentBatchMap.get(fee.enrollmentId) ||
-                        "Batch Fee";
+                        fee.batch?.name || enrollmentBatchMap.get(fee.enrollmentId) || 'Batch Fee';
                       const dueNum = parseFloat(fee.dueAmount);
                       const statusKey = fee.status as FeeStatus;
 
@@ -643,7 +630,7 @@ export function StudentDetailPage({
                                 -{formatCurrency(fee.discountAmount)}
                               </span>
                             ) : (
-                              "—"
+                              '—'
                             )}
                           </TableCell>
 
@@ -655,11 +642,7 @@ export function StudentDetailPage({
                           {/* Due */}
                           <TableCell className="text-right font-mono text-xs font-bold">
                             <span
-                              className={
-                                dueNum > 0
-                                  ? "text-amber-400"
-                                  : "text-muted-foreground"
-                              }
+                              className={dueNum > 0 ? 'text-amber-400' : 'text-muted-foreground'}
                             >
                               {formatCurrency(fee.dueAmount)}
                             </span>
@@ -667,7 +650,7 @@ export function StudentDetailPage({
 
                           {/* Status Badge */}
                           <TableCell className="text-center">
-                            <StatusBadge status={feeStatusVisuals[statusKey] || "info"}>
+                            <StatusBadge status={feeStatusVisuals[statusKey] || 'info'}>
                               {feeStatusLabels[statusKey] || fee.status}
                             </StatusBadge>
                           </TableCell>
@@ -743,7 +726,7 @@ export function StudentDetailPage({
       )}
 
       {/* Tab 2: Batch Enrollments */}
-      {activeTab === "enrollments" && (
+      {activeTab === 'enrollments' && (
         <div className="space-y-4">
           <SectionCard
             title="Active & Historical Enrollments"
@@ -752,7 +735,7 @@ export function StudentDetailPage({
               <Button
                 size="sm"
                 onClick={() => setEnrollOpen(true)}
-                disabled={student.status !== "active"}
+                disabled={student.status !== 'active'}
                 className="rounded-full shadow-xs"
               >
                 <Plus data-icon="inline-start" /> Enroll in Batch
@@ -769,12 +752,10 @@ export function StudentDetailPage({
             ) : enrollments.length === 0 ? (
               <div className="rounded-xl border border-dashed border-border/60 p-8 text-center text-muted-foreground">
                 <BookOpen className="mx-auto mb-2 size-8 opacity-40" />
-                <p className="text-sm font-medium text-foreground">
-                  No batch enrollments yet
-                </p>
+                <p className="text-sm font-medium text-foreground">No batch enrollments yet</p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  Enroll this student into an active batch to schedule attendance
-                  and generate monthly tuition fees.
+                  Enroll this student into an active batch to schedule attendance and generate
+                  monthly tuition fees.
                 </p>
               </div>
             ) : (
@@ -786,16 +767,12 @@ export function StudentDetailPage({
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h4 className="font-semibold text-foreground">
-                          {e.batchName}
-                        </h4>
+                        <h4 className="font-semibold text-foreground">{e.batchName}</h4>
                         <p className="text-xs text-muted-foreground">
                           Joined on {formatDate(e.joinedAt)}
                         </p>
                       </div>
-                      <StatusBadge
-                        status={e.status === "active" ? "success" : "info"}
-                      >
+                      <StatusBadge status={e.status === 'active' ? 'success' : 'info'}>
                         {e.status}
                       </StatusBadge>
                     </div>
@@ -810,9 +787,7 @@ export function StudentDetailPage({
                         </span>
                       </div>
                       <div>
-                        <span className="block text-[11px] text-muted-foreground">
-                          Discount
-                        </span>
+                        <span className="block text-[11px] text-muted-foreground">Discount</span>
                         <span className="font-mono font-medium text-emerald-400">
                           {formatTakaMinor(e.discountMinor)}
                         </span>
@@ -827,117 +802,7 @@ export function StudentDetailPage({
       )}
 
       {/* Tab 3: Student & Guardian Profile */}
-      {activeTab === "profile" && (
-        <div className="grid gap-6 md:grid-cols-2">
-          {/* Identity & Contact Details */}
-          <SectionCard title="Student Information">
-            <dl className="divide-y divide-border/40 text-sm">
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Student Code
-                </dt>
-                <dd className="col-span-2 font-mono font-semibold text-foreground">
-                  {student.studentCode}
-                </dd>
-              </div>
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Full Name
-                </dt>
-                <dd className="col-span-2 font-semibold text-foreground">
-                  {student.fullName}
-                </dd>
-              </div>
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Phone
-                </dt>
-                <dd className="col-span-2 font-mono text-foreground">
-                  {student.phone ? (
-                    <a href={`tel:${student.phone}`} className="hover:underline">
-                      {student.phone}
-                    </a>
-                  ) : (
-                    "Not recorded"
-                  )}
-                </dd>
-              </div>
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Gender
-                </dt>
-                <dd className="col-span-2 text-foreground capitalize">
-                  {student.gender || "Not recorded"}
-                </dd>
-              </div>
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Admission Date
-                </dt>
-                <dd className="col-span-2 text-foreground">
-                  {formatDate(student.admissionDate)}
-                </dd>
-              </div>
-            </dl>
-          </SectionCard>
-
-          {/* Guardian & Address */}
-          <SectionCard title="Guardian & Address Details">
-            <dl className="divide-y divide-border/40 text-sm">
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Guardian Name
-                </dt>
-                <dd className="col-span-2 font-semibold text-foreground">
-                  {student.guardianName || "Not recorded"}
-                </dd>
-              </div>
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Guardian Phone
-                </dt>
-                <dd className="col-span-2 font-mono text-foreground">
-                  {student.guardianPhone ? (
-                    <a
-                      href={`tel:${student.guardianPhone}`}
-                      className="hover:underline"
-                    >
-                      {student.guardianPhone}
-                    </a>
-                  ) : (
-                    "Not recorded"
-                  )}
-                </dd>
-              </div>
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Address
-                </dt>
-                <dd className="col-span-2 text-foreground">
-                  {student.address || "Not recorded"}
-                </dd>
-              </div>
-              <div className="grid grid-cols-3 gap-2 py-3">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Status
-                </dt>
-                <dd className="col-span-2">
-                  <StatusBadge status={statusVisuals[student.status]}>
-                    {statusLabels[student.status] || student.status}
-                  </StatusBadge>
-                </dd>
-              </div>
-            </dl>
-          </SectionCard>
-
-          {/* Notes */}
-          <SectionCard title="Coaching Notes" className="md:col-span-2">
-            <p className="whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-              {student.notes || "No internal notes recorded for this student."}
-            </p>
-          </SectionCard>
-        </div>
-      )}
+      {activeTab === 'profile' && <StudentProfileSection student={student} />}
 
       {/* Edit Profile Sheet */}
       <StudentSheet
@@ -956,21 +821,17 @@ export function StudentDetailPage({
           <SheetHeader className="border-b border-border/40 pb-4 pr-12">
             <SheetTitle>Enroll in batch</SheetTitle>
             <SheetDescription>
-              Assign {student.fullName} to an active coaching batch and set optional tuition fee overrides.
+              Assign {student.fullName} to an active coaching batch and set optional tuition fee
+              overrides.
             </SheetDescription>
           </SheetHeader>
 
-          <form
-            onSubmit={handleEnrollSubmit}
-            className="flex min-h-0 flex-1 flex-col"
-          >
+          <form onSubmit={handleEnrollSubmit} className="flex min-h-0 flex-1 flex-col">
             <div className="flex-1 overflow-y-auto p-6">
               <FieldGroup className="gap-5">
                 {/* Batch Selector with Search */}
                 <Field>
-                  <FieldLabel htmlFor="enroll-batch-select">
-                    Select Active Batch *
-                  </FieldLabel>
+                  <FieldLabel htmlFor="enroll-batch-select">Select Active Batch *</FieldLabel>
                   <div className="relative mb-2">
                     <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
                     <Input
@@ -982,19 +843,17 @@ export function StudentDetailPage({
                   </div>
                   <Select
                     value={batchId}
-                    onValueChange={(val) => setBatchId(val ?? "")}
-                    disabled={
-                      batchesQuery.isPending || activeBatchesList.length === 0
-                    }
+                    onValueChange={(val) => setBatchId(val ?? '')}
+                    disabled={batchesQuery.isPending || activeBatchesList.length === 0}
                   >
                     <SelectTrigger id="enroll-batch-select" className="w-full">
                       <SelectValue
                         placeholder={
                           batchesQuery.isPending
-                            ? "Loading active batches…"
+                            ? 'Loading active batches…'
                             : activeBatchesList.length
-                              ? "Choose an active batch"
-                              : "No active batches found"
+                              ? 'Choose an active batch'
+                              : 'No active batches found'
                         }
                       />
                     </SelectTrigger>
@@ -1012,9 +871,7 @@ export function StudentDetailPage({
 
                 {/* Joined Date */}
                 <Field>
-                  <FieldLabel htmlFor="enroll-joined-date">
-                    Enrollment / Joined Date *
-                  </FieldLabel>
+                  <FieldLabel htmlFor="enroll-joined-date">Enrollment / Joined Date *</FieldLabel>
                   <Input
                     id="enroll-joined-date"
                     type="date"
@@ -1041,7 +898,7 @@ export function StudentDetailPage({
                       value={feeOverrideTaka}
                       onChange={(e) => {
                         const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d{0,2}$/.test(val)) {
+                        if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
                           setFeeOverrideTaka(val);
                         }
                       }}
@@ -1052,9 +909,7 @@ export function StudentDetailPage({
                   </Field>
 
                   <Field>
-                    <FieldLabel htmlFor="enroll-discount">
-                      Monthly Discount (BDT ৳)
-                    </FieldLabel>
+                    <FieldLabel htmlFor="enroll-discount">Monthly Discount (BDT ৳)</FieldLabel>
                     <Input
                       id="enroll-discount"
                       type="text"
@@ -1063,7 +918,7 @@ export function StudentDetailPage({
                       value={discountTaka}
                       onChange={(e) => {
                         const val = e.target.value;
-                        if (val === "" || /^\d*\.?\d{0,2}$/.test(val)) {
+                        if (val === '' || /^\d*\.?\d{0,2}$/.test(val)) {
                           setDiscountTaka(val);
                         }
                       }}
@@ -1085,14 +940,9 @@ export function StudentDetailPage({
               >
                 Cancel
               </Button>
-              <Button
-                type="submit"
-                disabled={!batchId || enrollMutation.isPending}
-              >
-                {enrollMutation.isPending && (
-                  <Spinner data-icon="inline-start" />
-                )}
-                {enrollMutation.isPending ? "Enrolling…" : "Enroll student"}
+              <Button type="submit" disabled={!batchId || enrollMutation.isPending}>
+                {enrollMutation.isPending && <Spinner data-icon="inline-start" />}
+                {enrollMutation.isPending ? 'Enrolling…' : 'Enroll student'}
               </Button>
             </SheetFooter>
           </form>
@@ -1134,55 +984,45 @@ export function StudentDetailPage({
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>
-              {student.status === "archived"
-                ? "Reactivate this student?"
-                : "Archive this student?"}
+              {student.status === 'archived' ? 'Reactivate this student?' : 'Archive this student?'}
             </AlertDialogTitle>
             <AlertDialogDescription>
-              {student.status === "archived"
-                ? "The student profile will become active again and can be enrolled into batches."
-                : "The student will remain in the workspace record but will be marked as archived. Historical fee records and past attendance will remain preserved."}
+              {student.status === 'archived'
+                ? 'The student profile will become active again and can be enrolled into batches.'
+                : 'The student will remain in the workspace record but will be marked as archived. Historical fee records and past attendance will remain preserved.'}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={archiveMutation.isPending}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={archiveMutation.isPending}>Cancel</AlertDialogCancel>
             <AlertDialogAction
-              variant={
-                student.status === "archived" ? "default" : "destructive"
-              }
-              disabled={
-                archiveMutation.isPending || updateStudentMutation.isPending
-              }
+              variant={student.status === 'archived' ? 'default' : 'destructive'}
+              disabled={archiveMutation.isPending || updateStudentMutation.isPending}
               onClick={() => {
-                if (student.status === "archived") {
+                if (student.status === 'archived') {
                   updateStudentMutation.mutate(
-                    { workspaceId, studentId, input: { status: "active" } },
+                    { workspaceId, studentId, input: { status: 'active' } },
                     {
                       onSuccess: () => {
-                        toast.success("Student reactivated successfully.");
+                        toast.success('Student reactivated successfully.');
                         setArchiveOpen(false);
                       },
-                    },
+                    }
                   );
                 } else {
                   archiveMutation.mutate(
                     { workspaceId, studentId },
                     {
                       onSuccess: () => {
-                        toast.success("Student archived.");
+                        toast.success('Student archived.');
                         setArchiveOpen(false);
                       },
-                    },
+                    }
                   );
                 }
               }}
             >
               <Archive data-icon="inline-start" />
-              {student.status === "archived"
-                ? "Reactivate student"
-                : "Archive student"}
+              {student.status === 'archived' ? 'Reactivate student' : 'Archive student'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

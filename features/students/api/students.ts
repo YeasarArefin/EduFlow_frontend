@@ -1,6 +1,6 @@
-import { apiListRequest, apiRequest } from "@/lib/api/client";
+import { apiListRequest, apiRequest } from '@/lib/api/client';
 
-export const STUDENT_STATUSES = ["active", "inactive", "archived"] as const;
+export const STUDENT_STATUSES = ['active', 'inactive', 'archived'] as const;
 export type StudentStatus = (typeof STUDENT_STATUSES)[number];
 export type Student = {
   id: string;
@@ -10,7 +10,7 @@ export type Student = {
   guardianName: string | null;
   guardianPhone: string | null;
   address: string | null;
-  gender: "male" | "female" | "other" | null;
+  gender: 'male' | 'female' | 'other' | null;
   admissionDate: string | null;
   status: StudentStatus;
   notes: string | null;
@@ -24,7 +24,7 @@ export type StudentInput = {
   guardianName?: string | null;
   guardianPhone?: string | null;
   address?: string | null;
-  gender?: "male" | "female" | "other" | null;
+  gender?: 'male' | 'female' | 'other' | null;
   admissionDate?: string | null;
   status?: StudentStatus;
   notes?: string | null;
@@ -41,37 +41,29 @@ export type PaginationMeta = {
   total: number;
   totalPages: number;
 };
-const headers = (workspaceId: string) => ({ "X-Workspace-Id": workspaceId });
+const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
-export function getStudents(
-  workspaceId: string,
-  params: StudentListParams,
-  signal?: AbortSignal,
-) {
+export function getStudents(workspaceId: string, params: StudentListParams, signal?: AbortSignal) {
   const query = new URLSearchParams({
     page: String(params.page),
     limit: String(params.limit),
   });
-  if (params.search) query.set("search", params.search);
-  if (params.status) query.set("status", params.status);
+  if (params.search) query.set('search', params.search);
+  if (params.status) query.set('status', params.status);
   return apiListRequest<Student[], PaginationMeta>(`/students?${query}`, {
     headers: headers(workspaceId),
     signal,
   });
 }
-export function getStudent(
-  workspaceId: string,
-  studentId: string,
-  signal?: AbortSignal,
-) {
+export function getStudent(workspaceId: string, studentId: string, signal?: AbortSignal) {
   return apiRequest<Student>(`/students/${studentId}`, {
     headers: headers(workspaceId),
     signal,
   });
 }
 export function createStudent(workspaceId: string, input: StudentInput) {
-  return apiRequest<Student>("/students", {
-    method: "POST",
+  return apiRequest<Student>('/students', {
+    method: 'POST',
     headers: headers(workspaceId),
     body: input,
   });
@@ -79,17 +71,17 @@ export function createStudent(workspaceId: string, input: StudentInput) {
 export function updateStudent(
   workspaceId: string,
   studentId: string,
-  input: Partial<StudentInput>,
+  input: Partial<StudentInput>
 ) {
   return apiRequest<Student>(`/students/${studentId}`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: headers(workspaceId),
     body: input,
   });
 }
 export function archiveStudent(workspaceId: string, studentId: string) {
   return apiRequest<Student>(`/students/${studentId}`, {
-    method: "DELETE",
+    method: 'DELETE',
     headers: headers(workspaceId),
   });
 }

@@ -1,12 +1,7 @@
-"use client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  archiveTeacher,
-  createTeacher,
-  updateTeacher,
-  type TeacherInput,
-} from "../api/teachers";
-import { teacherKeys } from "../teacher-query-keys";
+'use client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { archiveTeacher, createTeacher, updateTeacher, type TeacherInput } from '../api/teachers';
+import { teacherKeys } from '../teacher-query-keys';
 const useInvalidate = () => {
   const client = useQueryClient();
   return () => client.invalidateQueries({ queryKey: teacherKeys.all });
@@ -14,13 +9,8 @@ const useInvalidate = () => {
 export function useCreateTeacherMutation() {
   const invalidate = useInvalidate();
   return useMutation({
-    mutationFn: ({
-      workspaceId,
-      input,
-    }: {
-      workspaceId: string;
-      input: TeacherInput;
-    }) => createTeacher(workspaceId, input),
+    mutationFn: ({ workspaceId, input }: { workspaceId: string; input: TeacherInput }) =>
+      createTeacher(workspaceId, input),
     onSuccess: invalidate,
   });
 }

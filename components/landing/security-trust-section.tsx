@@ -1,27 +1,31 @@
-import { Database, FileCheck, History, Lock } from "lucide-react";
-import { PublicContainer } from "@/components/public/public-container";
-import { Card, CardTitle } from "@/components/ui/card";
+import { Database, FileCheck, History, Lock } from 'lucide-react';
+import { PublicContainer } from '@/components/public/public-container';
+import { Card, CardTitle } from '@/components/ui/card';
 
 const pillars = [
   {
     icon: Database,
-    title: "Workspace Isolation",
-    description: "Every coaching center runs within a strictly scoped database tenant. Cross-tenant queries are blocked at both the middleware and database levels.",
+    title: 'Workspace Isolation',
+    description:
+      'Every coaching center runs within a strictly scoped database tenant. Cross-tenant queries are blocked at both the middleware and database levels.',
   },
   {
     icon: Lock,
-    title: "Controlled Permissions",
-    description: "Numeric role hierarchies and per-member permission overrides ensure teachers, staff, and owners only view data authorized for their role.",
+    title: 'Controlled Permissions',
+    description:
+      'Numeric role hierarchies and per-member permission overrides ensure teachers, staff, and owners only view data authorized for their role.',
   },
   {
     icon: FileCheck,
-    title: "Preserved Financial History",
-    description: "Fee receipts, payments, and discounts are stored in immutable ledgers with exact minor-unit accounting—never overwritten or lost.",
+    title: 'Preserved Financial History',
+    description:
+      'Fee receipts, payments, and discounts are stored in immutable ledgers with exact minor-unit accounting—never overwritten or lost.',
   },
   {
     icon: History,
-    title: "Auditability of Actions",
-    description: "Sensitive operations such as fee adjustments, subscription approvals, and permission changes are recorded in append-only audit logs.",
+    title: 'Auditability of Actions',
+    description:
+      'Sensitive operations such as fee adjustments, subscription approvals, and permission changes are recorded in append-only audit logs.',
   },
 ];
 
@@ -38,8 +42,8 @@ export function SecurityTrustSection() {
             Built for operational reliability and privacy.
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg font-light">
-            Your students&apos; personal records and your center&apos;s financial balances are protected by
-            strict architecture, not afterthought security patches.
+            Your students&apos; personal records and your center&apos;s financial balances are
+            protected by strict architecture, not afterthought security patches.
           </p>
         </div>
 

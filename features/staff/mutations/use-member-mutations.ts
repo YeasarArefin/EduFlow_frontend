@@ -1,13 +1,8 @@
-"use client";
+'use client';
 
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  addMember,
-  removeMember,
-  updateMemberRole,
-  updateMemberStatus,
-} from "../api/members";
-import { memberKeys } from "../member-query-keys";
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { addMember, removeMember, updateMemberRole, updateMemberStatus } from '../api/members';
+import { memberKeys } from '../member-query-keys';
 
 function useInvalidateMembers() {
   const client = useQueryClient();
@@ -58,7 +53,7 @@ export function useUpdateMemberStatusMutation() {
     }: {
       workspaceId: string;
       id: string;
-      status: "active" | "suspended";
+      status: 'active' | 'suspended';
     }) => updateMemberStatus(workspaceId, id, status),
     onSuccess: invalidate,
   });

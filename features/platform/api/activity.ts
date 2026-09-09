@@ -1,5 +1,5 @@
-import { apiListRequest } from "@/lib/api/client";
-import type { PaginationMeta } from "./workspaces";
+import { apiListRequest } from '@/lib/api/client';
+import type { PaginationMeta } from './workspaces';
 
 export type PlatformActivity = {
   id: string;
@@ -16,12 +16,12 @@ export type ActivityListParams = {
   page: number;
   limit: number;
   search?: string;
-  category?: "payment" | "plan" | "entitlement" | "lifecycle";
+  category?: 'payment' | 'plan' | 'entitlement' | 'lifecycle';
 };
 
 export function getPlatformActivity(params: ActivityListParams, signal?: AbortSignal) {
   const search = new URLSearchParams({ page: String(params.page), limit: String(params.limit) });
-  if (params.search) search.set("search", params.search);
-  if (params.category) search.set("category", params.category);
+  if (params.search) search.set('search', params.search);
+  if (params.category) search.set('category', params.category);
   return apiListRequest<PlatformActivity[], PaginationMeta>(`/activity?${search}`, { signal });
 }

@@ -1,13 +1,9 @@
-"use client";
+'use client';
 
-import { Crown, Trash2, UserPlus } from "lucide-react";
-import { useMemo, useState } from "react";
-import { toast } from "sonner";
-import {
-  ErrorState,
-  LoadingState,
-  SectionCard,
-} from "@/components/dashboard-primitives";
+import { Crown, Trash2, UserPlus } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
+import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard-primitives';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,8 +13,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -26,17 +22,17 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/lib/utils";
-import { useTeachersQuery } from "@/features/teachers/queries/use-teachers-query";
-import { type BatchTeacher } from "../api/batch-teachers";
+} from '@/components/ui/select';
+import { Spinner } from '@/components/ui/spinner';
+import { cn } from '@/lib/utils';
+import { useTeachersQuery } from '@/features/teachers/queries/use-teachers-query';
+import { type BatchTeacher } from '../api/batch-teachers';
 import {
   useAssignBatchTeacherMutation,
   useBatchTeachersQuery,
   useRemoveBatchTeacherMutation,
   useUpdateBatchTeacherMutation,
-} from "../hooks/use-batch-teachers";
+} from '../hooks/use-batch-teachers';
 
 export function BatchTeachersCard({
   workspaceId,
@@ -49,28 +45,26 @@ export function BatchTeachersCard({
   const teachers = useTeachersQuery(workspaceId, {
     page: 1,
     limit: 100,
-    status: "active",
+    status: 'active',
   });
   const assign = useAssignBatchTeacherMutation();
   const update = useUpdateBatchTeacherMutation();
   const remove = useRemoveBatchTeacherMutation();
 
-  const [teacherSearch, setTeacherSearch] = useState("");
-  const [teacherId, setTeacherId] = useState("");
+  const [teacherSearch, setTeacherSearch] = useState('');
+  const [teacherId, setTeacherId] = useState('');
   const [makePrimary, setMakePrimary] = useState(false);
   const [removing, setRemoving] = useState<BatchTeacher | null>(null);
 
   const options = useMemo(() => {
-    const assignedIds = new Set(
-      assignments.data?.map((teacher) => teacher.teacherId),
-    );
+    const assignedIds = new Set(assignments.data?.map((teacher) => teacher.teacherId));
     return (teachers.data?.data ?? []).filter(
       (teacher) =>
         !assignedIds.has(teacher.id) &&
         (!teacherSearch.trim() ||
-          `${teacher.name} ${teacher.teacherCode} ${teacher.subjectSpecialty ?? ""}`
+          `${teacher.name} ${teacher.teacherCode} ${teacher.subjectSpecialty ?? ''}`
             .toLowerCase()
-            .includes(teacherSearch.toLowerCase().trim())),
+            .includes(teacherSearch.toLowerCase().trim()))
     );
   }, [assignments.data, teacherSearch, teachers.data?.data]);
 
@@ -83,17 +77,15 @@ export function BatchTeachersCard({
       { workspaceId, batchId, teacherId, isPrimary: makePrimary },
       {
         onSuccess: () => {
-          toast.success(
-            `${selectedTeacher?.name ?? "Teacher"} assigned to batch.`,
-          );
-          setTeacherId("");
+          toast.success(`${selectedTeacher?.name ?? 'Teacher'} assigned to batch.`);
+          setTeacherId('');
           setMakePrimary(false);
-          setTeacherSearch("");
+          setTeacherSearch('');
         },
         onError: (err: Error) => {
-          toast.error(err.message || "Could not assign teacher.");
+          toast.error(err.message || 'Could not assign teacher.');
         },
-      },
+      }
     );
   }
 
@@ -107,9 +99,9 @@ export function BatchTeachersCard({
           setRemoving(null);
         },
         onError: (err: Error) => {
-          toast.error(err.message || "Could not remove teacher.");
+          toast.error(err.message || 'Could not remove teacher.');
         },
-      },
+      }
     );
   }
 
@@ -124,13 +116,13 @@ export function BatchTeachersCard({
       {
         onSuccess: () => {
           toast.success(
-            `${teacher.name} is ${!teacher.isPrimary ? "now primary instructor" : "no longer primary"}.`,
+            `${teacher.name} is ${!teacher.isPrimary ? 'now primary instructor' : 'no longer primary'}.`
           );
         },
         onError: (err: Error) => {
-          toast.error(err.message || "Could not update primary status.");
+          toast.error(err.message || 'Could not update primary status.');
         },
-      },
+      }
     );
   }
 
@@ -143,7 +135,7 @@ export function BatchTeachersCard({
       action={
         assignedCount > 0 ? (
           <span className="inline-flex shrink-0 items-center whitespace-nowrap rounded-full bg-muted/60 px-2.5 py-0.5 text-xs font-medium text-muted-foreground border border-border/60">
-            {assignedCount} {assignedCount === 1 ? "teacher" : "teachers"}
+            {assignedCount} {assignedCount === 1 ? 'teacher' : 'teachers'}
           </span>
         ) : null
       }
@@ -151,24 +143,22 @@ export function BatchTeachersCard({
       <div className="space-y-4">
         {/* Quick Assign Faculty Box */}
         <div className="rounded-2xl border border-border/80 bg-card/60 p-3.5 space-y-3 backdrop-blur-xs">
-          <p className="text-xs font-medium text-foreground">
-            Assign instructor to batch
-          </p>
+          <p className="text-xs font-medium text-foreground">Assign instructor to batch</p>
 
           <div className="space-y-2">
             <Select
               value={teacherId}
-              onValueChange={(value) => setTeacherId(value ?? "")}
+              onValueChange={(value) => setTeacherId(value ?? '')}
               disabled={teachers.isPending || pending}
             >
               <SelectTrigger className="w-full h-10 rounded-full bg-input/80">
                 <SelectValue
                   placeholder={
                     teachers.isPending
-                      ? "Loading instructors…"
+                      ? 'Loading instructors…'
                       : options.length
-                        ? "Choose teacher to assign"
-                        : "No available teachers"
+                        ? 'Choose teacher to assign'
+                        : 'No available teachers'
                   }
                 />
               </SelectTrigger>
@@ -177,9 +167,7 @@ export function BatchTeachersCard({
                   {options.map((teacher) => (
                     <SelectItem key={teacher.id} value={teacher.id}>
                       {teacher.name} ({teacher.teacherCode})
-                      {teacher.subjectSpecialty
-                        ? ` · ${teacher.subjectSpecialty}`
-                        : ""}
+                      {teacher.subjectSpecialty ? ` · ${teacher.subjectSpecialty}` : ''}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -189,19 +177,19 @@ export function BatchTeachersCard({
             <div className="flex items-center justify-between gap-2 pt-1">
               <Button
                 type="button"
-                variant={makePrimary ? "default" : "outline"}
+                variant={makePrimary ? 'default' : 'outline'}
                 size="sm"
                 onClick={() => setMakePrimary((current) => !current)}
                 disabled={pending || !teacherId}
                 className={cn(
-                  "h-8 rounded-full text-xs transition-all",
+                  'h-8 rounded-full text-xs transition-all',
                   makePrimary
-                    ? "bg-primary text-primary-foreground font-semibold"
-                    : "text-muted-foreground",
+                    ? 'bg-primary text-primary-foreground font-semibold'
+                    : 'text-muted-foreground'
                 )}
               >
                 <Crown className="size-3.5" data-icon="inline-start" />
-                {makePrimary ? "Primary Lead" : "Make Lead"}
+                {makePrimary ? 'Primary Lead' : 'Make Lead'}
               </Button>
 
               <Button
@@ -253,9 +241,7 @@ export function BatchTeachersCard({
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <p className="font-semibold text-sm text-foreground">
-                      {teacher.name}
-                    </p>
+                    <p className="font-semibold text-sm text-foreground">{teacher.name}</p>
                     {teacher.isPrimary ? (
                       <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold text-primary border border-primary/25">
                         <Crown className="size-3" /> Lead
@@ -264,7 +250,7 @@ export function BatchTeachersCard({
                   </div>
                   <p className="mt-0.5 text-xs text-muted-foreground">
                     {teacher.teacherCode}
-                    {teacher.phone ? ` · ${teacher.phone}` : ""}
+                    {teacher.phone ? ` · ${teacher.phone}` : ''}
                   </p>
                 </div>
 
@@ -277,7 +263,7 @@ export function BatchTeachersCard({
                     disabled={pending}
                     className="h-7 px-2.5 rounded-full text-[11px] font-medium text-muted-foreground hover:text-foreground"
                   >
-                    {teacher.isPrimary ? "Demote" : "Make Lead"}
+                    {teacher.isPrimary ? 'Demote' : 'Make Lead'}
                   </Button>
 
                   <Button
@@ -300,24 +286,16 @@ export function BatchTeachersCard({
       </div>
 
       {/* Remove Teacher Confirmation Dialog */}
-      <AlertDialog
-        open={Boolean(removing)}
-        onOpenChange={(open) => !open && setRemoving(null)}
-      >
+      <AlertDialog open={Boolean(removing)} onOpenChange={(open) => !open && setRemoving(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>
-              Remove {removing?.name} from batch?
-            </AlertDialogTitle>
+            <AlertDialogTitle>Remove {removing?.name} from batch?</AlertDialogTitle>
             <AlertDialogDescription>
               {removing?.name} will no longer be assigned as an instructor for this batch.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel
-              disabled={remove.isPending}
-              className="rounded-full"
-            >
+            <AlertDialogCancel disabled={remove.isPending} className="rounded-full">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

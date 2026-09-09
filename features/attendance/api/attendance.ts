@@ -1,7 +1,7 @@
-import { apiListRequest, apiRequest } from "@/lib/api/client";
+import { apiListRequest, apiRequest } from '@/lib/api/client';
 
-export const ATTENDANCE_SESSION_STATUSES = ["draft", "finalized"] as const;
-export const ATTENDANCE_RECORD_STATUSES = ["present", "absent"] as const;
+export const ATTENDANCE_SESSION_STATUSES = ['draft', 'finalized'] as const;
+export const ATTENDANCE_RECORD_STATUSES = ['present', 'absent'] as const;
 
 export type AttendanceSessionStatus = (typeof ATTENDANCE_SESSION_STATUSES)[number];
 export type AttendanceRecordStatus = (typeof ATTENDANCE_RECORD_STATUSES)[number];
@@ -31,7 +31,7 @@ export type AttendanceSession = {
   updatedAt: string;
 };
 
-export type AttendanceSessionSummary = Omit<AttendanceSession, "records"> & {
+export type AttendanceSessionSummary = Omit<AttendanceSession, 'records'> & {
   rosterCount: number;
   presentCount: number;
   absentCount: number;
@@ -52,34 +52,30 @@ export type AttendanceSessionListMeta = {
   totalPages: number;
 };
 
-export type AttendanceRecordInput = Pick<AttendanceRecord, "studentId" | "status">;
+export type AttendanceRecordInput = Pick<AttendanceRecord, 'studentId' | 'status'>;
 
-const headers = (workspaceId: string) => ({ "X-Workspace-Id": workspaceId });
+const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
 export function getAttendanceSessions(
   workspaceId: string,
   params: AttendanceSessionListParams,
-  signal?: AbortSignal,
+  signal?: AbortSignal
 ) {
   const query = new URLSearchParams({
     page: String(params.page ?? 1),
     limit: String(params.limit ?? 20),
   });
-  if (params.batchId) query.set("batchId", params.batchId);
-  if (params.sessionDate) query.set("sessionDate", params.sessionDate);
-  if (params.status) query.set("status", params.status);
+  if (params.batchId) query.set('batchId', params.batchId);
+  if (params.sessionDate) query.set('sessionDate', params.sessionDate);
+  if (params.status) query.set('status', params.status);
 
   return apiListRequest<AttendanceSessionSummary[], AttendanceSessionListMeta>(
     `/attendance-sessions?${query}`,
-    { headers: headers(workspaceId), signal },
+    { headers: headers(workspaceId), signal }
   );
 }
 
-export function getAttendanceSession(
-  workspaceId: string,
-  sessionId: string,
-  signal?: AbortSignal,
-) {
+export function getAttendanceSession(workspaceId: string, sessionId: string, signal?: AbortSignal) {
   return apiRequest<AttendanceSession>(`/attendance-sessions/${sessionId}`, {
     headers: headers(workspaceId),
     signal,
@@ -88,10 +84,10 @@ export function getAttendanceSession(
 
 export function createAttendanceSession(
   workspaceId: string,
-  input: { batchId: string; sessionDate: string },
+  input: { batchId: string; sessionDate: string }
 ) {
-  return apiRequest<AttendanceSession>("/attendance-sessions", {
-    method: "POST",
+  return apiRequest<AttendanceSession>('/attendance-sessions', {
+    method: 'POST',
     headers: headers(workspaceId),
     body: input,
   });
@@ -100,10 +96,10 @@ export function createAttendanceSession(
 export function saveAttendance(
   workspaceId: string,
   sessionId: string,
-  records: AttendanceRecordInput[],
+  records: AttendanceRecordInput[]
 ) {
   return apiRequest<AttendanceSession>(`/attendance-sessions/${sessionId}/records`, {
-    method: "PATCH",
+    method: 'PATCH',
     headers: headers(workspaceId),
     body: { records },
   });
@@ -111,7 +107,7 @@ export function saveAttendance(
 
 export function finalizeAttendanceSession(workspaceId: string, sessionId: string) {
   return apiRequest<AttendanceSession>(`/attendance-sessions/${sessionId}/finalize`, {
-    method: "POST",
+    method: 'POST',
     headers: headers(workspaceId),
   });
 }

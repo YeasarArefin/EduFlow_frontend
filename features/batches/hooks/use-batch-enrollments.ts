@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   archiveEnrollment,
   enroll,
@@ -8,11 +8,10 @@ import {
   reactivateEnrollment,
   unenrollStudent,
   updateEnrollment,
-} from "../api/batch-enrollments";
-import { batchKeys } from "../batch-query-keys";
+} from '../api/batch-enrollments';
+import { batchKeys } from '../batch-query-keys';
 
-const key = (w: string, b: string) =>
-  [...batchKeys.detail(w, b), "students"] as const;
+const key = (w: string, b: string) => [...batchKeys.detail(w, b), 'students'] as const;
 
 export const useBatchEnrollments = (w: string, b: string) =>
   useQuery({

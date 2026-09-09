@@ -1,13 +1,13 @@
-"use client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+'use client';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import {
   createRole,
   deleteRole,
   resetMemberOverrides,
   updateMemberOverrides,
   updateRole,
-} from "../api/permission-management";
-import { permissionKeys } from "../permission-query-keys";
+} from '../api/permission-management';
+import { permissionKeys } from '../permission-query-keys';
 const invalidate = (client: ReturnType<typeof useQueryClient>) => () =>
   client.invalidateQueries({ queryKey: permissionKeys.all });
 export const useCreateRoleMutation = () => {
@@ -45,13 +45,8 @@ export const useUpdateRoleMutation = () => {
 export const useDeleteRoleMutation = () => {
   const c = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      workspaceId,
-      roleId,
-    }: {
-      workspaceId: string;
-      roleId: string;
-    }) => deleteRole(workspaceId, roleId),
+    mutationFn: ({ workspaceId, roleId }: { workspaceId: string; roleId: string }) =>
+      deleteRole(workspaceId, roleId),
     onSuccess: invalidate(c),
   });
 };
@@ -73,13 +68,8 @@ export const useUpdateMemberOverridesMutation = () => {
 export const useResetMemberOverridesMutation = () => {
   const c = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      workspaceId,
-      memberId,
-    }: {
-      workspaceId: string;
-      memberId: string;
-    }) => resetMemberOverrides(workspaceId, memberId),
+    mutationFn: ({ workspaceId, memberId }: { workspaceId: string; memberId: string }) =>
+      resetMemberOverrides(workspaceId, memberId),
     onSuccess: invalidate(c),
   });
 };

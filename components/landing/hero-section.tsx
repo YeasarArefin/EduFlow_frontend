@@ -1,9 +1,9 @@
-import Link from "next/link";
-import { ArrowRight, CheckCircle2, PlayCircle } from "lucide-react";
-import { PublicContainer } from "@/components/public/public-container";
-import { Button } from "@/components/ui/button";
-import { AmbientGlow } from "./ambient-glow";
-import { HeroInteractiveDashboard } from "./hero-interactive-dashboard";
+import Link from 'next/link';
+import { ArrowRight, CheckCircle2, PlayCircle } from 'lucide-react';
+import { PublicContainer } from '@/components/public/public-container';
+import { Button } from '@/components/ui/button';
+import { AmbientGlow } from './ambient-glow';
+import { HeroInteractiveDashboard } from './hero-interactive-dashboard';
 
 export function HeroSection() {
   return (
@@ -19,7 +19,7 @@ export function HeroSection() {
 
         {/* Main Headline */}
         <h1 className="max-w-4xl font-heading text-4xl font-semibold tracking-[-0.04em] text-foreground sm:text-6xl sm:leading-[1.05] lg:text-7xl">
-          Run your entire coaching center from{" "}
+          Run your entire coaching center from{' '}
           <span className="block sm:inline bg-gradient-to-r from-foreground via-foreground/80 to-primary bg-clip-text text-transparent">
             one intelligent workspace.
           </span>

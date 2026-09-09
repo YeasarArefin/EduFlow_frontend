@@ -1,8 +1,3 @@
-"use client";
+'use client';
 
-export {
-  ReceiptDialog,
-  ReceiptModal,
-  ReceiptSheet,
-} from "./receipt-dialog";
-
+export { ReceiptDialog, ReceiptModal, ReceiptSheet } from './receipt-dialog';

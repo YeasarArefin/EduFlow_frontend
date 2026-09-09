@@ -1,28 +1,28 @@
-import type { Metadata } from "next";
-import { JetBrains_Mono, Manrope } from "next/font/google";
-import type { ReactNode } from "react";
-import "./globals.css";
-import { Providers } from "./providers";
+import type { Metadata } from 'next';
+import { JetBrains_Mono, Manrope } from 'next/font/google';
+import type { ReactNode } from 'react';
+import './globals.css';
+import { Providers } from './providers';
 
 const fontManrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  display: "swap",
+  variable: '--font-manrope',
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  display: 'swap',
 });
 
 const fontMono = JetBrains_Mono({
-  variable: "--font-mono",
-  subsets: ["latin"],
-  display: "swap",
+  variable: '--font-mono',
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "EduFlow",
-  description: "Multi-tenant coaching management SaaS.",
+  title: 'EduFlow',
+  description: 'Multi-tenant coaching management SaaS.',
 };
 
-export default function RootLayout({ children }: { children: ReactNode; }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html
       lang="en"

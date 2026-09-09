@@ -1,4 +1,4 @@
-import { apiRequest } from "@/lib/api/client";
+import { apiRequest } from '@/lib/api/client';
 
 export type DashboardSummary = {
   workspace: { id: string; name: string | null; status: string };
@@ -17,8 +17,8 @@ export type DashboardSummary = {
 };
 
 export function getDashboardSummary(workspaceId: string, signal?: AbortSignal) {
-  return apiRequest<DashboardSummary>("/workspaces/dashboard-summary", {
-    headers: { "X-Workspace-Id": workspaceId },
+  return apiRequest<DashboardSummary>('/workspaces/dashboard-summary', {
+    headers: { 'X-Workspace-Id': workspaceId },
     signal,
   });
 }

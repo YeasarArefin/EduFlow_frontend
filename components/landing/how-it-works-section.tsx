@@ -1,30 +1,45 @@
-import { ArrowRight, CheckCircle2, Laptop, UserPlus, Zap } from "lucide-react";
-import Link from "next/link";
-import { PublicContainer } from "@/components/public/public-container";
-import { Button } from "@/components/ui/button";
-import { Card, CardTitle } from "@/components/ui/card";
+import { ArrowRight, CheckCircle2, Laptop, UserPlus, Zap } from 'lucide-react';
+import Link from 'next/link';
+import { PublicContainer } from '@/components/public/public-container';
+import { Button } from '@/components/ui/button';
+import { Card, CardTitle } from '@/components/ui/card';
 
 const steps = [
   {
-    number: "01",
+    number: '01',
     icon: Laptop,
-    title: "Create your workspace",
-    description: "Set up your coaching center profile, academic terms, and branding in under 2 minutes. Start immediately with a full 14-day trial.",
-    details: ["Instant workspace provisioning", "Custom organization branding", "Academic term & holiday setup"],
+    title: 'Create your workspace',
+    description:
+      'Set up your coaching center profile, academic terms, and branding in under 2 minutes. Start immediately with a full 14-day trial.',
+    details: [
+      'Instant workspace provisioning',
+      'Custom organization branding',
+      'Academic term & holiday setup',
+    ],
   },
   {
-    number: "02",
+    number: '02',
     icon: UserPlus,
-    title: "Add students, batches & teachers",
-    description: "Enroll students, organize classes into morning/evening batches, and assign teachers to their respective subject schedules.",
-    details: ["Batch capacity management", "Teacher subject allocation", "Guardian contact directory"],
+    title: 'Add students, batches & teachers',
+    description:
+      'Enroll students, organize classes into morning/evening batches, and assign teachers to their respective subject schedules.',
+    details: [
+      'Batch capacity management',
+      'Teacher subject allocation',
+      'Guardian contact directory',
+    ],
   },
   {
-    number: "03",
+    number: '03',
     icon: Zap,
-    title: "Run daily operations from EduFlow",
-    description: "Take 1-click batch attendance, collect tuition with instant digital receipts, and keep parents updated via automated bilingual SMS.",
-    details: ["1-click roll call & alerts", "bKash & cash fee receipts", "Real-time revenue overview"],
+    title: 'Run daily operations from EduFlow',
+    description:
+      'Take 1-click batch attendance, collect tuition with instant digital receipts, and keep parents updated via automated bilingual SMS.',
+    details: [
+      '1-click roll call & alerts',
+      'bKash & cash fee receipts',
+      'Real-time revenue overview',
+    ],
   },
 ];
 
@@ -41,7 +56,8 @@ export function HowItWorksSection() {
             From setup to daily operations in minutes.
           </h2>
           <p className="mt-4 text-base text-muted-foreground sm:text-lg font-light">
-            EduFlow replaces scattered tools with one straightforward workflow designed specifically for coaching centers.
+            EduFlow replaces scattered tools with one straightforward workflow designed specifically
+            for coaching centers.
           </p>
         </div>
 
@@ -73,7 +89,10 @@ export function HowItWorksSection() {
 
                   <ul className="mt-6 space-y-2 border-t border-border pt-4 text-xs">
                     {step.details.map((detail) => (
-                      <li key={detail} className="flex items-center gap-2 text-muted-foreground font-light">
+                      <li
+                        key={detail}
+                        className="flex items-center gap-2 text-muted-foreground font-light"
+                      >
                         <CheckCircle2 className="size-3.5 text-accent-foreground shrink-0" />
                         <span>{detail}</span>
                       </li>

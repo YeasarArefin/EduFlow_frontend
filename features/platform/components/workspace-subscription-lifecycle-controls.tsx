@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { ShieldAlert } from "lucide-react";
-import { useState } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { ShieldAlert } from 'lucide-react';
+import { useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,12 +13,12 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import type { PlatformWorkspaceDetail } from "../api/workspaces";
-import type { PlatformSubscriptionLifecycleOperation } from "../api/subscription-lifecycle";
-import { useRunPlatformSubscriptionLifecycleOperation } from "../hooks/use-subscription-lifecycle";
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import type { PlatformWorkspaceDetail } from '../api/workspaces';
+import type { PlatformSubscriptionLifecycleOperation } from '../api/subscription-lifecycle';
+import { useRunPlatformSubscriptionLifecycleOperation } from '../hooks/use-subscription-lifecycle';
 
 type LifecycleOperationConfig = {
   operation: PlatformSubscriptionLifecycleOperation;
@@ -29,43 +29,51 @@ type LifecycleOperationConfig = {
   destructive?: boolean;
 };
 
-const lifecycleOperationConfigs: Record<PlatformSubscriptionLifecycleOperation, LifecycleOperationConfig> = {
-  "renewal-due": {
-    operation: "renewal-due",
-    label: "Mark renewal due",
-    title: "Mark this subscription as renewal due?",
-    description: "This records that the renewal deadline has passed. The backend will verify the current subscription timeline.",
-    confirmLabel: "Mark renewal due",
+const lifecycleOperationConfigs: Record<
+  PlatformSubscriptionLifecycleOperation,
+  LifecycleOperationConfig
+> = {
+  'renewal-due': {
+    operation: 'renewal-due',
+    label: 'Mark renewal due',
+    title: 'Mark this subscription as renewal due?',
+    description:
+      'This records that the renewal deadline has passed. The backend will verify the current subscription timeline.',
+    confirmLabel: 'Mark renewal due',
   },
   expire: {
-    operation: "expire",
-    label: "Expire subscription",
-    title: "Expire this subscription?",
-    description: "This ends the current subscription period. The backend will verify that expiry is due before applying the change.",
-    confirmLabel: "Expire subscription",
+    operation: 'expire',
+    label: 'Expire subscription',
+    title: 'Expire this subscription?',
+    description:
+      'This ends the current subscription period. The backend will verify that expiry is due before applying the change.',
+    confirmLabel: 'Expire subscription',
     destructive: true,
   },
   lock: {
-    operation: "lock",
-    label: "Lock workspace",
-    title: "Lock this workspace?",
-    description: "Members will lose workspace access until it is unlocked with a valid subscription.",
-    confirmLabel: "Lock workspace",
+    operation: 'lock',
+    label: 'Lock workspace',
+    title: 'Lock this workspace?',
+    description:
+      'Members will lose workspace access until it is unlocked with a valid subscription.',
+    confirmLabel: 'Lock workspace',
     destructive: true,
   },
   unlock: {
-    operation: "unlock",
-    label: "Unlock workspace",
-    title: "Unlock this workspace?",
-    description: "Members will regain access only when the backend confirms the subscription is valid.",
-    confirmLabel: "Unlock workspace",
+    operation: 'unlock',
+    label: 'Unlock workspace',
+    title: 'Unlock this workspace?',
+    description:
+      'Members will regain access only when the backend confirms the subscription is valid.',
+    confirmLabel: 'Unlock workspace',
   },
-  "schedule-deletion": {
-    operation: "schedule-deletion",
-    label: "Schedule deletion",
-    title: "Schedule workspace deletion?",
-    description: "The workspace stays locked until the selected future deletion date. This does not erase its subscription or payment history.",
-    confirmLabel: "Schedule deletion",
+  'schedule-deletion': {
+    operation: 'schedule-deletion',
+    label: 'Schedule deletion',
+    title: 'Schedule workspace deletion?',
+    description:
+      'The workspace stays locked until the selected future deletion date. This does not erase its subscription or payment history.',
+    confirmLabel: 'Schedule deletion',
     destructive: true,
   },
 };
@@ -74,17 +82,17 @@ function lifecycleActions(detail: PlatformWorkspaceDetail) {
   const { workspace, subscription } = detail;
   const actions: PlatformSubscriptionLifecycleOperation[] = [];
 
-  if (subscription?.status === "active") actions.push("renewal-due");
-  if (subscription?.status === "renewal_due") actions.push("expire");
-  if (workspace.status === "active" && subscription?.status === "expired") actions.push("lock");
+  if (subscription?.status === 'active') actions.push('renewal-due');
+  if (subscription?.status === 'renewal_due') actions.push('expire');
+  if (workspace.status === 'active' && subscription?.status === 'expired') actions.push('lock');
   if (
-    workspace.status === "locked" &&
+    workspace.status === 'locked' &&
     subscription &&
-    ["trial", "active", "renewal_due"].includes(subscription.status)
+    ['trial', 'active', 'renewal_due'].includes(subscription.status)
   ) {
-    actions.push("unlock");
+    actions.push('unlock');
   }
-  if (workspace.status === "locked") actions.push("schedule-deletion");
+  if (workspace.status === 'locked') actions.push('schedule-deletion');
 
   return actions;
 }
@@ -99,22 +107,26 @@ function LifecycleActionDialog({
   onRun: (operation: PlatformSubscriptionLifecycleOperation, scheduledDeleteAt?: string) => void;
 }) {
   const [open, setOpen] = useState(false);
-  const [scheduledDeleteAt, setScheduledDeleteAt] = useState("");
+  const [scheduledDeleteAt, setScheduledDeleteAt] = useState('');
   const [dateError, setDateError] = useState<string | null>(null);
-  const requiresDeletionDate = config.operation === "schedule-deletion";
+  const requiresDeletionDate = config.operation === 'schedule-deletion';
 
   function submit() {
     if (requiresDeletionDate) {
       const deletionDate = new Date(scheduledDeleteAt);
-      if (!scheduledDeleteAt || Number.isNaN(deletionDate.getTime()) || deletionDate <= new Date()) {
-        setDateError("Choose a future deletion date.");
+      if (
+        !scheduledDeleteAt ||
+        Number.isNaN(deletionDate.getTime()) ||
+        deletionDate <= new Date()
+      ) {
+        setDateError('Choose a future deletion date.');
         return;
       }
     }
 
     onRun(
       config.operation,
-      requiresDeletionDate ? new Date(scheduledDeleteAt).toISOString() : undefined,
+      requiresDeletionDate ? new Date(scheduledDeleteAt).toISOString() : undefined
     );
     setOpen(false);
   }
@@ -125,7 +137,7 @@ function LifecycleActionDialog({
         render={
           <Button
             size="sm"
-            variant={config.destructive ? "destructive" : "outline"}
+            variant={config.destructive ? 'destructive' : 'outline'}
             className="rounded-full"
             disabled={isPending}
           />
@@ -145,23 +157,27 @@ function LifecycleActionDialog({
               type="date"
               value={scheduledDeleteAt}
               aria-invalid={Boolean(dateError)}
-              aria-describedby={dateError ? "scheduled-delete-at-error" : undefined}
+              aria-describedby={dateError ? 'scheduled-delete-at-error' : undefined}
               onChange={(event) => {
                 setScheduledDeleteAt(event.target.value);
                 setDateError(null);
               }}
             />
-            {dateError ? <span id="scheduled-delete-at-error" className="text-sm font-normal text-destructive">{dateError}</span> : null}
+            {dateError ? (
+              <span id="scheduled-delete-at-error" className="text-sm font-normal text-destructive">
+                {dateError}
+              </span>
+            ) : null}
           </label>
         ) : null}
         <AlertDialogFooter>
           <AlertDialogCancel disabled={isPending}>Cancel</AlertDialogCancel>
           <AlertDialogAction
-            variant={config.destructive ? "destructive" : "default"}
+            variant={config.destructive ? 'destructive' : 'default'}
             disabled={isPending}
             onClick={submit}
           >
-            {isPending ? "Updating…" : config.confirmLabel}
+            {isPending ? 'Updating…' : config.confirmLabel}
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
@@ -201,12 +217,14 @@ export function WorkspaceSubscriptionLifecycleControls({
           <ShieldAlert />
           <AlertTitle>No lifecycle action is available</AlertTitle>
           <AlertDescription>
-            The current workspace and subscription state do not offer an administrative lifecycle action.
+            The current workspace and subscription state do not offer an administrative lifecycle
+            action.
           </AlertDescription>
         </Alert>
       )}
       <p className="text-sm text-muted-foreground">
-        Actions are based on the current state. The server validates the final transition and refreshes this view if the state has changed.
+        Actions are based on the current state. The server validates the final transition and
+        refreshes this view if the state has changed.
       </p>
     </div>
   );

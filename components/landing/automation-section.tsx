@@ -1,14 +1,6 @@
-import {
-  BellRing,
-  CheckCircle2,
-  CreditCard,
-  FileCheck,
-  Send,
-  UserX,
-  Zap,
-} from "lucide-react";
-import { PublicContainer } from "@/components/public/public-container";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BellRing, CheckCircle2, CreditCard, FileCheck, Send, UserX, Zap } from 'lucide-react';
+import { PublicContainer } from '@/components/public/public-container';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export function AutomationSection() {
   return (
@@ -24,8 +16,8 @@ export function AutomationSection() {
             Less repetitive work. More time teaching.
           </h2>
           <p className="mt-4 text-base font-light text-muted-foreground sm:text-lg">
-            EduFlow runs routine operations in the background so you never have to spend evenings manually
-            crafting SMS alerts or reconciling receipts.
+            EduFlow runs routine operations in the background so you never have to spend evenings
+            manually crafting SMS alerts or reconciling receipts.
           </p>
         </div>
 
@@ -46,10 +38,30 @@ export function AutomationSection() {
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
               {[
-                { step: "01", title: "Tuition Payment Logged", desc: "Front desk records ৳3,000 cash or bKash TrxID", icon: CreditCard },
-                { step: "02", title: "Digital Receipt Generated", desc: "Branded PDF & receipt number (#EF-8942) created", icon: FileCheck },
-                { step: "03", title: "Student Ledger Updated", desc: "Balance reconciled to ৳0 with updated batch dues", icon: CheckCircle2 },
-                { step: "04", title: "Parent SMS Dispatched", desc: "Guardian receives immediate confirmation SMS", icon: Send },
+                {
+                  step: '01',
+                  title: 'Tuition Payment Logged',
+                  desc: 'Front desk records ৳3,000 cash or bKash TrxID',
+                  icon: CreditCard,
+                },
+                {
+                  step: '02',
+                  title: 'Digital Receipt Generated',
+                  desc: 'Branded PDF & receipt number (#EF-8942) created',
+                  icon: FileCheck,
+                },
+                {
+                  step: '03',
+                  title: 'Student Ledger Updated',
+                  desc: 'Balance reconciled to ৳0 with updated batch dues',
+                  icon: CheckCircle2,
+                },
+                {
+                  step: '04',
+                  title: 'Parent SMS Dispatched',
+                  desc: 'Guardian receives immediate confirmation SMS',
+                  icon: Send,
+                },
               ].map((item) => {
                 const Icon = item.icon;
                 return (
@@ -58,8 +70,12 @@ export function AutomationSection() {
                       <Icon className="size-4" />
                     </span>
                     <div className="flex-1 rounded-xl border border-border bg-card p-3">
-                      <p className="font-heading text-xs font-semibold text-foreground">{item.title}</p>
-                      <p className="mt-0.5 text-[11px] font-light text-muted-foreground">{item.desc}</p>
+                      <p className="font-heading text-xs font-semibold text-foreground">
+                        {item.title}
+                      </p>
+                      <p className="mt-0.5 text-[11px] font-light text-muted-foreground">
+                        {item.desc}
+                      </p>
                     </div>
                   </div>
                 );
@@ -82,18 +98,42 @@ export function AutomationSection() {
             </CardHeader>
             <CardContent className="pt-6 space-y-4">
               {[
-                { step: "01", title: "Student Marked Absent", desc: "Teacher checks roll in class with 1 click", icon: UserX },
-                { step: "02", title: "Batch Attendance Finalized", desc: "System locks daily session log and counts", icon: FileCheck },
-                { step: "03", title: "Absence Threshold Evaluated", desc: "Checks if student falls below 80% monthly attendance", icon: CheckCircle2 },
-                { step: "04", title: "Guardian Alert Sent", desc: "Bilingual SMS notice delivered to guardian's phone", icon: Send },
+                {
+                  step: '01',
+                  title: 'Student Marked Absent',
+                  desc: 'Teacher checks roll in class with 1 click',
+                  icon: UserX,
+                },
+                {
+                  step: '02',
+                  title: 'Batch Attendance Finalized',
+                  desc: 'System locks daily session log and counts',
+                  icon: FileCheck,
+                },
+                {
+                  step: '03',
+                  title: 'Absence Threshold Evaluated',
+                  desc: 'Checks if student falls below 80% monthly attendance',
+                  icon: CheckCircle2,
+                },
+                {
+                  step: '04',
+                  title: 'Guardian Alert Sent',
+                  desc: "Bilingual SMS notice delivered to guardian's phone",
+                  icon: Send,
+                },
               ].map((item) => (
                 <div key={item.step} className="flex items-start gap-3.5">
                   <span className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-border-strong bg-muted font-mono text-xs font-semibold text-accent-foreground">
                     {item.step}
                   </span>
                   <div className="flex-1 rounded-xl border border-border bg-card p-3">
-                    <p className="font-heading text-xs font-semibold text-foreground">{item.title}</p>
-                    <p className="mt-0.5 text-[11px] font-light text-muted-foreground">{item.desc}</p>
+                    <p className="font-heading text-xs font-semibold text-foreground">
+                      {item.title}
+                    </p>
+                    <p className="mt-0.5 text-[11px] font-light text-muted-foreground">
+                      {item.desc}
+                    </p>
                   </div>
                 </div>
               ))}

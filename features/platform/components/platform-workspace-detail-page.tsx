@@ -1,72 +1,103 @@
-"use client";
+'use client';
 
-import { ArrowLeft, CreditCard, SlidersHorizontal } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { DataTable, EmptyState, ErrorState, LoadingState, PageHeader, SectionCard, StatCard } from "@/components/dashboard-primitives";
-import { StatusBadge } from "@/components/status-badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Button } from "@/components/ui/button";
-import { TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ApiError } from "@/lib/api/client";
-import type { PlatformWorkspaceDetail } from "../api/workspaces";
-import { usePlatformWorkspaceDetail } from "../hooks/use-workspace-detail";
-import { WorkspaceEntitlementOverridesSheet } from "./workspace-entitlement-overrides-sheet";
-import { WorkspaceSubscriptionLifecycleControls } from "./workspace-subscription-lifecycle-controls";
+import { ArrowLeft, CreditCard, SlidersHorizontal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import {
+  DataTable,
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  PageHeader,
+  SectionCard,
+  StatCard,
+} from '@/components/dashboard-primitives';
+import { StatusBadge } from '@/components/status-badge';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { ApiError } from '@/lib/api/client';
+import type { PlatformWorkspaceDetail } from '../api/workspaces';
+import { usePlatformWorkspaceDetail } from '../hooks/use-workspace-detail';
+import { WorkspaceEntitlementOverridesSheet } from './workspace-entitlement-overrides-sheet';
+import { WorkspaceSubscriptionLifecycleControls } from './workspace-subscription-lifecycle-controls';
 
 const workspaceStatusLabels = {
-  pending: "Pending",
-  active: "Active",
-  locked: "Locked",
-  suspended: "Suspended",
-  scheduled_deletion: "Scheduled for deletion",
-  deleted: "Deleted",
+  pending: 'Pending',
+  active: 'Active',
+  locked: 'Locked',
+  suspended: 'Suspended',
+  scheduled_deletion: 'Scheduled for deletion',
+  deleted: 'Deleted',
 } as const;
 
 const subscriptionStatusLabels = {
-  trial: "Trial",
-  pending: "Pending",
-  active: "Active",
-  renewal_due: "Renewal due",
-  expired: "Expired",
-  cancelled: "Cancelled",
-  suspended: "Suspended",
+  trial: 'Trial',
+  pending: 'Pending',
+  active: 'Active',
+  renewal_due: 'Renewal due',
+  expired: 'Expired',
+  cancelled: 'Cancelled',
+  suspended: 'Suspended',
 } as const;
 
 const accessStatusLabels = {
-  verification_pending: "Verification pending",
-  payment_pending: "Payment pending",
-  trial: "Trial",
-  active: "Active",
-  renewal_due: "Renewal due",
-  subscription_expired: "Subscription expired",
-  locked: "Locked",
-  scheduled_for_deletion: "Scheduled for deletion",
-  suspended: "Suspended",
+  verification_pending: 'Verification pending',
+  payment_pending: 'Payment pending',
+  trial: 'Trial',
+  active: 'Active',
+  renewal_due: 'Renewal due',
+  subscription_expired: 'Subscription expired',
+  locked: 'Locked',
+  scheduled_for_deletion: 'Scheduled for deletion',
+  suspended: 'Suspended',
 } as const;
 
-function statusTone(status: string): "success" | "warning" | "danger" | "info" {
-  if (status === "active" || status === "approved") return "success";
-  if (["locked", "suspended", "deleted", "expired", "cancelled", "subscription_expired", "rejected"].includes(status)) return "danger";
-  if (["pending", "renewal_due", "payment_pending", "verification_pending", "scheduled_deletion", "scheduled_for_deletion"].includes(status)) return "warning";
-  return "info";
+function statusTone(status: string): 'success' | 'warning' | 'danger' | 'info' {
+  if (status === 'active' || status === 'approved') return 'success';
+  if (
+    [
+      'locked',
+      'suspended',
+      'deleted',
+      'expired',
+      'cancelled',
+      'subscription_expired',
+      'rejected',
+    ].includes(status)
+  )
+    return 'danger';
+  if (
+    [
+      'pending',
+      'renewal_due',
+      'payment_pending',
+      'verification_pending',
+      'scheduled_deletion',
+      'scheduled_for_deletion',
+    ].includes(status)
+  )
+    return 'warning';
+  return 'info';
 }
 
 function formatDate(value: string | null) {
-  if (!value) return "—";
+  if (!value) return '—';
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "—";
-  return new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" }).format(date);
+  if (Number.isNaN(date.getTime())) return '—';
+  return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(
+    date
+  );
 }
 
 function formatAmount(amountMinor: string) {
   const minor = BigInt(amountMinor);
   const divisor = BigInt(100);
-  return `৳${minor / divisor}.${(minor % divisor).toString().padStart(2, "0")}`;
+  return `৳${minor / divisor}.${(minor % divisor).toString().padStart(2, '0')}`;
 }
 
 function ContactValue({ value }: { value: string | null }) {
-  return <dd className="text-sm text-foreground">{value || "Not provided"}</dd>;
+  return <dd className="text-sm text-foreground">{value || 'Not provided'}</dd>;
 }
 
 function DetailTables({ workspace }: { workspace: PlatformWorkspaceDetail }) {
@@ -90,17 +121,23 @@ function DetailTables({ workspace }: { workspace: PlatformWorkspaceDetail }) {
             <TableBody>
               {workspace.subscriptionHistory.map((subscription) => (
                 <TableRow key={subscription.id}>
-                  <TableCell className="font-medium">{subscription.plan?.name ?? "No plan"}</TableCell>
+                  <TableCell className="font-medium">
+                    {subscription.plan?.name ?? 'No plan'}
+                  </TableCell>
                   <TableCell>
                     <StatusBadge status={statusTone(subscription.status)}>
                       {subscriptionStatusLabels[subscription.status]}
                     </StatusBadge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(subscription.startsAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(subscription.startsAt)}
+                  </TableCell>
                   <TableCell className="text-muted-foreground">
                     {formatDate(subscription.expiresAt ?? subscription.trialEndsAt)}
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(subscription.createdAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(subscription.createdAt)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -132,14 +169,18 @@ function DetailTables({ workspace }: { workspace: PlatformWorkspaceDetail }) {
             <TableBody>
               {workspace.recentPayments.map((payment) => (
                 <TableRow key={payment.id}>
-                  <TableCell className="capitalize font-medium">{payment.purpose.replace("_", " ")}</TableCell>
-                  <TableCell>{payment.plan?.name ?? "—"}</TableCell>
+                  <TableCell className="capitalize font-medium">
+                    {payment.purpose.replace('_', ' ')}
+                  </TableCell>
+                  <TableCell>{payment.plan?.name ?? '—'}</TableCell>
                   <TableCell className="font-mono">{formatAmount(payment.amountMinor)}</TableCell>
                   <TableCell className="uppercase text-xs">{payment.method}</TableCell>
                   <TableCell>
                     <StatusBadge status={statusTone(payment.status)}>{payment.status}</StatusBadge>
                   </TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(payment.createdAt)}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(payment.createdAt)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -170,17 +211,23 @@ function DetailTables({ workspace }: { workspace: PlatformWorkspaceDetail }) {
             <TableBody>
               {workspace.activeEntitlementOverrides.map((override) => (
                 <TableRow key={override.id}>
-                  <TableCell className="font-mono text-xs font-medium">{override.featureKey}</TableCell>
+                  <TableCell className="font-mono text-xs font-medium">
+                    {override.featureKey}
+                  </TableCell>
                   <TableCell>
                     {override.enabled === null
-                      ? "Plan default"
+                      ? 'Plan default'
                       : override.enabled
-                      ? "Enabled"
-                      : "Disabled"}
+                        ? 'Enabled'
+                        : 'Disabled'}
                   </TableCell>
-                  <TableCell>{override.limit ?? "Plan default"}</TableCell>
-                  <TableCell className="text-muted-foreground">{formatDate(override.expiresAt)}</TableCell>
-                  <TableCell className="max-w-72 truncate text-muted-foreground">{override.reason}</TableCell>
+                  <TableCell>{override.limit ?? 'Plan default'}</TableCell>
+                  <TableCell className="text-muted-foreground">
+                    {formatDate(override.expiresAt)}
+                  </TableCell>
+                  <TableCell className="max-w-72 truncate text-muted-foreground">
+                    {override.reason}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -212,7 +259,12 @@ export function PlatformWorkspaceDetailPage({ workspaceId }: { workspaceId: stri
         title="Workspace not found"
         description="This workspace may have been removed or the link may be incorrect."
         action={
-          <Button variant="outline" size="sm" className="rounded-full" onClick={() => router.push("/platform/workspaces")}>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full"
+            onClick={() => router.push('/platform/workspaces')}
+          >
             <ArrowLeft data-icon="inline-start" /> Back to workspaces
           </Button>
         }
@@ -232,24 +284,22 @@ export function PlatformWorkspaceDetailPage({ workspaceId }: { workspaceId: stri
   const detail = workspaceQuery.data;
   const { workspace, subscription, access } = detail;
   const pendingPaymentCount = detail.recentPayments.filter(
-    (payment) => payment.status === "pending"
+    (payment) => payment.status === 'pending'
   ).length;
 
   return (
     <div className="flex flex-col gap-6">
       <PageHeader
-        title={workspace.name ?? "Untitled workspace"}
+        title={workspace.name ?? 'Untitled workspace'}
         description={
-          workspace.slug
-            ? `Workspace identifier: ${workspace.slug}`
-            : "Platform workspace"
+          workspace.slug ? `Workspace identifier: ${workspace.slug}` : 'Platform workspace'
         }
         actions={
           <Button
             variant="outline"
             size="sm"
             className="rounded-full"
-            onClick={() => router.push("/platform/workspaces")}
+            onClick={() => router.push('/platform/workspaces')}
           >
             <ArrowLeft data-icon="inline-start" /> Back to workspaces
           </Button>
@@ -262,14 +312,11 @@ export function PlatformWorkspaceDetailPage({ workspaceId }: { workspaceId: stri
           value={workspaceStatusLabels[workspace.status]}
           status={statusTone(workspace.status)}
         />
-        <StatCard
-          label="Current plan"
-          value={subscription?.plan?.name ?? "No plan"}
-        />
+        <StatCard label="Current plan" value={subscription?.plan?.name ?? 'No plan'} />
         <StatCard
           label="Subscription"
-          value={subscription ? subscriptionStatusLabels[subscription.status] : "None"}
-          status={subscription ? statusTone(subscription.status) : "info"}
+          value={subscription ? subscriptionStatusLabels[subscription.status] : 'None'}
+          status={subscription ? statusTone(subscription.status) : 'info'}
         />
         <StatCard
           label="Access"
@@ -285,23 +332,33 @@ export function PlatformWorkspaceDetailPage({ workspaceId }: { workspaceId: stri
         >
           <dl className="grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1">
-              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Workspace ID</dt>
+              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Workspace ID
+              </dt>
               <ContactValue value={workspace.id} />
             </div>
             <div className="flex flex-col gap-1">
-              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Identifier (Slug)</dt>
+              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Identifier (Slug)
+              </dt>
               <ContactValue value={workspace.slug} />
             </div>
             <div className="flex flex-col gap-1">
-              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Contact Email</dt>
+              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Contact Email
+              </dt>
               <ContactValue value={workspace.email} />
             </div>
             <div className="flex flex-col gap-1">
-              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Contact Phone</dt>
+              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Contact Phone
+              </dt>
               <ContactValue value={workspace.phone} />
             </div>
             <div className="flex flex-col gap-1 sm:col-span-2">
-              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Address</dt>
+              <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Address
+              </dt>
               <ContactValue value={workspace.address} />
             </div>
           </dl>
@@ -327,19 +384,27 @@ export function PlatformWorkspaceDetailPage({ workspaceId }: { workspaceId: stri
             )}
             <dl className="grid gap-4 sm:grid-cols-2">
               <div className="flex flex-col gap-1">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Created</dt>
+                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Created
+                </dt>
                 <ContactValue value={formatDate(workspace.createdAt)} />
               </div>
               <div className="flex flex-col gap-1">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Last updated</dt>
+                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Last updated
+                </dt>
                 <ContactValue value={formatDate(workspace.updatedAt)} />
               </div>
               <div className="flex flex-col gap-1">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Activated</dt>
+                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Activated
+                </dt>
                 <ContactValue value={formatDate(workspace.activatedAt)} />
               </div>
               <div className="flex flex-col gap-1">
-                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Scheduled deletion</dt>
+                <dt className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Scheduled deletion
+                </dt>
                 <ContactValue value={formatDate(workspace.scheduledDeleteAt)} />
               </div>
             </dl>
@@ -354,22 +419,34 @@ export function PlatformWorkspaceDetailPage({ workspaceId }: { workspaceId: stri
         {subscription ? (
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Plan</span>
-              <span className="font-semibold text-foreground">{subscription.plan?.name ?? "No plan"}</span>
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Plan
+              </span>
+              <span className="font-semibold text-foreground">
+                {subscription.plan?.name ?? 'No plan'}
+              </span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Status</span>
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Status
+              </span>
               <StatusBadge status={statusTone(subscription.status)}>
                 {subscriptionStatusLabels[subscription.status]}
               </StatusBadge>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Started</span>
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Started
+              </span>
               <span className="text-sm text-foreground">{formatDate(subscription.startsAt)}</span>
             </div>
             <div className="flex flex-col gap-1">
-              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Expires</span>
-              <span className="text-sm text-foreground">{formatDate(subscription.expiresAt ?? subscription.trialEndsAt)}</span>
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Expires
+              </span>
+              <span className="text-sm text-foreground">
+                {formatDate(subscription.expiresAt ?? subscription.trialEndsAt)}
+              </span>
             </div>
           </div>
         ) : (
@@ -387,7 +464,12 @@ export function PlatformWorkspaceDetailPage({ workspaceId }: { workspaceId: stri
           title="Entitlement overrides"
           description="Grant a feature exception or a workspace-specific quota without changing the plan."
           action={
-            <Button size="sm" variant="outline" className="rounded-full" onClick={() => setOverridesOpen(true)}>
+            <Button
+              size="sm"
+              variant="outline"
+              className="rounded-full"
+              onClick={() => setOverridesOpen(true)}
+            >
               <SlidersHorizontal data-icon="inline-start" /> Manage overrides
             </Button>
           }
@@ -421,16 +503,22 @@ export function PlatformWorkspaceDetailPage({ workspaceId }: { workspaceId: stri
             <CreditCard />
             <AlertTitle>
               {pendingPaymentCount
-                ? `${pendingPaymentCount} payment request${pendingPaymentCount === 1 ? "" : "s"} pending`
-                : "No payment review required"}
+                ? `${pendingPaymentCount} payment request${pendingPaymentCount === 1 ? '' : 's'} pending`
+                : 'No payment review required'}
             </AlertTitle>
             <AlertDescription>
-              Payment records are visible above. Approval and rejection actions remain unavailable in this phase.
+              Payment records are visible above. Approval and rejection actions remain unavailable
+              in this phase.
             </AlertDescription>
           </Alert>
         </SectionCard>
       </div>
-      <WorkspaceEntitlementOverridesSheet open={overridesOpen} onOpenChange={setOverridesOpen} workspaceId={workspaceId} planId={subscription?.plan?.id} />
+      <WorkspaceEntitlementOverridesSheet
+        open={overridesOpen}
+        onOpenChange={setOverridesOpen}
+        workspaceId={workspaceId}
+        planId={subscription?.plan?.id}
+      />
     </div>
   );
 }
