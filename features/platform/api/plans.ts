@@ -1,34 +1,16 @@
 import { apiRequest } from '@/lib/api/client';
-
-export type PlatformPlan = {
-  id: string;
-  name: string;
-  slug: string;
-  priceMinor: string;
-  durationDays: number;
-  trialDays: number;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-  features: PlatformPlanFeature[];
-};
-
-export type PlatformPlanFeature = {
-  featureKey: string;
-  enabled: boolean;
-  limitValue: string | null;
-};
-
-export type PlatformFeatureCatalogItem = {
-  key: string;
-  name: string;
-  description: string | null;
-};
-
-export type PlatformPlanInput = Pick<
+import type {
+  PlatformFeatureCatalogItem,
   PlatformPlan,
-  'name' | 'slug' | 'priceMinor' | 'durationDays' | 'trialDays'
->;
+  PlatformPlanFeature,
+  PlatformPlanInput,
+} from '@/types/platform';
+export type {
+  PlatformFeatureCatalogItem,
+  PlatformPlan,
+  PlatformPlanFeature,
+  PlatformPlanInput,
+} from '@/types/platform';
 
 export function getPlatformPlans(signal?: AbortSignal) {
   return apiRequest<PlatformPlan[]>('/plans', { signal });

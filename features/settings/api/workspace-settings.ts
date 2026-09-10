@@ -1,22 +1,6 @@
 import { apiRequest } from '@/lib/api/client';
-export type WorkspaceSettings = {
-  workspaceId: string;
-  name: string | null;
-  phone: string | null;
-  email: string | null;
-  address: string | null;
-  defaultFeeDueDay: number | null;
-  gracePeriodDays: number;
-  receiptPrefix: string | null;
-  smsDefaultSenderId: string | null;
-  absenceEmailEnabled: boolean;
-  absenceEmailRecipient: 'guardian' | 'student' | 'both';
-  paymentConfirmationEnabled: boolean;
-  paymentReminderEnabled: boolean;
-  graceReminderEnabled: boolean;
-  overdueWarningEnabled: boolean;
-};
-export type UpdateWorkspaceSettingsInput = Partial<Omit<WorkspaceSettings, 'workspaceId'>>;
+import type { UpdateWorkspaceSettingsInput, WorkspaceSettings } from '@/types/settings';
+export type { UpdateWorkspaceSettingsInput, WorkspaceSettings } from '@/types/settings';
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 export const getWorkspaceSettings = (workspaceId: string, signal?: AbortSignal) =>
   apiRequest<WorkspaceSettings>('/workspace-settings', {

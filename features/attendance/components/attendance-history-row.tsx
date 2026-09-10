@@ -1,23 +1,14 @@
-import { StatusBadge } from '@/components/status-badge';
-import type { AttendanceSessionSummary } from '../api/attendance';
+import { StatusBadge } from '@/components/status/status-badge';
+import type { AttendanceHistoryRowProps } from '@/types/attendance';
+import {
+  formatAttendanceDate,
+  getAttendanceStatusBadge,
+  getAttendanceStatusLabel,
+} from '@/utils/attendance-formatters';
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(`${date}T00:00:00`));
-}
-
-export function AttendanceHistoryRow({
-  session,
-  onOpen,
-}: {
-  session: AttendanceSessionSummary;
-  onOpen: () => void;
-}) {
-  const status = session.status === 'finalized' ? 'success' : 'warning';
-  const label = session.status === 'finalized' ? 'Finalized' : 'Draft';
+export function AttendanceHistoryRow({ session, onOpen }: AttendanceHistoryRowProps) {
+  const status = getAttendanceStatusBadge(session.status);
+  const label = getAttendanceStatusLabel(session.status);
   return (
     <button
       type="button"
@@ -27,7 +18,7 @@ export function AttendanceHistoryRow({
       <div className="min-w-0">
         <p className="truncate font-medium text-foreground">{session.batch.name}</p>
         <p className="mt-0.5 text-sm text-muted-foreground">
-          {formatDate(session.sessionDate)} · {session.rosterCount} students
+          {formatAttendanceDate(session.sessionDate)} · {session.rosterCount} students
         </p>
       </div>
       <p className="text-sm text-muted-foreground">

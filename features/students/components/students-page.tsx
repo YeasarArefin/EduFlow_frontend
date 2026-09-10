@@ -8,8 +8,8 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -24,23 +24,16 @@ import { Archive, ChevronRight, Eye, GraduationCap, Plus, UserCheck, UserX } fro
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { STUDENT_STATUSES, type StudentStatus } from '../api/students';
+import { STUDENT_STATUSES, type StudentStatus, type StudentsPageProps } from '@/types/students';
 import { useStudentsQuery } from '../queries/use-students-query';
 import { StudentSheet } from './student-sheet';
+import {
+  formatStudentDate,
+  getStudentInitials,
+  getStudentStatusVisual,
+} from '@/utils/student-formatters';
 
 const pageSize = 20;
-
-const statusLabels: Record<StudentStatus, string> = {
-  active: 'Active',
-  inactive: 'Inactive',
-  archived: 'Archived',
-};
-
-const statusVisual: Record<StudentStatus, 'success' | 'warning' | 'info'> = {
-  active: 'success',
-  inactive: 'warning',
-  archived: 'info',
-};
 
 function page(value: string | null) {
   const result = Number(value);
@@ -51,29 +44,7 @@ function status(value: string | null): StudentStatus | undefined {
   return STUDENT_STATUSES.includes(value as StudentStatus) ? (value as StudentStatus) : undefined;
 }
 
-function initials(name: string) {
-  return name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase();
-}
-
-function formatDate(value?: string | null): string {
-  if (!value) return '—';
-  try {
-    return new Intl.DateTimeFormat('en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).format(new Date(value));
-  } catch {
-    return value;
-  }
-}
-
-export function StudentsPage({ workspaceId }: { workspaceId: string }) {
+export function StudentsPage({ workspaceId }: StudentsPageProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -206,7 +177,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string }) {
               <SelectItem value="all">All statuses</SelectItem>
               {STUDENT_STATUSES.map((item) => (
                 <SelectItem key={item} value={item}>
-                  {statusLabels[item]}
+                  {getStudentStatusVisual(item).label}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -268,7 +239,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string }) {
                         className="group flex items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
                       >
                         <span className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-lime-500/20 bg-lime-500/10 text-xs font-bold text-lime-400">
-                          {initials(student.fullName)}
+                          {getStudentInitials(student.fullName)}
                         </span>
                         <div className="min-w-0">
                           <span className="block truncate font-semibold text-foreground group-hover:text-lime-400 transition-colors">
@@ -303,12 +274,12 @@ export function StudentsPage({ workspaceId }: { workspaceId: string }) {
                     </TableCell>
 
                     <TableCell className="text-xs text-muted-foreground">
-                      {formatDate(student.admissionDate)}
+                      {formatStudentDate(student.admissionDate, '—')}
                     </TableCell>
 
                     <TableCell>
-                      <StatusBadge status={statusVisual[student.status]}>
-                        {statusLabels[student.status] || student.status}
+                      <StatusBadge status={getStudentStatusVisual(student.status).tone}>
+                        {getStudentStatusVisual(student.status).label}
                       </StatusBadge>
                     </TableCell>
 
@@ -340,7 +311,7 @@ export function StudentsPage({ workspaceId }: { workspaceId: string }) {
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex items-center gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-lime-500/20 bg-lime-500/10 text-xs font-bold text-lime-400">
-                      {initials(student.fullName)}
+                      {getStudentInitials(student.fullName)}
                     </span>
                     <div>
                       <h4 className="font-semibold text-foreground">{student.fullName}</h4>
@@ -349,8 +320,8 @@ export function StudentsPage({ workspaceId }: { workspaceId: string }) {
                       </p>
                     </div>
                   </div>
-                  <StatusBadge status={statusVisual[student.status]}>
-                    {statusLabels[student.status] || student.status}
+                  <StatusBadge status={getStudentStatusVisual(student.status).tone}>
+                    {getStudentStatusVisual(student.status).label}
                   </StatusBadge>
                 </div>
 
@@ -361,7 +332,9 @@ export function StudentsPage({ workspaceId }: { workspaceId: string }) {
                   </div>
                   <div>
                     <span className="block text-[11px]">Admission Date</span>
-                    <span className="text-foreground">{formatDate(student.admissionDate)}</span>
+                    <span className="text-foreground">
+                      {formatStudentDate(student.admissionDate, '—')}
+                    </span>
                   </div>
                 </div>
 

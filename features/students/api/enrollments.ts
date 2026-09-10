@@ -1,13 +1,7 @@
 import { apiRequest } from '@/lib/api/client';
-export type StudentEnrollment = {
-  id: string;
-  batchId: string;
-  batchName: string;
-  joinedAt: string;
-  status: string;
-  feeOverrideMinor: string | null;
-  discountMinor: string | null;
-};
+import type { StudentEnrollment } from '@/types/students';
+
+export type { StudentEnrollment };
 export const getStudentEnrollments = (
   workspaceId: string,
   studentId: string,

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +12,7 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 import { CheckCircle2, CreditCard, Printer, User, Wallet } from 'lucide-react';
 import type { ReceiptDetail } from '../api/fees';
-import { useReceiptQuery } from '../hooks/use-fees';
+import { useReceiptQuery } from '../queries/use-fees';
 
 function formatCurrency(amount?: string | number | null): string {
   if (amount === undefined || amount === null || amount === '') return '৳0.00';

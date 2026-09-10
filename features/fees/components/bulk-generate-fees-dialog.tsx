@@ -16,7 +16,7 @@ import { Calendar, CheckCircle2, Sparkles } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import type { BulkGenerateResult } from '../api/fees';
-import { useBulkGenerateFeesMutation } from '../hooks/use-fees';
+import { useBulkGenerateFeesMutation } from '../queries/use-fees';
 
 function formatMonth(dateStr: string): string {
   try {

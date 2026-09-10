@@ -9,8 +9,8 @@ import {
   PageHeader,
   Pagination,
   StatCard,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -33,70 +33,25 @@ import {
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
-import { FEE_STATUSES, type FeeStatus, type StudentFee } from '../api/fees';
-import { useFeesQuery } from '../hooks/use-fees';
+import { useFeesQuery } from '../queries/use-fees';
 import { BulkGenerateFeesDialog } from './bulk-generate-fees-dialog';
 import { CollectPaymentSheet } from './collect-payment-sheet';
 import { FeePaymentsHistoryDialog } from './fee-payments-history-dialog';
 import { ReceiptDialog } from './receipt-dialog';
 
+import type { FeesPageProps, FeeStatus, StudentFee } from '@/types/fees';
+import { FEE_STATUSES } from '@/types/fees';
+import {
+  formatFeeCurrency,
+  formatFeeMonth,
+  getDefaultFeeMonth,
+  getFeeStatusLabel,
+  getFeeStatusVisual,
+  shiftFeeMonth,
+} from '@/utils/fee-formatters';
+
 const pageSize = 20;
-
-const statusLabels: Record<FeeStatus, string> = {
-  unpaid: 'Unpaid',
-  partially_paid: 'Partially Paid',
-  paid: 'Paid',
-  overpaid: 'Overpaid',
-  waived: 'Waived',
-  overdue: 'Overdue',
-};
-
-const statusVisual: Record<FeeStatus, 'success' | 'warning' | 'danger' | 'info'> = {
-  paid: 'success',
-  overpaid: 'success',
-  partially_paid: 'warning',
-  overdue: 'danger',
-  unpaid: 'info',
-  waived: 'info',
-};
-
-function formatCurrency(amount?: string | number | null): string {
-  if (amount === undefined || amount === null || amount === '') return '৳0.00';
-  const num = typeof amount === 'string' ? parseFloat(amount) : amount;
-  if (isNaN(num)) return '৳0.00';
-  return `৳${num.toLocaleString('en-BD', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-}
-
-function formatMonth(dateStr?: string | null): string {
-  if (!dateStr) return '';
-  try {
-    const d = new Date(dateStr);
-    return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-  } catch {
-    return dateStr;
-  }
-}
-
-function getDefaultMonth(): string {
-  const d = new Date();
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  return `${year}-${month}-01`;
-}
-
-function shiftMonth(monthStr: string, delta: number): string {
-  try {
-    const [y, m] = monthStr.split('-').map(Number);
-    const date = new Date(y, m - 1 + delta, 1);
-    const newY = date.getFullYear();
-    const newM = String(date.getMonth() + 1).padStart(2, '0');
-    return `${newY}-${newM}-01`;
-  } catch {
-    return monthStr;
-  }
-}
-
-export function FeesPage({ workspaceId }: { workspaceId: string }) {
+export function FeesPage({ workspaceId }: FeesPageProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -108,7 +63,7 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
   const [generateDialogOpen, setGenerateDialogOpen] = useState(false);
 
   // URL State
-  const activeMonth = searchParams.get('feeMonth') || getDefaultMonth();
+  const activeMonth = searchParams.get('feeMonth') || getDefaultFeeMonth();
   const activeStatus = searchParams.get('status') as FeeStatus | undefined;
   const activeSearch = searchParams.get('search') || undefined;
   const activePage = Number(searchParams.get('page')) || 1;
@@ -157,25 +112,25 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
       {/* Top Summary Metrics */}
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <StatCard
-          label={`Expected (${formatMonth(activeMonth)})`}
-          value={formatCurrency(summary?.totalExpected)}
+          label={`Expected (${formatFeeMonth(activeMonth)})`}
+          value={formatFeeCurrency(summary?.totalExpected)}
           detail="Total billed charges"
         />
         <StatCard
           label="Total Collected"
-          value={formatCurrency(summary?.totalCollected)}
+          value={formatFeeCurrency(summary?.totalCollected)}
           detail="Collected payments to date"
           status="success"
         />
         <StatCard
           label="Outstanding Dues"
-          value={formatCurrency(summary?.totalOutstanding)}
+          value={formatFeeCurrency(summary?.totalOutstanding)}
           detail="Remaining unpaid balance"
           status="warning"
         />
         <StatCard
           label="Overdue Balance"
-          value={formatCurrency(summary?.totalOverdue)}
+          value={formatFeeCurrency(summary?.totalOverdue)}
           detail="Past grace period"
           status="danger"
         />
@@ -194,7 +149,7 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
             size="icon"
             onClick={() =>
               updateUrl({
-                feeMonth: shiftMonth(activeMonth, -1),
+                feeMonth: shiftFeeMonth(activeMonth, -1),
                 page: undefined,
               })
             }
@@ -206,7 +161,7 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
 
           <span className="px-2 text-xs font-semibold text-foreground font-mono flex items-center gap-1.5">
             <Calendar className="size-3.5 text-primary" />
-            {formatMonth(activeMonth)}
+            {formatFeeMonth(activeMonth)}
           </span>
 
           <Button
@@ -214,7 +169,7 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
             size="icon"
             onClick={() =>
               updateUrl({
-                feeMonth: shiftMonth(activeMonth, 1),
+                feeMonth: shiftFeeMonth(activeMonth, 1),
                 page: undefined,
               })
             }
@@ -243,7 +198,7 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
               <SelectItem value="all">All statuses</SelectItem>
               {FEE_STATUSES.map((st) => (
                 <SelectItem key={st} value={st}>
-                  {statusLabels[st]}
+                  {getFeeStatusLabel(st)}
                 </SelectItem>
               ))}
             </SelectGroup>
@@ -265,7 +220,7 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
           description={
             activeSearch || activeStatus
               ? 'No fee records match the selected filters.'
-              : `No student fee snapshots generated for ${formatMonth(activeMonth)} yet.`
+              : `No student fee snapshots generated for ${formatFeeMonth(activeMonth)} yet.`
           }
           action={
             !activeSearch && !activeStatus ? (
@@ -273,7 +228,7 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
                 onClick={() => setGenerateDialogOpen(true)}
                 className="rounded-full shadow-sm gap-2"
               >
-                <Sparkles className="size-4" /> Generate Fees for {formatMonth(activeMonth)}
+                <Sparkles className="size-4" /> Generate Fees for {formatFeeMonth(activeMonth)}
               </Button>
             ) : undefined
           }
@@ -331,32 +286,32 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
 
                       {/* Expected */}
                       <TableCell className="text-right font-mono text-sm">
-                        {formatCurrency(fee.expectedAmount)}
+                        {formatFeeCurrency(fee.expectedAmount)}
                       </TableCell>
 
                       {/* Discount */}
                       <TableCell className="text-right font-mono text-sm text-emerald-500">
                         {Number(fee.discountAmount) > 0
-                          ? `-${formatCurrency(fee.discountAmount)}`
+                          ? `-${formatFeeCurrency(fee.discountAmount)}`
                           : '—'}
                       </TableCell>
 
                       {/* Paid */}
                       <TableCell className="text-right font-mono text-sm text-foreground">
-                        {formatCurrency(fee.paidAmount)}
+                        {formatFeeCurrency(fee.paidAmount)}
                       </TableCell>
 
                       {/* Due Balance */}
                       <TableCell className="text-right font-mono text-sm font-bold">
                         <span className={dueVal > 0 ? 'text-amber-500 font-bold' : 'text-primary'}>
-                          {formatCurrency(fee.dueAmount)}
+                          {formatFeeCurrency(fee.dueAmount)}
                         </span>
                       </TableCell>
 
                       {/* Status */}
                       <TableCell className="text-center">
-                        <StatusBadge status={statusVisual[fee.status]}>
-                          {statusLabels[fee.status]}
+                        <StatusBadge status={getFeeStatusVisual(fee.status)}>
+                          {getFeeStatusLabel(fee.status)}
                         </StatusBadge>
                       </TableCell>
 
@@ -425,8 +380,8 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
                         {fee.student?.studentCode} • {fee.batch?.name}
                       </p>
                     </div>
-                    <StatusBadge status={statusVisual[fee.status]}>
-                      {statusLabels[fee.status]}
+                    <StatusBadge status={getFeeStatusVisual(fee.status)}>
+                      {getFeeStatusLabel(fee.status)}
                     </StatusBadge>
                   </div>
 
@@ -434,13 +389,13 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
                     <div>
                       <span className="text-muted-foreground block text-[10px]">Expected</span>
                       <span className="font-mono font-medium text-foreground">
-                        {formatCurrency(fee.expectedAmount)}
+                        {formatFeeCurrency(fee.expectedAmount)}
                       </span>
                     </div>
                     <div>
                       <span className="text-muted-foreground block text-[10px]">Paid</span>
                       <span className="font-mono font-medium text-foreground">
-                        {formatCurrency(fee.paidAmount)}
+                        {formatFeeCurrency(fee.paidAmount)}
                       </span>
                     </div>
                     <div>
@@ -450,7 +405,7 @@ export function FeesPage({ workspaceId }: { workspaceId: string }) {
                           dueVal > 0 ? 'text-amber-500' : 'text-primary'
                         }`}
                       >
-                        {formatCurrency(fee.dueAmount)}
+                        {formatFeeCurrency(fee.dueAmount)}
                       </span>
                     </div>
                   </div>

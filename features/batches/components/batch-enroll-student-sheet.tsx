@@ -11,18 +11,10 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Spinner } from '@/components/ui/spinner';
+import type { BatchEnrollStudentSheetProps } from '@/types/batches';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import type { Enrollment } from '../api/batch-enrollments';
-import { useEnrollStudent } from '../hooks/use-batch-enrollments';
-
-type Student = {
-  id: string;
-  studentCode: string;
-  fullName: string;
-  phone: string | null;
-  status: string;
-};
+import { useEnrollStudent } from '../queries/use-batch-enrollments';
 
 export function BatchEnrollStudentSheet({
   open,
@@ -34,17 +26,7 @@ export function BatchEnrollStudentSheet({
   existingEnrollments,
   allStudents,
   isLoadingStudents,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  workspaceId: string;
-  batchId: string;
-  batchName: string;
-  defaultMonthlyFeeMinor: string;
-  existingEnrollments: Enrollment[];
-  allStudents: Student[];
-  isLoadingStudents: boolean;
-}) {
+}: BatchEnrollStudentSheetProps) {
   const enroll = useEnrollStudent();
   const [search, setSearch] = useState('');
   const [studentId, setStudentId] = useState('');

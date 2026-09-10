@@ -1,9 +1,9 @@
-import { GrainOverlay } from '@/components/landing/grain-overlay';
+import { GrainOverlay } from '@/features/landing/components/grain-overlay';
 import {
   LivePricingCard,
   STATIC_TIERS,
   StaticPricingCard,
-} from '@/components/pricing/pricing-card';
+} from '@/features/pricing/components/pricing-card';
 import { PublicContainer } from '@/components/public/public-container';
 import { Button } from '@/components/ui/button';
 import { getPublicPlans } from '@/features/pricing/api/get-public-plans';

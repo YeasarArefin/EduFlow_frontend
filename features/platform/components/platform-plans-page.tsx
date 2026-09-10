@@ -19,8 +19,8 @@ import {
   ErrorState,
   LoadingState,
   PageHeader,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -44,13 +44,18 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { PlatformPlan } from '../api/plans';
+import type { PlatformPlan, PlatformPlanFormValues } from '@/types/platform';
 import {
   usePlatformPlans,
   useSavePlatformPlan,
   useSetPlatformPlanActive,
-} from '../hooks/use-platform-plans';
+} from '../queries/use-platform-plans';
 import { PlanFeaturesSheet } from './plan-features-sheet';
+import {
+  formatPlatformPlanPrice,
+  minorToPlatformPriceInput,
+  platformPriceToMinor,
+} from '@/utils/platform-formatters';
 
 const pricePattern = /^\d+(?:\.\d{1,2})?$/;
 const nonNegativeIntegerPattern = /^\d+$/;
@@ -75,35 +80,12 @@ const planFormSchema = z.object({
   trialDays: z.string().trim().regex(nonNegativeIntegerPattern, 'Use a whole number of days.'),
 });
 
-type PlanFormValues = z.infer<typeof planFormSchema>;
-
-function formatBdt(priceMinor: string) {
-  const normalized = priceMinor.replace(/^0+(?=\d)/, '');
-  const whole = normalized.length > 2 ? normalized.slice(0, -2) : '0';
-  return `৳${whole}.${normalized.slice(-2).padStart(2, '0')}`;
-}
-
-function minorToPriceInput(priceMinor: string) {
-  const normalized = priceMinor.replace(/^0+(?=\d)/, '');
-  const whole = normalized.length > 2 ? normalized.slice(0, -2) : '0';
-  const fraction = normalized.slice(-2).padStart(2, '0');
-  return `${whole}.${fraction}`;
-}
-
-function priceToMinor(price: string) {
-  const [whole, fraction = ''] = price.trim().split('.');
-  return `${whole.replace(/^0+(?=\d)/, '') || '0'}${fraction.padEnd(2, '0')}`.replace(
-    /^0+(?=\d)/,
-    ''
-  );
-}
-
-function defaultValues(plan?: PlatformPlan): PlanFormValues {
+function defaultValues(plan?: PlatformPlan): PlatformPlanFormValues {
   return plan
     ? {
         name: plan.name,
         slug: plan.slug,
-        price: minorToPriceInput(plan.priceMinor),
+        price: minorToPlatformPriceInput(plan.priceMinor),
         durationDays: String(plan.durationDays),
         trialDays: String(plan.trialDays),
       }
@@ -120,20 +102,20 @@ function PlanEditorSheet({
   plan: PlatformPlan | null;
 }) {
   const saveMutation = useSavePlatformPlan();
-  const form = useForm<PlanFormValues>({
+  const form = useForm<PlatformPlanFormValues>({
     resolver: zodResolver(planFormSchema),
     defaultValues: defaultValues(plan ?? undefined),
   });
   const isEditing = Boolean(plan);
 
-  function submit(values: PlanFormValues) {
+  function submit(values: PlatformPlanFormValues) {
     saveMutation.mutate(
       {
         planId: plan?.id,
         input: {
           name: values.name.trim(),
           slug: values.slug.trim(),
-          priceMinor: priceToMinor(values.price),
+          priceMinor: platformPriceToMinor(values.price),
           durationDays: Number(values.durationDays),
           trialDays: Number(values.trialDays),
         },
@@ -377,7 +359,7 @@ export function PlatformPlansPage() {
                   </div>
                 </TableCell>
                 <TableCell className="font-medium tabular-nums">
-                  {formatBdt(plan.priceMinor)}
+                  {formatPlatformPlanPrice(plan.priceMinor)}
                 </TableCell>
                 <TableCell>{plan.durationDays} days</TableCell>
                 <TableCell>{plan.trialDays ? `${plan.trialDays} days` : 'No trial'}</TableCell>

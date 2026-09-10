@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { AppShell, type AppShellNavGroup } from '@/components/app-shell';
+import { AppShell, type AppShellNavGroup } from '@/components/app-shell/app-shell';
 import { getServerSession } from '@/lib/auth/server';
 import { postAuthDestinations, resolvePostAuthDestination } from '@/lib/auth/post-auth-destination';
 

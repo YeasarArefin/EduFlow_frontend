@@ -10,11 +10,11 @@ import {
   PageHeader,
   SectionCard,
   StatCard,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { usePlatformOverview } from '@/features/platform/hooks/use-overview';
+import { usePlatformOverview } from '@/features/platform/queries/use-overview';
 
 export default function PlatformOverviewPage() {
   const overview = usePlatformOverview();

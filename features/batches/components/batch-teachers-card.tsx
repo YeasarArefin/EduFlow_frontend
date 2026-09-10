@@ -3,7 +3,7 @@
 import { Crown, Trash2, UserPlus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard-primitives';
+import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard/dashboard-primitives';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -26,21 +26,15 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
 import { useTeachersQuery } from '@/features/teachers/queries/use-teachers-query';
-import { type BatchTeacher } from '../api/batch-teachers';
+import type { BatchTeacher, BatchTeachersCardProps } from '@/types/batches';
 import {
   useAssignBatchTeacherMutation,
   useBatchTeachersQuery,
   useRemoveBatchTeacherMutation,
   useUpdateBatchTeacherMutation,
-} from '../hooks/use-batch-teachers';
+} from '../queries/use-batch-teachers';
 
-export function BatchTeachersCard({
-  workspaceId,
-  batchId,
-}: {
-  workspaceId: string;
-  batchId: string;
-}) {
+export function BatchTeachersCard({ workspaceId, batchId }: BatchTeachersCardProps) {
   const assignments = useBatchTeachersQuery(workspaceId, batchId);
   const teachers = useTeachersQuery(workspaceId, {
     page: 1,

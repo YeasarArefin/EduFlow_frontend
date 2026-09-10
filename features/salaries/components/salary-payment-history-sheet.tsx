@@ -1,4 +1,4 @@
-import { EmptyState, LoadingState } from '@/components/dashboard-primitives';
+import { EmptyState, LoadingState } from '@/components/dashboard/dashboard-primitives';
 import {
   Sheet,
   SheetContent,
@@ -6,19 +6,15 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import type { Salary } from '../api/salaries';
-import { useSalaryPayments } from '../hooks/use-salaries';
-import { formatSalaryMoney } from './salary-formatters';
+import type { SalaryPaymentHistorySheetProps } from '@/types/salaries';
+import { useSalaryPayments } from '../queries/use-salaries';
+import { formatSalaryMoney } from '@/utils/salary-formatters';
 
 export function SalaryPaymentHistorySheet({
   salary,
   workspaceId,
   onClose,
-}: {
-  salary: Salary | null;
-  workspaceId: string;
-  onClose: () => void;
-}) {
+}: SalaryPaymentHistorySheetProps) {
   const payments = useSalaryPayments(workspaceId, salary?.id ?? null);
   if (!salary) return null;
   return (

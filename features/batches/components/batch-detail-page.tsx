@@ -3,16 +3,17 @@
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { useState } from 'react';
-import { ErrorState, LoadingState } from '@/components/dashboard-primitives';
-import { useBatchQuery } from '../hooks/use-batches-query';
-import { useBatchEnrollments } from '../hooks/use-batch-enrollments';
-import { useBatchTeachersQuery } from '../hooks/use-batch-teachers';
+import { ErrorState, LoadingState } from '@/components/dashboard/dashboard-primitives';
+import type { BatchDetailPageProps } from '@/types/batches';
+import { useBatchQuery } from '../queries/use-batches-query';
+import { useBatchEnrollments } from '../queries/use-batch-enrollments';
+import { useBatchTeachersQuery } from '../queries/use-batch-teachers';
 import { BatchSheet } from './batch-sheet';
 import { BatchProfileHero } from './batch-profile-hero';
 import { BatchStudentsCard } from './batch-students-card';
 import { BatchTeachersCard } from './batch-teachers-card';
 
-export function BatchDetailPage({ workspaceId, id }: { workspaceId: string; id: string }) {
+export function BatchDetailPage({ workspaceId, id }: BatchDetailPageProps) {
   const query = useBatchQuery(workspaceId, id);
   const enrollmentsQuery = useBatchEnrollments(workspaceId, id);
   const teachersQuery = useBatchTeachersQuery(workspaceId, id);

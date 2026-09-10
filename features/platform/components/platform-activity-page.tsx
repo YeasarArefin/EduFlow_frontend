@@ -12,7 +12,7 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from '@/components/dashboard-primitives';
+} from '@/components/dashboard/dashboard-primitives';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/select';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { ActivityListParams } from '../api/activity';
-import { usePlatformActivity } from '../hooks/use-platform-activity';
+import { usePlatformActivity } from '../queries/use-platform-activity';
 
 const PAGE_SIZE = 20;
 const categories = [

@@ -1,9 +1,8 @@
 import { headers } from 'next/headers';
 import { env } from '@/config/env';
-import type { PaymentRequest } from './create-payment-request';
+import type { LatestPaymentResponse, ServerLatestPaymentResult } from '@/types/payments';
 
-export type ServerLatestPaymentResult =
-  { ok: true; payment: PaymentRequest | null } | { ok: false };
+export type { ServerLatestPaymentResult } from '@/types/payments';
 
 export async function getLatestPaymentRequestServer(
   workspaceId: string
@@ -22,7 +21,7 @@ export async function getLatestPaymentRequestServer(
 
     if (!response.ok) return { ok: false };
 
-    const payload = (await response.json()) as { data?: PaymentRequest | null };
+    const payload = (await response.json()) as LatestPaymentResponse;
     return { ok: true, payment: payload.data ?? null };
   } catch {
     return { ok: false };

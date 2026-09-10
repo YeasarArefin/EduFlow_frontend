@@ -1,25 +1,17 @@
 import { apiRequest } from '@/lib/api/client';
-
-export type Permission = {
-  code: number;
-  key: string;
-  name: string | null;
-  module: string | null;
-  description: string | null;
-};
-export type WorkspaceRole = {
-  id: string;
-  name: string;
-  description: string | null;
-};
-export type PermissionConfiguration = {
-  roles: WorkspaceRole[];
-  permissions: Array<Permission & { roles: Record<string, boolean> }>;
-};
-export type MemberPermissionConfiguration = {
-  member: { id: string; roleId: string; name: string; email: string };
-  permissions: Array<Permission & { inheritedAllowed: boolean; overrideAllowed: boolean | null }>;
-};
+import type {
+  MemberPermissionConfiguration,
+  PermissionConfiguration,
+  PermissionOverride,
+  RoleInput,
+  WorkspaceRole,
+} from '@/types/staff';
+export type {
+  MemberPermissionConfiguration,
+  Permission,
+  PermissionConfiguration,
+  WorkspaceRole,
+} from '@/types/staff';
 
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
@@ -28,28 +20,13 @@ export const getPermissionConfiguration = (workspaceId: string, signal?: AbortSi
     headers: headers(workspaceId),
     signal,
   });
-export const createRole = (
-  workspaceId: string,
-  input: {
-    name: string;
-    description?: string;
-    permissions: { permissionCode: number; allowed: boolean }[];
-  }
-) =>
+export const createRole = (workspaceId: string, input: RoleInput) =>
   apiRequest<WorkspaceRole>('/permission-management/roles', {
     method: 'POST',
     headers: headers(workspaceId),
     body: input,
   });
-export const updateRole = (
-  workspaceId: string,
-  roleId: string,
-  input: {
-    name: string;
-    description?: string;
-    permissions: { permissionCode: number; allowed: boolean }[];
-  }
-) =>
+export const updateRole = (workspaceId: string, roleId: string, input: RoleInput) =>
   apiRequest<PermissionConfiguration>(`/permission-management/roles/${roleId}`, {
     method: 'PATCH',
     headers: headers(workspaceId),
@@ -72,7 +49,7 @@ export const getMemberPermissionConfiguration = (
 export const updateMemberOverrides = (
   workspaceId: string,
   memberId: string,
-  overrides: { permissionCode: number; allowed: boolean }[]
+  overrides: PermissionOverride[]
 ) =>
   apiRequest<MemberPermissionConfiguration>(`/permission-management/members/${memberId}`, {
     method: 'PATCH',

@@ -1,8 +1,10 @@
 import { apiRequest } from '@/lib/api/client';
-
-export const academicResources = ['class-levels', 'mediums', 'academic-groups'] as const;
-export type AcademicResource = (typeof academicResources)[number];
-export type AcademicReference = { id: string; name: string; isActive: boolean };
+import type { AcademicReference, AcademicResource } from '@/types/settings';
+export {
+  ACADEMIC_RESOURCES as academicResources,
+  type AcademicReference,
+  type AcademicResource,
+} from '@/types/settings';
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
 export function getAcademicReferences(

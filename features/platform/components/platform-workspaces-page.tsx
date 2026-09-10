@@ -11,8 +11,8 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -29,7 +29,7 @@ import {
   PLATFORM_WORKSPACE_STATUSES,
   type PlatformWorkspaceListParams,
 } from '../api/workspaces';
-import { usePlatformWorkspaces } from '../hooks/use-workspaces';
+import { usePlatformWorkspaces } from '../queries/use-workspaces';
 
 const PAGE_SIZE = 20;
 

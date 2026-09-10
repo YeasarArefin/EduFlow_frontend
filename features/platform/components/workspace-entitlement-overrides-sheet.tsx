@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Check, LoaderCircle, Pencil, Plus, Trash2 } from 'lucide-react';
-import { EmptyState, ErrorState, LoadingState } from '@/components/dashboard-primitives';
+import { EmptyState, ErrorState, LoadingState } from '@/components/dashboard/dashboard-primitives';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,24 +32,20 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import type { PlatformFeatureCatalogItem, PlatformPlan } from '../api/plans';
-import type { WorkspaceEntitlementOverride } from '../api/entitlement-overrides';
+import type {
+  PlatformEntitlementOverrideDraft,
+  PlatformFeatureCatalogItem,
+  PlatformPlan,
+  WorkspaceEntitlementOverride,
+} from '@/types/platform';
 import {
   useRemoveWorkspaceEntitlementOverride,
   useSaveWorkspaceEntitlementOverride,
   useWorkspaceEntitlementOverrides,
-} from '../hooks/use-entitlement-overrides';
-import { usePlatformFeatureCatalog, usePlatformPlans } from '../hooks/use-platform-plans';
+} from '../queries/use-entitlement-overrides';
+import { usePlatformFeatureCatalog, usePlatformPlans } from '../queries/use-platform-plans';
 
-type Draft = {
-  featureKey: string;
-  enabledOverride: 'default' | 'enabled' | 'disabled';
-  limitOverride: string;
-  reason: string;
-  expiresAt: string;
-};
-
-function initialDraft(override?: WorkspaceEntitlementOverride): Draft {
+function initialDraft(override?: WorkspaceEntitlementOverride): PlatformEntitlementOverrideDraft {
   return {
     featureKey: override?.featureKey ?? '',
     enabledOverride:
@@ -177,7 +173,8 @@ function OverrideEditor({
                 onValueChange={(enabledOverride) =>
                   setDraft((current) => ({
                     ...current,
-                    enabledOverride: enabledOverride as Draft['enabledOverride'],
+                    enabledOverride:
+                      enabledOverride as PlatformEntitlementOverrideDraft['enabledOverride'],
                   }))
                 }
               >

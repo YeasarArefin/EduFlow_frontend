@@ -24,9 +24,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import type { Salary } from '../api/salaries';
-import { useRecordSalaryPayment } from '../hooks/use-salaries';
-import { formatSalaryMoney } from './salary-formatters';
+import type { SalaryPaymentSheetProps } from '@/types/salaries';
+import { useRecordSalaryPayment } from '../queries/use-salaries';
+import { formatSalaryMoney } from '@/utils/salary-formatters';
 
 const paymentMethods = ['cash', 'bkash', 'nagad', 'rocket', 'other'] as const;
 const paymentSchema = z.object({
@@ -42,15 +42,7 @@ const paymentSchema = z.object({
   note: z.string().trim().max(500, 'Note must be 500 characters or fewer.'),
 });
 
-export function SalaryPaymentSheet({
-  salary,
-  workspaceId,
-  onClose,
-}: {
-  salary: Salary | null;
-  workspaceId: string;
-  onClose: () => void;
-}) {
+export function SalaryPaymentSheet({ salary, workspaceId, onClose }: SalaryPaymentSheetProps) {
   const [amount, setAmount] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<(typeof paymentMethods)[number]>('cash');
   const [paymentDate, setPaymentDate] = useState(() => new Date().toISOString().slice(0, 10));

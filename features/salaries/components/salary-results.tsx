@@ -1,20 +1,12 @@
-import { DataTable } from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+import { DataTable } from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { CreditCard, History } from 'lucide-react';
-import type { Salary } from '../api/salaries';
-import { formatSalaryMoney, salaryStatusVisual } from './salary-formatters';
+import type { SalaryResultsProps } from '@/types/salaries';
+import { formatSalaryMoney, salaryStatusVisual } from '@/utils/salary-formatters';
 
-export function SalaryResults({
-  rows,
-  onPay,
-  onHistory,
-}: {
-  rows: Salary[];
-  onPay: (salary: Salary) => void;
-  onHistory: (salary: Salary) => void;
-}) {
+export function SalaryResults({ rows, onPay, onHistory }: SalaryResultsProps) {
   return (
     <>
       <div className="hidden md:block">

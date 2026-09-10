@@ -12,8 +12,8 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -24,18 +24,12 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { BATCH_STATUSES, type BatchStatus } from '../api/batches';
-import { useBatchesQuery } from '../hooks/use-batches-query';
+import { BATCH_STATUSES, type BatchStatus, type BatchesPageProps } from '@/types/batches';
+import { useBatchesQuery } from '../queries/use-batches-query';
 import { BatchSheet } from './batch-sheet';
+import { formatBatchDate, formatBatchMoney, getBatchStatusVisual } from '@/utils/batch-formatters';
 
-const money = (value: string) =>
-  new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-    maximumFractionDigits: 2,
-  }).format(Number(value) / 100);
-
-export function BatchesPage({ workspaceId }: { workspaceId: string }) {
+export function BatchesPage({ workspaceId }: BatchesPageProps) {
   const path = usePathname();
   const router = useRouter();
   const params = useSearchParams();
@@ -132,25 +126,13 @@ export function BatchesPage({ workspaceId }: { workspaceId: string }) {
                       {batch.name}
                     </Link>
                   </TableCell>
-                  <TableCell>{money(batch.monthlyFeeMinor)}</TableCell>
+                  <TableCell>{formatBatchMoney(batch.monthlyFeeMinor)}</TableCell>
                   <TableCell>
-                    <StatusBadge
-                      status={
-                        batch.status === 'active'
-                          ? 'success'
-                          : batch.status === 'inactive'
-                            ? 'warning'
-                            : 'info'
-                      }
-                    >
+                    <StatusBadge status={getBatchStatusVisual(batch.status)}>
                       {batch.status}
                     </StatusBadge>
                   </TableCell>
-                  <TableCell>
-                    {new Intl.DateTimeFormat('en-BD', { dateStyle: 'medium' }).format(
-                      new Date(batch.updatedAt)
-                    )}
-                  </TableCell>
+                  <TableCell>{formatBatchDate(batch.updatedAt)}</TableCell>
                 </TableRow>
               ))}
             </TableBody>

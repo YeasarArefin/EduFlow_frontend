@@ -16,22 +16,16 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import type { PlatformWorkspaceDetail } from '../api/workspaces';
-import type { PlatformSubscriptionLifecycleOperation } from '../api/subscription-lifecycle';
-import { useRunPlatformSubscriptionLifecycleOperation } from '../hooks/use-subscription-lifecycle';
-
-type LifecycleOperationConfig = {
-  operation: PlatformSubscriptionLifecycleOperation;
-  label: string;
-  title: string;
-  description: string;
-  confirmLabel: string;
-  destructive?: boolean;
-};
+import type {
+  PlatformLifecycleOperationConfig,
+  PlatformSubscriptionLifecycleOperation,
+  PlatformWorkspaceDetail,
+} from '@/types/platform';
+import { useRunPlatformSubscriptionLifecycleOperation } from '../mutations/use-subscription-lifecycle';
 
 const lifecycleOperationConfigs: Record<
   PlatformSubscriptionLifecycleOperation,
-  LifecycleOperationConfig
+  PlatformLifecycleOperationConfig
 > = {
   'renewal-due': {
     operation: 'renewal-due',
@@ -102,7 +96,7 @@ function LifecycleActionDialog({
   isPending,
   onRun,
 }: {
-  config: LifecycleOperationConfig;
+  config: PlatformLifecycleOperationConfig;
   isPending: boolean;
   onRun: (operation: PlatformSubscriptionLifecycleOperation, scheduledDeleteAt?: string) => void;
 }) {

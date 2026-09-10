@@ -1,22 +1,7 @@
 import { env } from '@/config/env';
+import type { PublicPlan, PublicPlansResponse } from '@/types/pricing';
 
-export type PublicPlan = {
-  id: string;
-  name: string;
-  slug: string;
-  priceMinor: string;
-  durationDays: number;
-  trial: { included: boolean; days: number };
-  features: Array<{
-    key: string;
-    name: string;
-    description: string | null;
-    defaultLimit: string | null;
-  }>;
-  quotas: Record<string, string | null>;
-};
-
-type PublicPlansResponse = { data: PublicPlan[] };
+export type { PublicPlan } from '@/types/pricing';
 
 export async function getPublicPlans(): Promise<PublicPlan[] | null> {
   try {

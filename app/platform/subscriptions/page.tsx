@@ -1,5 +1,5 @@
 import { Suspense } from 'react';
-import { LoadingState } from '@/components/dashboard-primitives';
+import { LoadingState } from '@/components/dashboard/dashboard-primitives';
 import { PlatformSubscriptionsPage } from '@/features/platform/components/platform-subscriptions-page';
 
 export default function PlatformSubscriptionsRoute() {

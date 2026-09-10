@@ -23,7 +23,7 @@ import {
   type RecordPaymentResult,
   type StudentFee,
 } from '../api/fees';
-import { useRecordPaymentMutation } from '../hooks/use-fees';
+import { useRecordPaymentMutation } from '../queries/use-fees';
 
 function formatCurrency(amount?: string | number | null): string {
   if (amount === undefined || amount === null || amount === '') return '৳0.00';

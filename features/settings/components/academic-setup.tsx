@@ -1,6 +1,7 @@
 import { AcademicReferenceCard } from './academic-reference-card';
+import type { AcademicSetupProps } from '@/types/settings';
 
-export function AcademicSetup({ workspaceId }: { workspaceId: string }) {
+export function AcademicSetup({ workspaceId }: AcademicSetupProps) {
   return (
     <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2 xl:grid-cols-3">
       <AcademicReferenceCard

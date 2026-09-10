@@ -7,7 +7,7 @@ import {
   LoadingState,
   PageHeader,
   StatCard,
-} from '@/components/dashboard-primitives';
+} from '@/components/dashboard/dashboard-primitives';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -20,19 +20,21 @@ import {
 } from '@/components/ui/select';
 import { CalendarPlus } from 'lucide-react';
 import { useMemo, useState } from 'react';
-import { SALARY_STATUSES, type Salary, type SalaryStatus } from '../api/salaries';
-import { useSalaries } from '../hooks/use-salaries';
+import {
+  SALARY_STATUSES,
+  type Salary,
+  type SalaryManagementPageProps,
+  type SalaryStatus,
+} from '@/types/salaries';
+import { useSalaries } from '../queries/use-salaries';
 import { GenerateSalariesDialog } from './generate-salaries-dialog';
-import { formatSalaryMoney } from './salary-formatters';
+import { formatSalaryMoney, getCurrentSalaryMonth } from '@/utils/salary-formatters';
 import { SalaryPaymentHistorySheet } from './salary-payment-history-sheet';
 import { SalaryPaymentSheet } from './salary-payment-sheet';
 import { SalaryResults } from './salary-results';
 
-const currentMonth = () =>
-  `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-01`;
-
-export function SalaryManagementPage({ workspaceId }: { workspaceId: string }) {
-  const [salaryMonth, setSalaryMonth] = useState(currentMonth);
+export function SalaryManagementPage({ workspaceId }: SalaryManagementPageProps) {
+  const [salaryMonth, setSalaryMonth] = useState(getCurrentSalaryMonth);
   const [status, setStatus] = useState<SalaryStatus>();
   const [search, setSearch] = useState('');
   const [paymentSalary, setPaymentSalary] = useState<Salary | null>(null);

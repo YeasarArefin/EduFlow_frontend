@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { headers } from 'next/headers';
 import { LayoutDashboard, Shield } from 'lucide-react';
 import { env } from '@/config/env';
-import { ThemeToggle } from '@/components/theme-toggle';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { Button } from '@/components/ui/button';
 import { PublicContainer } from '@/components/public/public-container';
 import { PublicMobileNav } from '@/components/public/public-mobile-nav';

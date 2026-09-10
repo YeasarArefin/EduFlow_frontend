@@ -1,28 +1,11 @@
 import { ApiError } from '@/lib/api/client';
+import type {
+  CreatePaymentRequestInput,
+  PaymentErrorResponse,
+  PaymentResponse,
+} from '@/types/payments';
 
-export type PaymentMethod = 'bkash';
-
-export type CreatePaymentRequestInput = {
-  paymentMethod: PaymentMethod;
-  senderNumber: string;
-  transactionId: string;
-};
-
-export type PaymentRequest = {
-  id: string;
-  planId: string;
-  amountMinor: string;
-  paymentMethod: PaymentMethod;
-  senderNumber: string;
-  transactionId: string;
-  status: 'pending' | 'approved' | 'rejected';
-  reviewedAt?: string | null;
-  rejectionReason?: string | null;
-  createdAt: string;
-};
-
-type PaymentResponse = { data: PaymentRequest };
-type PaymentErrorResponse = { error?: { code?: string; message?: string } };
+export type { CreatePaymentRequestInput, PaymentMethod, PaymentRequest } from '@/types/payments';
 
 export async function createPaymentRequest(input: CreatePaymentRequestInput) {
   const response = await fetch('/api/checkout/payment-request', {

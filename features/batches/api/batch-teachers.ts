@@ -1,16 +1,7 @@
 import { apiRequest } from '@/lib/api/client';
+import type { BatchTeacher } from '@/types/batches';
 
-export type BatchTeacher = {
-  id: string;
-  teacherId: string;
-  teacherCode: string;
-  name: string;
-  phone: string | null;
-  email: string | null;
-  status: 'active' | 'inactive' | 'archived';
-  isPrimary: boolean;
-  assignedAt: string;
-};
+export type { BatchTeacher };
 
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 export const getBatchTeachers = (workspaceId: string, batchId: string, signal?: AbortSignal) =>

@@ -1,12 +1,13 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { PageHeader } from '@/components/dashboard-primitives';
+import { PageHeader } from '@/components/dashboard/dashboard-primitives';
 import { cn } from '@/lib/utils';
+import { SETTING_TABS, type SettingsPageProps, type SettingsTab } from '@/types/settings';
 import { AcademicSetup } from './academic-setup';
 import { WorkspaceSettingsCards } from './workspace-settings-cards';
 
-const tabs = ['general', 'billing', 'academic', 'salary', 'sms', 'reminders'] as const;
+const tabs = SETTING_TABS;
 const labels = {
   general: 'General',
   billing: 'Billing',
@@ -15,15 +16,16 @@ const labels = {
   sms: 'SMS Settings',
   reminders: 'Reminder Settings',
 };
-type Tab = (typeof tabs)[number];
-export function SettingsPage({ workspaceId }: { workspaceId: string }) {
+export function SettingsPage({ workspaceId }: SettingsPageProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
   const requested = searchParams.get('tab');
-  const tab: Tab = tabs.includes(requested as Tab) ? (requested as Tab) : 'general';
+  const tab: SettingsTab = tabs.includes(requested as SettingsTab)
+    ? (requested as SettingsTab)
+    : 'general';
 
-  function select(next: Tab) {
+  function select(next: SettingsTab) {
     const params = new URLSearchParams(searchParams);
     if (next === 'general') params.delete('tab');
     else params.set('tab', next);

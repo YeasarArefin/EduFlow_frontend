@@ -11,8 +11,8 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -23,12 +23,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import {
-  PLATFORM_ACCESS_STATUSES,
-  type PlatformWorkspace,
-  type PlatformWorkspaceListParams,
-} from '../api/workspaces';
-import { usePlatformWorkspaces } from '../hooks/use-workspaces';
+import { PLATFORM_ACCESS_STATUSES } from '@/types/platform';
+import type {
+  PlatformReviewGroup,
+  PlatformWorkspace,
+  PlatformWorkspaceListParams,
+} from '@/types/platform';
+import { usePlatformWorkspaces } from '../queries/use-workspaces';
 
 const PAGE_SIZE = 20;
 
@@ -41,8 +42,6 @@ const reviewGroups = [
   { value: 'locked', label: 'Locked workspace' },
   { value: 'scheduled_deletion', label: 'Scheduled deletion' },
 ] as const;
-
-type ReviewGroup = (typeof reviewGroups)[number]['value'];
 
 const accessStatusLabels = {
   verification_pending: 'Verification pending',
@@ -102,12 +101,14 @@ function getPositivePage(value: string | null) {
   return Number.isInteger(page) && page > 0 ? page : 1;
 }
 
-function getReviewGroup(value: string | null): ReviewGroup {
-  return reviewGroups.some((group) => group.value === value) ? (value as ReviewGroup) : 'all';
+function getReviewGroup(value: string | null): PlatformReviewGroup {
+  return reviewGroups.some((group) => group.value === value)
+    ? (value as PlatformReviewGroup)
+    : 'all';
 }
 
 function paramsForGroup(
-  group: ReviewGroup
+  group: PlatformReviewGroup
 ): Pick<PlatformWorkspaceListParams, 'workspaceStatus' | 'subscriptionStatus'> {
   if (group === 'locked' || group === 'scheduled_deletion') return { workspaceStatus: group };
   if (group === 'all') return {};

@@ -11,8 +11,8 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -23,16 +23,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { TEACHER_STATUSES, type TeacherStatus } from '../api/teachers';
+import { TEACHER_STATUSES, type TeacherStatus, type TeachersPageProps } from '@/types/teachers';
 import { useTeachersQuery } from '../queries/use-teachers-query';
 import { TeacherSheet } from './teacher-sheet';
-const money = (value: string) =>
-  new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-    maximumFractionDigits: 2,
-  }).format(Number(value) / 100);
-export function TeachersPage({ workspaceId }: { workspaceId: string }) {
+import { formatTeacherSalaryMinor } from '@/utils/teacher-formatters';
+export function TeachersPage({ workspaceId }: TeachersPageProps) {
   const path = usePathname(),
     router = useRouter(),
     params = useSearchParams(),
@@ -135,7 +130,7 @@ export function TeachersPage({ workspaceId }: { workspaceId: string }) {
                   <TableCell>{t.teacherCode}</TableCell>
                   <TableCell>{t.phone ?? '—'}</TableCell>
                   <TableCell>{t.subjectSpecialty ?? '—'}</TableCell>
-                  <TableCell>{money(t.defaultSalaryMinor)}</TableCell>
+                  <TableCell>{formatTeacherSalaryMinor(t.defaultSalaryMinor)}</TableCell>
                   <TableCell>
                     <StatusBadge
                       status={

@@ -12,7 +12,7 @@ import {
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { env } from '@/config/env';
-import { AppShell, type AppShellNavGroup } from '@/components/app-shell';
+import { AppShell, type AppShellNavGroup } from '@/components/app-shell/app-shell';
 import { getServerSession } from '@/lib/auth/server';
 import type { ReactNode } from 'react';
 

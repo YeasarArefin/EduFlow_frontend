@@ -3,8 +3,8 @@
 import { Pencil, Plus, Power } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,35 +19,22 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
-import type { AcademicResource, AcademicReference } from '../api/academic-references';
+import type { AcademicReference, AcademicReferenceCardProps } from '@/types/settings';
 import {
   useAcademicReferences,
   useCreateAcademicReference,
   useRenameAcademicReference,
   useSetAcademicReferenceStatus,
-} from '../hooks/use-academic-references';
+} from '../queries/use-academic-references';
 
-function message(error: unknown) {
-  return (error as { message?: string })?.message ?? 'Could not save this reference.';
-}
-
-const shortUnitLabels: Record<AcademicResource, { singular: string; plural: string }> = {
-  'class-levels': { singular: 'Class', plural: 'Classes' },
-  mediums: { singular: 'Medium', plural: 'Mediums' },
-  'academic-groups': { singular: 'Group', plural: 'Groups' },
-};
+import { academicResourceLabels, getSettingsErrorMessage } from '@/utils/settings-helpers';
 
 export function AcademicReferenceCard({
   workspaceId,
   resource,
   title,
   description,
-}: {
-  workspaceId: string;
-  resource: AcademicResource;
-  title: string;
-  description: string;
-}) {
+}: AcademicReferenceCardProps) {
   const query = useAcademicReferences(workspaceId, resource);
   const create = useCreateAcademicReference();
   const rename = useRenameAcademicReference();
@@ -58,8 +45,9 @@ export function AcademicReferenceCard({
   const [confirming, setConfirming] = useState<AcademicReference | null>(null);
 
   const singularTitle =
-    shortUnitLabels[resource]?.singular ?? (title.endsWith('s') ? title.slice(0, -1) : title);
-  const pluralTitle = shortUnitLabels[resource]?.plural ?? title;
+    academicResourceLabels[resource]?.singular ??
+    (title.endsWith('s') ? title.slice(0, -1) : title);
+  const pluralTitle = academicResourceLabels[resource]?.plural ?? title;
 
   function add() {
     const value = name.trim();
@@ -72,7 +60,7 @@ export function AcademicReferenceCard({
           toast.success(`${singularTitle} "${value}" added successfully.`);
         },
         onError: (err) => {
-          toast.error(message(err));
+          toast.error(getSettingsErrorMessage(err));
         },
       }
     );
@@ -89,7 +77,7 @@ export function AcademicReferenceCard({
           toast.success(`${singularTitle} renamed to "${newName}".`);
         },
         onError: (err) => {
-          toast.error(message(err));
+          toast.error(getSettingsErrorMessage(err));
         },
       }
     );
@@ -111,7 +99,7 @@ export function AcademicReferenceCard({
           );
         },
         onError: (err) => {
-          toast.error(message(err));
+          toast.error(getSettingsErrorMessage(err));
         },
       }
     );
@@ -161,7 +149,7 @@ export function AcademicReferenceCard({
         </div>
 
         {create.isError ? (
-          <p className="text-xs text-destructive">{message(create.error)}</p>
+          <p className="text-xs text-destructive">{getSettingsErrorMessage(create.error)}</p>
         ) : null}
 
         {query.isPending ? <LoadingState rows={2} /> : null}
@@ -290,7 +278,7 @@ export function AcademicReferenceCard({
         ) : null}
 
         {rename.isError ? (
-          <p className="text-xs text-destructive">{message(rename.error)}</p>
+          <p className="text-xs text-destructive">{getSettingsErrorMessage(rename.error)}</p>
         ) : null}
       </div>
 

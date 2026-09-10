@@ -16,8 +16,8 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Check, LoaderCircle, X } from 'lucide-react';
 import { useState } from 'react';
-import type { PlatformPayment } from '../api/payments';
-import { useReviewPlatformPayment } from '../hooks/use-platform-payments';
+import type { PlatformPayment } from '@/types/platform';
+import { useReviewPlatformPayment } from '../queries/use-platform-payments';
 
 export function PlatformPaymentActions({ payment }: { payment: PlatformPayment }) {
   const review = useReviewPlatformPayment();

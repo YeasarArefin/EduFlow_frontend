@@ -12,8 +12,8 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -38,9 +38,13 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import type { PlatformWorkspace, PlatformWorkspaceListParams } from '../api/workspaces';
-import { useRunPlatformSubscriptionLifecycleOperation } from '../hooks/use-subscription-lifecycle';
-import { usePlatformWorkspaces } from '../hooks/use-workspaces';
+import type {
+  PlatformQueueFilter,
+  PlatformWorkspace,
+  PlatformWorkspaceListParams,
+} from '@/types/platform';
+import { useRunPlatformSubscriptionLifecycleOperation } from '../mutations/use-subscription-lifecycle';
+import { usePlatformWorkspaces } from '../queries/use-workspaces';
 
 const PAGE_SIZE = 20;
 const queueFilters = [
@@ -48,7 +52,6 @@ const queueFilters = [
   { value: 'locked', label: 'Locked only' },
   { value: 'scheduled_deletion', label: 'Scheduled deletion only' },
 ] as const;
-type QueueFilter = (typeof queueFilters)[number]['value'];
 
 const workspaceLabels = {
   locked: 'Locked',
@@ -65,8 +68,10 @@ function getPositivePage(value: string | null) {
   return Number.isInteger(page) && page > 0 ? page : 1;
 }
 
-function getQueueFilter(value: string | null): QueueFilter {
-  return queueFilters.some((filter) => filter.value === value) ? (value as QueueFilter) : 'all';
+function getQueueFilter(value: string | null): PlatformQueueFilter {
+  return queueFilters.some((filter) => filter.value === value)
+    ? (value as PlatformQueueFilter)
+    : 'all';
 }
 
 function formatDate(value: string | null) {

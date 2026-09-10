@@ -1,7 +1,8 @@
 'use client';
 
 import { useQuery } from '@tanstack/react-query';
-import { getMembers, type MemberListParams } from '../api/members';
+import { getMembers } from '../api/members';
+import type { MemberListParams } from '@/types/staff';
 import { memberKeys } from '../member-query-keys';
 
 export const useMembersQuery = (workspaceId: string, params: MemberListParams) =>

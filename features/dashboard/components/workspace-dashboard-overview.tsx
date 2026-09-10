@@ -6,89 +6,27 @@ import {
   PageHeader,
   SectionCard,
   StatCard,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { ArrowRight, CalendarCheck, RefreshCw, Settings, UserRoundCog, Users } from 'lucide-react';
+import type { WorkspaceDashboardOverviewProps } from '@/types/dashboard';
+import { ArrowRight, RefreshCw } from 'lucide-react';
 import Link from 'next/link';
-import type { DashboardSummary } from '../api/get-dashboard-summary';
-import { useDashboardSummary } from '../hooks/use-dashboard-summary';
+import { useDashboardSummary } from '../queries/use-dashboard-summary';
+import {
+  dashboardQuickActions,
+  formatDashboardDate,
+  getAccessLabel,
+  getAccessVisual,
+  getEntitlementSummary,
+} from '@/utils/dashboard-formatters';
 import { DashboardDetailRow } from './dashboard-detail-row';
-
-const accessVisuals: Record<string, 'success' | 'warning' | 'danger' | 'info'> = {
-  active: 'success',
-  trial: 'info',
-  renewal_due: 'warning',
-  payment_pending: 'warning',
-  subscription_expired: 'danger',
-  locked: 'danger',
-  suspended: 'danger',
-  scheduled_for_deletion: 'danger',
-  verification_pending: 'warning',
-};
-
-const accessLabels: Record<string, string> = {
-  active: 'Active',
-  trial: 'Trial',
-  renewal_due: 'Renewal due',
-  payment_pending: 'Payment pending',
-  subscription_expired: 'Subscription expired',
-  locked: 'Locked',
-  suspended: 'Suspended',
-  scheduled_for_deletion: 'Deletion scheduled',
-  verification_pending: 'Verification pending',
-};
-
-const quickActions = [
-  {
-    title: 'Students',
-    description: 'Manage student records, profiles, and enrollments.',
-    href: '/dashboard/students',
-    icon: Users,
-  },
-  {
-    title: 'Attendance',
-    description: 'Create sessions and record daily attendance.',
-    href: '/dashboard/attendance',
-    icon: CalendarCheck,
-  },
-  {
-    title: 'Staff',
-    description: 'Manage workspace members and roles from your staff area.',
-    href: '/dashboard/staff',
-    icon: UserRoundCog,
-  },
-  {
-    title: 'Settings',
-    description: 'Review your workspace preferences and configuration.',
-    href: '/dashboard/settings',
-    icon: Settings,
-  },
-];
-
-function formatDate(value: string | null) {
-  if (!value) return 'Not set';
-  return new Intl.DateTimeFormat('en-GB', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(value));
-}
-
-function entitlementSummary(summary: DashboardSummary) {
-  const enabled = summary.entitlements.filter((item) => item.enabled);
-  if (!summary.entitlements.length) return 'No plan features configured';
-  return `${enabled.length} of ${summary.entitlements.length} features enabled`;
-}
 
 export function WorkspaceDashboardOverview({
   workspaceId,
   initialSummary,
-}: {
-  workspaceId: string;
-  initialSummary?: DashboardSummary | null;
-}) {
+}: WorkspaceDashboardOverviewProps) {
   const query = useDashboardSummary(workspaceId, initialSummary);
 
   if (query.isPending) return <LoadingState rows={6} />;
@@ -101,8 +39,8 @@ export function WorkspaceDashboardOverview({
     );
 
   const summary = query.data;
-  const accessLabel = accessLabels[summary.access.status] ?? summary.access.status;
-  const accessVisual = accessVisuals[summary.access.status] ?? 'info';
+  const accessLabel = getAccessLabel(summary.access.status);
+  const accessVisual = getAccessVisual(summary.access.status);
   const dateLabel = summary.subscription?.status === 'trial' ? 'Trial ends' : 'Access until';
 
   return (
@@ -145,7 +83,7 @@ export function WorkspaceDashboardOverview({
         <StatCard
           label="Features"
           value={summary.entitlements.filter((item) => item.enabled).length}
-          detail={entitlementSummary(summary)}
+          detail={getEntitlementSummary(summary)}
         />
       </div>
 
@@ -162,7 +100,7 @@ export function WorkspaceDashboardOverview({
             />
             <DashboardDetailRow
               label={dateLabel}
-              value={formatDate(
+              value={formatDashboardDate(
                 summary.subscription?.status === 'trial'
                   ? (summary.subscription?.trialEndsAt ?? null)
                   : (summary.subscription?.expiresAt ?? null)
@@ -170,13 +108,13 @@ export function WorkspaceDashboardOverview({
             />
             <DashboardDetailRow
               label="Renewal due"
-              value={formatDate(summary.subscription?.renewalDueAt ?? null)}
+              value={formatDashboardDate(summary.subscription?.renewalDueAt ?? null)}
             />
             <DashboardDetailRow
               label="Latest payment"
               value={
                 summary.latestPayment
-                  ? `${summary.latestPayment.status[0].toUpperCase()}${summary.latestPayment.status.slice(1)} · ${formatDate(summary.latestPayment.createdAt)}`
+                  ? `${summary.latestPayment.status[0].toUpperCase()}${summary.latestPayment.status.slice(1)} · ${formatDashboardDate(summary.latestPayment.createdAt)}`
                   : 'No payment request'
               }
             />
@@ -185,7 +123,7 @@ export function WorkspaceDashboardOverview({
 
         <SectionCard
           title="Plan features"
-          description={entitlementSummary(summary)}
+          description={getEntitlementSummary(summary)}
           className="lg:col-span-2"
         >
           {summary.entitlements.length ? (
@@ -218,7 +156,7 @@ export function WorkspaceDashboardOverview({
           </p>
         </div>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {quickActions.map((action) => {
+          {dashboardQuickActions.map((action) => {
             const Icon = action.icon;
             return (
               <Link

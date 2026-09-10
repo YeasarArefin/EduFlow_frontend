@@ -11,13 +11,13 @@ import {
   PageHeader,
   SectionCard,
   StatCard,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { formatBdt } from '@/lib/format-money';
-import { useRevenueOverview } from '../hooks/use-revenue-overview';
+import { useRevenueOverview } from '../queries/use-revenue-overview';
 
 function formatDate(value: string) {
   const date = new Date(value);

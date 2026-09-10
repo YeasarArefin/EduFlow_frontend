@@ -5,7 +5,7 @@ import {
   LoadingState,
   PageHeader,
   SectionCard,
-} from '@/components/dashboard-primitives';
+} from '@/components/dashboard/dashboard-primitives';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
@@ -24,8 +24,9 @@ import {
   useUpdateRoleMutation,
 } from '../mutations/use-permission-mutations';
 import { usePermissionConfigurationQuery } from '../queries/use-permission-queries';
+import type { PermissionManagementPageProps } from '@/types/staff';
 
-export function PermissionManagementPage({ workspaceId }: { workspaceId: string }) {
+export function PermissionManagementPage({ workspaceId }: PermissionManagementPageProps) {
   const configuration = usePermissionConfigurationQuery(workspaceId);
   const createRole = useCreateRoleMutation();
   const updateRole = useUpdateRoleMutation();

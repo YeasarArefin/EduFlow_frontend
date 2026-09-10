@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -12,7 +12,7 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 import { History, Receipt } from 'lucide-react';
 import type { StudentFee } from '../api/fees';
-import { useFeePaymentsQuery } from '../hooks/use-fees';
+import { useFeePaymentsQuery } from '../queries/use-fees';
 import { FeePaymentHistoryItem } from './fee-payment-history-item';
 
 function formatMonth(dateStr?: string | null): string {

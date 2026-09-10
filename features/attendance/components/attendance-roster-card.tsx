@@ -1,17 +1,7 @@
-import type { AttendanceRecord, AttendanceRecordStatus } from '../api/attendance';
+import type { AttendanceRosterProps } from '@/types/attendance';
 import { AttendanceControl } from './attendance-control';
 
-export function AttendanceRosterCard({
-  record,
-  value,
-  disabled,
-  onChange,
-}: {
-  record: AttendanceRecord;
-  value: AttendanceRecordStatus;
-  disabled: boolean;
-  onChange: (status: AttendanceRecordStatus) => void;
-}) {
+export function AttendanceRosterCard({ record, value, disabled, onChange }: AttendanceRosterProps) {
   return (
     <div className="rounded-xl border border-border bg-card p-4">
       <div className="mb-3 flex items-start justify-between gap-3">

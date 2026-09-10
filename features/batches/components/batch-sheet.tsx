@@ -1,7 +1,8 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from '@/components/ui/field';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -20,66 +21,30 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Spinner } from '@/components/ui/spinner';
-import { useAcademicReferences } from '@/features/settings/hooks/use-academic-references';
+import { useAcademicReferences } from '@/features/settings/queries/use-academic-references';
+import type { Batch, BatchSheetProps, BatchSheetValues } from '@/types/batches';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import type { Batch, BatchStatus } from '../api/batches';
-import { useCreateBatchMutation, useUpdateBatchMutation } from '../hooks/use-batch-mutations';
+import { useCreateBatchMutation, useUpdateBatchMutation } from '../mutations/use-batch-mutations';
+import { formatBatchTakaPreview, getBatchMonthlyFeeInTaka } from '@/utils/batch-formatters';
 
-type Values = {
-  name: string;
-  classLevelId: string;
-  mediumId: string;
-  academicGroupId: string;
-  startDate: string;
-  monthlyFee: string;
-  status: Exclude<BatchStatus, 'archived'>;
-};
-
-function takaFromBatch(batch?: Batch): string {
-  if (!batch) return '';
-  if (batch.monthlyFee !== undefined && batch.monthlyFee !== null) {
-    return batch.monthlyFee;
-  }
-  const minor = Number(batch.monthlyFeeMinor || 0);
-  if (isNaN(minor) || minor === 0) return '0';
-  return (minor / 100).toFixed(2).replace(/\.00$/, '');
-}
-
-function formatTakaPreview(taka: string): string {
-  const clean = taka.trim();
-  const num = Number(clean || 0);
-  if (isNaN(num) || num < 0) return '৳ 0.00';
-  return new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(num);
-}
-
-const initialValues = (batch?: Batch): Values => ({
+const initialValues = (batch?: Batch): BatchSheetValues => ({
   name: batch?.name ?? '',
   classLevelId: batch?.classLevelId ?? '',
   mediumId: batch?.mediumId ?? '',
   academicGroupId: batch?.academicGroupId ?? '',
   startDate: batch?.startDate ?? '',
-  monthlyFee: takaFromBatch(batch),
+  classDays: batch?.classDays ?? [],
+  monthlyFee: getBatchMonthlyFeeInTaka(batch),
   status: batch?.status === 'inactive' ? 'inactive' : 'active',
 });
 
-export function BatchSheet({
-  open,
-  onOpenChange,
-  workspaceId,
-  batch,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  workspaceId: string;
-  batch?: Batch;
-}) {
-  const [values, setValues] = useState<Values>(() => initialValues(batch));
+const weekdays = [
+  ['Sun', 0], ['Mon', 1], ['Tue', 2], ['Wed', 3], ['Thu', 4], ['Fri', 5], ['Sat', 6],
+] as const;
+
+export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchSheetProps) {
+  const [values, setValues] = useState<BatchSheetValues>(() => initialValues(batch));
   const [submitted, setSubmitted] = useState(false);
 
   const classLevels = useAcademicReferences(workspaceId, 'class-levels');
@@ -109,6 +74,7 @@ export function BatchSheet({
       values.mediumId !== initial.mediumId ||
       values.academicGroupId !== initial.academicGroupId ||
       values.startDate !== initial.startDate ||
+      values.classDays.join(',') !== initial.classDays.join(',') ||
       values.monthlyFee.trim() !== initial.monthlyFee.trim() ||
       values.status !== initial.status
     );
@@ -118,7 +84,7 @@ export function BatchSheet({
     event.preventDefault();
     setSubmitted(true);
 
-    if (!values.name.trim() || !values.classLevelId || !isFeeValid) return;
+    if (!values.name.trim() || !values.classLevelId || !values.classDays.length || !isFeeValid) return;
 
     const feeNum = Number(values.monthlyFee.trim() || 0);
     const feeMinor = Math.round(feeNum * 100).toString();
@@ -129,6 +95,7 @@ export function BatchSheet({
       mediumId: values.mediumId || null,
       academicGroupId: values.academicGroupId || null,
       startDate: values.startDate || null,
+      classDays: values.classDays,
       monthlyFee: feeNum,
       monthlyFeeMinor: feeMinor,
       status: values.status,
@@ -283,6 +250,38 @@ export function BatchSheet({
                 </Field>
               </div>
 
+              <FieldSet>
+                <FieldLegend variant="label">Class Days *</FieldLegend>
+                <FieldDescription>Select every weekday this batch meets.</FieldDescription>
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" data-slot="checkbox-group">
+                  {weekdays.map(([label, day]) => {
+                    const checked = values.classDays.includes(day);
+                    return (
+                      <FieldLabel key={day} className="cursor-pointer rounded-lg border border-border px-3 py-2 text-sm">
+                        <Field orientation="horizontal">
+                          <Checkbox
+                            checked={checked}
+                            onCheckedChange={(next) =>
+                              setValues((current) => ({
+                                ...current,
+                                classDays: next
+                                  ? [...current.classDays, day].sort((a, b) => a - b)
+                                  : current.classDays.filter((item) => item !== day),
+                              }))
+                            }
+                            aria-label={`${label} class day`}
+                          />
+                          <span>{label}</span>
+                        </Field>
+                      </FieldLabel>
+                    );
+                  })}
+                </div>
+                {submitted && !values.classDays.length ? (
+                  <FieldError errors={[{ message: 'Select at least one class day.' }]} />
+                ) : null}
+              </FieldSet>
+
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field>
                   <FieldLabel htmlFor="batch-start-date">Batch Start Date</FieldLabel>
@@ -306,7 +305,7 @@ export function BatchSheet({
                     onValueChange={(status) =>
                       setValues((current) => ({
                         ...current,
-                        status: status as Values['status'],
+                        status: status as BatchSheetValues['status'],
                       }))
                     }
                   >
@@ -345,7 +344,7 @@ export function BatchSheet({
                 />
                 <FieldDescription>
                   {values.monthlyFee.trim() && !isNaN(Number(values.monthlyFee))
-                    ? `Per student fee: ${formatTakaPreview(values.monthlyFee)} / month`
+                    ? `Per student fee: ${formatBatchTakaPreview(values.monthlyFee)} / month`
                     : 'Enter the monthly tuition fee in Taka (e.g. 2000).'}
                 </FieldDescription>
                 {submitted && !isFeeValid && (
@@ -371,6 +370,7 @@ export function BatchSheet({
                 loading ||
                 !values.name.trim() ||
                 !values.classLevelId ||
+                !values.classDays.length ||
                 !isFeeValid ||
                 (isEditing && !isDirty)
               }

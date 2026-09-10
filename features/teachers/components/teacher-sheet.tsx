@@ -27,16 +27,23 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import { ApiError } from '@/lib/api/client';
+import type {
+  Teacher,
+  TeacherInput,
+  TeacherSheetFormValues,
+  TeacherSheetProps,
+  TeacherStatus,
+} from '@/types/teachers';
 import {
   useCreateTeacherMutation,
   useUpdateTeacherMutation,
 } from '../mutations/use-teacher-mutations';
+import { TEACHER_STATUSES } from '@/types/teachers';
 import {
-  TEACHER_STATUSES,
-  type Teacher,
-  type TeacherInput,
-  type TeacherStatus,
-} from '../api/teachers';
+  formatTeacherTakaPreview,
+  teacherMinorFromTaka,
+  teacherTakaFromMinor,
+} from '@/utils/teacher-formatters';
 
 const phonePattern = /^(?:\+8801\d{9}|01\d{9})$/;
 const currencyPattern = /^\d*(?:\.\d{0,2})?$/;
@@ -78,35 +85,7 @@ const schema = z.object({
   notes: z.string().trim().max(2000, 'Notes cannot exceed 2000 characters.'),
 });
 
-type Values = z.infer<typeof schema>;
-
-function takaFromMinor(minor: string): string {
-  const num = Number(minor || 0);
-  if (isNaN(num) || num === 0) return '0';
-  return (num / 100).toFixed(2).replace(/\.00$/, '');
-}
-
-function minorFromTaka(taka: string): string {
-  const clean = taka.trim();
-  if (!clean) return '0';
-  const num = Number(clean);
-  if (isNaN(num) || num < 0) return '0';
-  return Math.round(num * 100).toString();
-}
-
-function formatTakaPreview(taka: string): string {
-  const clean = taka.trim();
-  const num = Number(clean || 0);
-  if (isNaN(num) || num < 0) return '৳ 0.00';
-  return new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(num);
-}
-
-function defaultValuesFromTeacher(teacher?: Teacher): Values {
+function defaultValuesFromTeacher(teacher?: Teacher): TeacherSheetFormValues {
   if (teacher) {
     return {
       teacherCode: teacher.teacherCode,
@@ -114,7 +93,7 @@ function defaultValuesFromTeacher(teacher?: Teacher): Values {
       phone: teacher.phone ?? '',
       email: teacher.email ?? '',
       subjectSpecialty: teacher.subjectSpecialty ?? '',
-      defaultSalaryTaka: takaFromMinor(teacher.defaultSalaryMinor),
+      defaultSalaryTaka: teacherTakaFromMinor(teacher.defaultSalaryMinor),
       status: teacher.status,
       notes: teacher.notes ?? '',
     };
@@ -131,23 +110,13 @@ function defaultValuesFromTeacher(teacher?: Teacher): Values {
   };
 }
 
-export function TeacherSheet({
-  open,
-  onOpenChange,
-  workspaceId,
-  teacher,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  workspaceId: string;
-  teacher?: Teacher;
-}) {
+export function TeacherSheet({ open, onOpenChange, workspaceId, teacher }: TeacherSheetProps) {
   const createMutation = useCreateTeacherMutation();
   const updateMutation = useUpdateTeacherMutation();
   const isEditing = Boolean(teacher);
   const pending = createMutation.isPending || updateMutation.isPending;
 
-  const form = useForm<Values>({
+  const form = useForm<TeacherSheetFormValues>({
     resolver: zodResolver(schema),
     defaultValues: defaultValuesFromTeacher(teacher),
   });
@@ -167,7 +136,7 @@ export function TeacherSheet({
     }
   }, [form, open, teacher]);
 
-  function submit(values: Values) {
+  function submit(values: TeacherSheetFormValues) {
     form.clearErrors('root');
     const input: TeacherInput = {
       teacherCode: values.teacherCode,
@@ -175,7 +144,7 @@ export function TeacherSheet({
       phone: values.phone || null,
       email: values.email || null,
       subjectSpecialty: values.subjectSpecialty || null,
-      defaultSalaryMinor: minorFromTaka(values.defaultSalaryTaka),
+      defaultSalaryMinor: teacherMinorFromTaka(values.defaultSalaryTaka),
       status: values.status,
       notes: values.notes || null,
     };
@@ -363,7 +332,7 @@ export function TeacherSheet({
                 <div className="mt-1 flex items-center justify-between rounded-lg border border-border/40 bg-muted/20 px-3 py-1.5 text-xs text-muted-foreground">
                   <span>Formatted Monthly Compensation</span>
                   <span className="font-semibold text-foreground">
-                    {formatTakaPreview(salaryTaka || '0')}
+                    {formatTeacherTakaPreview(salaryTaka || '0')}
                   </span>
                 </div>
                 <FieldError

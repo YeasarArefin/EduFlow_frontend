@@ -1,14 +1,6 @@
-import type { ReactNode } from 'react';
+import type { BatchProfileMetadataItemProps } from '@/types/batches';
 
-export function BatchProfileMetadataItem({
-  label,
-  value,
-  icon,
-}: {
-  label: string;
-  value: ReactNode;
-  icon: ReactNode;
-}) {
+export function BatchProfileMetadataItem({ label, value, icon }: BatchProfileMetadataItemProps) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40 text-primary">

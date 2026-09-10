@@ -1,4 +1,4 @@
-import { ManualPaymentForm } from '@/components/checkout/manual-payment-form';
+import { ManualPaymentForm } from '@/features/payments/components/manual-payment-form';
 import { PublicContainer } from '@/components/public/public-container';
 import { Button } from '@/components/ui/button';
 import {
@@ -9,36 +9,21 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { getPublicPlans, type PublicPlan } from '@/features/pricing/api/get-public-plans';
+import { getPublicPlans } from '@/features/pricing/api/get-public-plans';
+import { findPublicPlan } from '@/utils/public-plan';
+import { durationLabel, formatBdt } from '@/lib/format-money';
 import { postAuthDestinations, resolvePostAuthDestination } from '@/lib/auth/post-auth-destination';
 import { SELECTED_PLAN_COOKIE } from '@/lib/selected-plan';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
-function formatBdt(priceMinor: string) {
-  const normalized = priceMinor.replace(/^0+(?=\d)/, '');
-  const whole = normalized.length > 2 ? normalized.slice(0, -2) : '0';
-  const poisha = normalized.slice(-2).padStart(2, '0');
-  return `৳${whole}.${poisha}`;
-}
-
-function durationLabel(days: number) {
-  if (days === 365) return 'year';
-  if (days === 30) return 'month';
-  return `${days} days`;
-}
-
-function findSelectedPlan(plans: PublicPlan[] | null, slug: string | undefined) {
-  return plans?.find((plan) => plan.slug === slug);
-}
-
 export default async function CheckoutPage() {
   const selectedPlanSlug = (await cookies()).get(SELECTED_PLAN_COOKIE)?.value;
   const destination = await resolvePostAuthDestination({ selectedPlanSlug });
   if (destination !== postAuthDestinations.checkout) redirect(destination);
 
-  const selectedPlan = findSelectedPlan(await getPublicPlans(), selectedPlanSlug);
+  const selectedPlan = findPublicPlan(await getPublicPlans(), selectedPlanSlug);
   if (!selectedPlan) redirect(postAuthDestinations.pricing);
   return (
     <PublicContainer className="flex flex-1 items-center py-16 sm:py-24">

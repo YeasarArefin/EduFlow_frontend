@@ -1,20 +1,20 @@
 import { getPublicPlans } from '@/features/pricing/api/get-public-plans';
 import { getServerSession } from '@/lib/auth/server';
-import { CommunicationAutomationSection } from '@/components/landing/communication-automation-section';
-import { CoreWorkflowsSection } from '@/components/landing/core-workflows-section';
-import { CtaSection } from '@/components/landing/cta-section';
-import { DashboardIntelligenceSection } from '@/components/landing/dashboard-intelligence-section';
-import { FaqSection } from '@/components/landing/faq-section';
-import { HeroSection } from '@/components/landing/hero-section';
-import { HowItWorksSection } from '@/components/landing/how-it-works-section';
-import { PricingPreviewSection } from '@/components/landing/pricing-preview-section';
-import { ProblemSolutionSection } from '@/components/landing/problem-solution-section';
-import { RolesPermissionsSection } from '@/components/landing/roles-permissions-section';
-import { SecurityTrustSection } from '@/components/landing/security-trust-section';
-import { TrustStrip } from '@/components/landing/trust-strip';
+import { CommunicationAutomationSection } from '@/features/landing/components/communication-automation-section';
+import { CoreWorkflowsSection } from '@/features/landing/components/core-workflows-section';
+import { CtaSection } from '@/features/landing/components/cta-section';
+import { DashboardIntelligenceSection } from '@/features/landing/components/dashboard-intelligence-section';
+import { FaqSection } from '@/features/landing/components/faq-section';
+import { HeroSection } from '@/features/landing/components/hero-section';
+import { HowItWorksSection } from '@/features/landing/components/how-it-works-section';
+import { PricingPreviewSection } from '@/features/pricing/components/pricing-preview-section';
+import { ProblemSolutionSection } from '@/features/landing/components/problem-solution-section';
+import { RolesPermissionsSection } from '@/features/landing/components/roles-permissions-section';
+import { SecurityTrustSection } from '@/features/landing/components/security-trust-section';
+import { TrustStrip } from '@/features/landing/components/trust-strip';
 
-import { LandingBackdrop } from '@/components/landing/landing-backdrop';
-import { PremiumTiltController } from '@/components/landing/premium-tilt-controller';
+import { LandingBackdrop } from '@/features/landing/components/landing-backdrop';
+import { PremiumTiltController } from '@/features/landing/components/premium-tilt-controller';
 
 export default async function Home() {
   const [plans, session] = await Promise.all([getPublicPlans(), getServerSession()]);

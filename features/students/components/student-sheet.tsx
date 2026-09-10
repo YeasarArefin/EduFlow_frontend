@@ -27,7 +27,12 @@ import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
-import type { Student, StudentInput } from '../api/students';
+import type {
+  Student,
+  StudentInput,
+  StudentSheetFormValues,
+  StudentSheetProps,
+} from '@/types/students';
 import { useCreateStudentMutation } from '../mutations/use-create-student-mutation';
 import { useUpdateStudentMutation } from '../mutations/use-update-student-mutation';
 
@@ -50,8 +55,7 @@ const schema = z.object({
   status: z.enum(['active', 'inactive', 'archived']),
   notes: z.string().trim().max(5000),
 });
-type Values = z.infer<typeof schema>;
-const emptyValues: Values = {
+const emptyValues: StudentSheetFormValues = {
   studentCode: '',
   fullName: '',
   phone: '',
@@ -63,7 +67,7 @@ const emptyValues: Values = {
   status: 'active',
   notes: '',
 };
-function valuesFromStudent(student?: Student | null): Values {
+function valuesFromStudent(student?: Student | null): StudentSheetFormValues {
   return student
     ? {
         studentCode: student.studentCode,
@@ -79,7 +83,7 @@ function valuesFromStudent(student?: Student | null): Values {
       }
     : emptyValues;
 }
-function toInput(values: Values): StudentInput {
+function toInput(values: StudentSheetFormValues): StudentInput {
   return {
     studentCode: values.studentCode.trim(),
     fullName: values.fullName.trim(),
@@ -94,18 +98,8 @@ function toInput(values: Values): StudentInput {
   };
 }
 
-export function StudentSheet({
-  open,
-  onOpenChange,
-  workspaceId,
-  student,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  workspaceId: string;
-  student?: Student | null;
-}) {
-  const form = useForm<Values>({
+export function StudentSheet({ open, onOpenChange, workspaceId, student }: StudentSheetProps) {
+  const form = useForm<StudentSheetFormValues>({
     resolver: zodResolver(schema),
     defaultValues: valuesFromStudent(student),
   });
@@ -118,7 +112,7 @@ export function StudentSheet({
   useEffect(() => {
     if (open) form.reset(valuesFromStudent(student));
   }, [form, open, student]);
-  function submit(values: Values) {
+  function submit(values: StudentSheetFormValues) {
     form.clearErrors('root');
     const input = toInput(values);
     const options = {
@@ -270,7 +264,7 @@ export function StudentSheet({
                   <Select
                     value={studentStatus}
                     onValueChange={(value) =>
-                      form.setValue('status', value as Values['status'], {
+                      form.setValue('status', value as StudentSheetFormValues['status'], {
                         shouldDirty: true,
                       })
                     }
@@ -304,7 +298,9 @@ export function StudentSheet({
                     onValueChange={(value) =>
                       form.setValue(
                         'gender',
-                        (value === 'unspecified' ? '' : (value ?? '')) as Values['gender'],
+                        (value === 'unspecified'
+                          ? ''
+                          : (value ?? '')) as StudentSheetFormValues['gender'],
                         { shouldDirty: true }
                       )
                     }

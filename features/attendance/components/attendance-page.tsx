@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Calendar } from '@/components/ui/calendar';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -25,50 +26,43 @@ import {
   ErrorState,
   LoadingState,
   PageHeader,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
-import { useBatchesQuery } from '@/features/batches/hooks/use-batches-query';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
+import { useBatchesQuery } from '@/features/batches/queries/use-batches-query';
+import type {
+  AttendancePageProps,
+  AttendanceRecord,
+  AttendanceRecordStatus,
+  AttendanceSessionSummary,
+} from '@/types/attendance';
 import { CalendarDays, CheckCheck, CircleCheck, Clock3, Save, UsersRound } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { AttendanceHistoryRow } from './attendance-history-row';
 import { AttendanceRosterCard } from './attendance-roster-card';
 import { AttendanceRosterRow } from './attendance-roster-row';
-import type {
-  AttendanceRecord,
-  AttendanceRecordStatus,
-  AttendanceSessionSummary,
-} from '../api/attendance';
 import {
   useAttendanceSessionQuery,
   useAttendanceSessionsQuery,
   useCreateAttendanceSessionMutation,
   useFinalizeAttendanceSessionMutation,
   useSaveAttendanceMutation,
-} from '../hooks/use-attendance';
+} from '../queries/use-attendance';
+import {
+  formatAttendanceDate,
+  getAttendanceStatusBadge,
+  getAttendanceStatusLabel,
+  getTodayDate,
+} from '@/utils/attendance-formatters';
 
-const today = () => new Date().toISOString().slice(0, 10);
 const emptyRecords: AttendanceRecord[] = [];
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat('en-US', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(`${date}T00:00:00`));
-}
+const isoDate = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
 
-function sessionStatus(status: 'draft' | 'finalized') {
-  return status === 'finalized' ? 'success' : 'warning';
-}
-
-function statusLabel(status: 'draft' | 'finalized') {
-  return status === 'finalized' ? 'Finalized' : 'Draft';
-}
-
-export function AttendancePage({ workspaceId }: { workspaceId: string }) {
+export function AttendancePage({ workspaceId }: AttendancePageProps) {
   const [batchId, setBatchId] = useState('');
-  const [sessionDate, setSessionDate] = useState(today);
+  const [sessionDate, setSessionDate] = useState(getTodayDate);
   const [loadedSessionId, setLoadedSessionId] = useState<string | null>(null);
   const [hasLookedUpSession, setHasLookedUpSession] = useState(false);
   const [historyBatchId, setHistoryBatchId] = useState('all');
@@ -97,6 +91,7 @@ export function AttendancePage({ workspaceId }: { workspaceId: string }) {
   const activeSession = sessionQuery.data;
   const batches = batchesQuery.data?.data ?? [];
   const activeBatches = batches.filter((batch) => batch.status === 'active');
+  const selectedBatch = activeBatches.find((batch) => batch.id === batchId);
   const matchingSession = lookupQuery.data?.data[0];
   const records = activeSession?.records ?? emptyRecords;
   const isFinalized = activeSession?.status === 'finalized';
@@ -217,7 +212,8 @@ export function AttendancePage({ workspaceId }: { workspaceId: string }) {
             Select a batch and date, then load its existing session or start a new one.
           </CardDescription>
         </CardHeader>
-        <CardContent className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_190px_auto] sm:items-end">
+        <CardContent className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
+          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
           <label className="grid gap-1.5 text-sm font-medium text-foreground">
             Batch
             <Select
@@ -239,18 +235,6 @@ export function AttendancePage({ workspaceId }: { workspaceId: string }) {
               </SelectContent>
             </Select>
           </label>
-          <label className="grid gap-1.5 text-sm font-medium text-foreground">
-            Date
-            <Input
-              type="date"
-              value={sessionDate}
-              onChange={(event) => {
-                setSessionDate(event.target.value);
-                resetLookup();
-              }}
-              aria-label="Attendance date"
-            />
-          </label>
           <Button
             className="h-9"
             variant="outline"
@@ -260,6 +244,31 @@ export function AttendancePage({ workspaceId }: { workspaceId: string }) {
             <Clock3 data-icon="inline-start" />{' '}
             {lookupQuery.isFetching ? 'Loading' : 'Load session'}
           </Button>
+          </div>
+          <div className="flex flex-col gap-3">
+            <div>
+              <p className="text-sm font-medium text-foreground">Attendance date</p>
+              <p className="text-sm text-muted-foreground">
+                {selectedBatch
+                  ? `Class days: ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].filter((_, day) => selectedBatch.classDays.includes(day)).join(', ')}`
+                  : 'Select a batch to see its class days.'}
+              </p>
+            </div>
+            <Calendar
+              mode="single"
+              selected={sessionDate ? new Date(`${sessionDate}T00:00:00`) : undefined}
+              onSelect={(date) => {
+                if (!date) return;
+                setSessionDate(isoDate(date));
+                resetLookup();
+              }}
+              disabled={(date) =>
+                date > new Date(new Date().setHours(23, 59, 59, 999)) ||
+                !selectedBatch ||
+                !selectedBatch.classDays.includes(date.getDay())
+              }
+            />
+          </div>
         </CardContent>
       </Card>
 
@@ -297,11 +306,12 @@ export function AttendancePage({ workspaceId }: { workspaceId: string }) {
             <div>
               <CardTitle>{activeSession.batch.name}</CardTitle>
               <CardDescription className="mt-1">
-                {formatDate(activeSession.sessionDate)} · {records.length} enrolled students
+                {formatAttendanceDate(activeSession.sessionDate)} · {records.length} enrolled
+                students
               </CardDescription>
             </div>
-            <StatusBadge status={sessionStatus(activeSession.status)}>
-              {statusLabel(activeSession.status)}
+            <StatusBadge status={getAttendanceStatusBadge(activeSession.status)}>
+              {getAttendanceStatusLabel(activeSession.status)}
             </StatusBadge>
           </CardHeader>
           <CardContent className="space-y-4">

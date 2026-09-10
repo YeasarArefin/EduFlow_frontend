@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Check, LoaderCircle, SlidersHorizontal } from 'lucide-react';
-import { EmptyState, ErrorState, LoadingState } from '@/components/dashboard-primitives';
+import { EmptyState, ErrorState, LoadingState } from '@/components/dashboard/dashboard-primitives';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,15 +24,20 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet';
-import type { PlatformFeatureCatalogItem, PlatformPlan, PlatformPlanFeature } from '../api/plans';
+import type {
+  DraftPlatformPlanFeature,
+  PlatformFeatureCatalogItem,
+  PlatformPlan,
+} from '@/types/platform';
 import {
   usePlatformFeatureCatalog,
   useUpdatePlatformPlanFeatures,
-} from '../hooks/use-platform-plans';
+} from '../queries/use-platform-plans';
 
-type DraftFeature = PlatformPlanFeature & { quota: string };
-
-function createDraft(catalog: PlatformFeatureCatalogItem[], plan: PlatformPlan): DraftFeature[] {
+function createDraft(
+  catalog: PlatformFeatureCatalogItem[],
+  plan: PlatformPlan
+): DraftPlatformPlanFeature[] {
   return catalog.map((feature) => {
     const saved = plan.features.find((item) => item.featureKey === feature.key);
     return {
@@ -70,7 +75,7 @@ function FeatureEditor({
   const isDirty =
     initial !== current || draft.some((feature) => (feature.quota || null) !== feature.limitValue);
 
-  function updateFeature(featureKey: string, updates: Partial<DraftFeature>) {
+  function updateFeature(featureKey: string, updates: Partial<DraftPlatformPlanFeature>) {
     setDraft((currentDraft) =>
       currentDraft.map((feature) =>
         feature.featureKey === featureKey ? { ...feature, ...updates } : feature

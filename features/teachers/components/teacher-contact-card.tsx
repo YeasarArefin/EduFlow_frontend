@@ -1,8 +1,8 @@
-import { SectionCard } from '@/components/dashboard-primitives';
+import { SectionCard } from '@/components/dashboard/dashboard-primitives';
 import { Mail, Phone } from 'lucide-react';
-import type { Teacher } from '../api/teachers';
+import type { TeacherContactCardProps } from '@/types/teachers';
 
-export function TeacherContactCard({ teacher }: { teacher: Teacher }) {
+export function TeacherContactCard({ teacher }: TeacherContactCardProps) {
   return (
     <SectionCard title="Contact information">
       <div className="flex flex-col gap-3">

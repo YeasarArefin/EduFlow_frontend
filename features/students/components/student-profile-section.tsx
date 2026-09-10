@@ -1,35 +1,10 @@
-import { SectionCard } from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
-import type { Student } from '../api/students';
+import { SectionCard } from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
+import type { StudentProfileSectionProps } from '@/types/students';
 import { StudentProfileDetailRow } from './student-profile-detail-row';
+import { formatStudentDate, getStudentStatusVisual } from '@/utils/student-formatters';
 
-const statusLabels: Record<Student['status'], string> = {
-  active: 'Active',
-  inactive: 'Inactive',
-  archived: 'Archived',
-};
-
-const statusVisuals: Record<Student['status'], 'success' | 'warning' | 'info'> = {
-  active: 'success',
-  inactive: 'warning',
-  archived: 'info',
-};
-
-function formatDate(value?: string | null): string {
-  if (!value) return 'Not recorded';
-
-  try {
-    return new Intl.DateTimeFormat('en-US', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).format(new Date(value));
-  } catch {
-    return value;
-  }
-}
-
-export function StudentProfileSection({ student }: { student: Student }) {
+export function StudentProfileSection({ student }: StudentProfileSectionProps) {
   return (
     <div className="grid gap-6 md:grid-cols-2">
       <SectionCard title="Student Information">
@@ -53,7 +28,7 @@ export function StudentProfileSection({ student }: { student: Student }) {
             <span className="capitalize">{student.gender || 'Not recorded'}</span>
           </StudentProfileDetailRow>
           <StudentProfileDetailRow label="Admission Date">
-            {formatDate(student.admissionDate)}
+            {formatStudentDate(student.admissionDate)}
           </StudentProfileDetailRow>
         </dl>
       </SectionCard>
@@ -76,8 +51,8 @@ export function StudentProfileSection({ student }: { student: Student }) {
             {student.address || 'Not recorded'}
           </StudentProfileDetailRow>
           <StudentProfileDetailRow label="Status">
-            <StatusBadge status={statusVisuals[student.status]}>
-              {statusLabels[student.status]}
+            <StatusBadge status={getStudentStatusVisual(student.status).tone}>
+              {getStudentStatusVisual(student.status).label}
             </StatusBadge>
           </StudentProfileDetailRow>
         </dl>

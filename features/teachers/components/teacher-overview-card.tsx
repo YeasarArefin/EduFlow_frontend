@@ -1,8 +1,8 @@
-import { SectionCard } from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
-import type { Teacher } from '../api/teachers';
+import { SectionCard } from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
+import type { TeacherOverviewCardProps } from '@/types/teachers';
 
-export function TeacherOverviewCard({ teacher }: { teacher: Teacher }) {
+export function TeacherOverviewCard({ teacher }: TeacherOverviewCardProps) {
   return (
     <SectionCard title="Teacher overview">
       <div className="flex flex-col gap-3">

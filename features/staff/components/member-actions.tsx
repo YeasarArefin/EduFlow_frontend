@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import type { WorkspaceMember } from '../api/members';
+import type { MemberActionsProps } from '@/types/staff';
 
 export function MemberActions({
   member,
@@ -16,13 +16,7 @@ export function MemberActions({
   onSuspend,
   onReactivate,
   onRemove,
-}: {
-  member: WorkspaceMember;
-  onEdit: () => void;
-  onSuspend: () => void;
-  onReactivate: () => void;
-  onRemove: () => void;
-}) {
+}: MemberActionsProps) {
   if (member.role === 'Owner') {
     return <span className="text-xs text-muted-foreground">Protected owner</span>;
   }

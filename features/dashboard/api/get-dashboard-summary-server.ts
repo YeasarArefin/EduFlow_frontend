@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { env } from '@/config/env';
-import type { DashboardSummary } from './get-dashboard-summary';
+import type { DashboardSummary, DashboardSummaryResponse } from '@/types/dashboard';
 
 export async function getDashboardSummaryServer(
   workspaceId: string
@@ -12,7 +12,7 @@ export async function getDashboardSummaryServer(
       cache: 'no-store',
     });
     if (!response.ok) return null;
-    const payload = (await response.json()) as { data?: DashboardSummary };
+    const payload = (await response.json()) as DashboardSummaryResponse;
     return payload.data ?? null;
   } catch {
     return null;

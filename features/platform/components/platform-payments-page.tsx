@@ -10,33 +10,19 @@ import {
   FilterToolbar,
   LoadingState,
   PageHeader,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { formatBdt } from '@/lib/format-money';
-import type { PlatformPayment } from '../api/payments';
-import { usePendingPlatformPayments } from '../hooks/use-platform-payments';
+import type { PlatformPayment } from '@/types/platform';
+import { usePendingPlatformPayments } from '../queries/use-platform-payments';
 import { PlatformPaymentActions } from './platform-payment-actions';
+import {
+  formatPlatformDate,
+  formatPlatformPlanPrice,
+  getPlatformPaymentStatusVisual,
+} from '@/utils/platform-formatters';
 
 const EMPTY_PAYMENTS: PlatformPayment[] = [];
-
-function formatSubmittedAt(value: string) {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return '—';
-  return new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' }).format(
-    date
-  );
-}
-
-function paymentStatusTone(status: PlatformPayment['status']) {
-  if (status === 'approved') return 'success' as const;
-  if (status === 'rejected') return 'danger' as const;
-  return 'warning' as const;
-}
-
-function paymentStatusLabel(status: PlatformPayment['status']) {
-  return status.slice(0, 1).toUpperCase() + status.slice(1);
-}
 
 /* Legacy payment-action implementation removed in favor of PlatformPaymentActions.
 function LegacyPaymentActions({ payment }: { payment: PlatformPayment }) {
@@ -274,17 +260,17 @@ export function PlatformPaymentsPage() {
                   {payment.plan?.name ?? <span className="text-muted-foreground">No plan</span>}
                 </TableCell>
                 <TableCell className="font-medium tabular-nums">
-                  {formatBdt(payment.amountMinor)}
+                  {formatPlatformPlanPrice(payment.amountMinor)}
                 </TableCell>
                 <TableCell className="capitalize">{payment.paymentMethod}</TableCell>
                 <TableCell className="font-mono text-xs">{payment.senderNumber}</TableCell>
                 <TableCell className="font-mono text-xs">{payment.transactionId}</TableCell>
                 <TableCell className="whitespace-nowrap text-muted-foreground">
-                  {formatSubmittedAt(payment.createdAt)}
+                  {formatPlatformDate(payment.createdAt, true)}
                 </TableCell>
                 <TableCell>
-                  <StatusBadge status={paymentStatusTone(payment.status)}>
-                    {paymentStatusLabel(payment.status)}
+                  <StatusBadge status={getPlatformPaymentStatusVisual(payment.status).tone}>
+                    {getPlatformPaymentStatusVisual(payment.status).label}
                   </StatusBadge>
                 </TableCell>
                 <TableCell>

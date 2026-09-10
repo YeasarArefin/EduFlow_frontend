@@ -1,58 +1,27 @@
 import { apiListRequest, apiRequest } from '@/lib/api/client';
+import {
+  ATTENDANCE_RECORD_STATUSES,
+  ATTENDANCE_SESSION_STATUSES,
+  type AttendanceRecordInput,
+  type AttendanceSession,
+  type AttendanceSessionListMeta,
+  type AttendanceSessionListParams,
+  type AttendanceSessionSummary,
+  type CreateAttendanceSessionInput,
+} from '@/types/attendance';
 
-export const ATTENDANCE_SESSION_STATUSES = ['draft', 'finalized'] as const;
-export const ATTENDANCE_RECORD_STATUSES = ['present', 'absent'] as const;
-
-export type AttendanceSessionStatus = (typeof ATTENDANCE_SESSION_STATUSES)[number];
-export type AttendanceRecordStatus = (typeof ATTENDANCE_RECORD_STATUSES)[number];
-
-export type AttendanceRecord = {
-  id: string;
-  studentId: string;
-  status: AttendanceRecordStatus;
-  createdAt: string;
-  updatedAt: string;
-  student: {
-    id: string;
-    studentCode: string;
-    fullName: string;
-    phone: string | null;
-  };
-};
-
-export type AttendanceSession = {
-  id: string;
-  batchId: string;
-  sessionDate: string;
-  status: AttendanceSessionStatus;
-  batch: { id: string; name: string };
-  records: AttendanceRecord[];
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type AttendanceSessionSummary = Omit<AttendanceSession, 'records'> & {
-  rosterCount: number;
-  presentCount: number;
-  absentCount: number;
-};
-
-export type AttendanceSessionListParams = {
-  batchId?: string;
-  sessionDate?: string;
-  status?: AttendanceSessionStatus;
-  page?: number;
-  limit?: number;
-};
-
-export type AttendanceSessionListMeta = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-};
-
-export type AttendanceRecordInput = Pick<AttendanceRecord, 'studentId' | 'status'>;
+export { ATTENDANCE_RECORD_STATUSES, ATTENDANCE_SESSION_STATUSES };
+export type {
+  AttendanceRecord,
+  AttendanceRecordInput,
+  AttendanceRecordStatus,
+  AttendanceSession,
+  AttendanceSessionListMeta,
+  AttendanceSessionListParams,
+  AttendanceSessionStatus,
+  AttendanceSessionSummary,
+  CreateAttendanceSessionInput,
+} from '@/types/attendance';
 
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
@@ -82,10 +51,7 @@ export function getAttendanceSession(workspaceId: string, sessionId: string, sig
   });
 }
 
-export function createAttendanceSession(
-  workspaceId: string,
-  input: { batchId: string; sessionDate: string }
-) {
+export function createAttendanceSession(workspaceId: string, input: CreateAttendanceSessionInput) {
   return apiRequest<AttendanceSession>('/attendance-sessions', {
     method: 'POST',
     headers: headers(workspaceId),

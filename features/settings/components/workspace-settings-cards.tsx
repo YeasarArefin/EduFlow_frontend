@@ -11,10 +11,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { SectionCard } from '@/components/dashboard-primitives';
-import { useSaveWorkspaceSettings, useWorkspaceSettings } from '../hooks/use-workspace-settings';
-import type { WorkspaceSettings } from '../api/workspace-settings';
-import type { UpdateWorkspaceSettingsInput } from '../api/workspace-settings';
+import { SectionCard } from '@/components/dashboard/dashboard-primitives';
+import { useSaveWorkspaceSettings, useWorkspaceSettings } from '../queries/use-workspace-settings';
+import type {
+  UpdateWorkspaceSettingsInput,
+  WorkspaceSettings,
+  WorkspaceSettingsCardsProps,
+} from '@/types/settings';
 
 const tabFields = {
   general: ['name', 'phone', 'email', 'address'],
@@ -29,13 +32,7 @@ const tabFields = {
     'absenceEmailRecipient',
   ],
 } as const satisfies Record<string, readonly (keyof UpdateWorkspaceSettingsInput)[]>;
-export function WorkspaceSettingsCards({
-  workspaceId,
-  tab,
-}: {
-  workspaceId: string;
-  tab: 'general' | 'billing' | 'salary' | 'sms' | 'reminders';
-}) {
+export function WorkspaceSettingsCards({ workspaceId, tab }: WorkspaceSettingsCardsProps) {
   const query = useWorkspaceSettings(workspaceId);
   const save = useSaveWorkspaceSettings();
   const form = useForm<Partial<WorkspaceSettings>>();

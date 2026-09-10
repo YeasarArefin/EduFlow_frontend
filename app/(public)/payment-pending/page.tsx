@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { PublicContainer } from '@/components/public/public-container';
-import { PaymentPendingClient } from '@/components/payment-pending/payment-pending-client';
+import { PaymentPendingClient } from '@/features/payments/components/payment-pending-client';
 import { postAuthDestinations, resolvePostAuthDestination } from '@/lib/auth/post-auth-destination';
 
 export default async function PaymentPendingPage() {

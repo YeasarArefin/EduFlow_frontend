@@ -1,4 +1,4 @@
-import { WorkspaceOnboarding } from '@/components/onboarding/workspace-onboarding';
+import { WorkspaceOnboarding } from '@/features/onboarding/components/workspace-onboarding';
 import { postAuthDestinations, resolvePostAuthDestination } from '@/lib/auth/post-auth-destination';
 import { redirect } from 'next/navigation';
 

@@ -1,46 +1,15 @@
 import { apiListRequest, apiRequest } from '@/lib/api/client';
+import {
+  STUDENT_STATUSES,
+  type PaginationMeta,
+  type Student,
+  type StudentInput,
+  type StudentListParams,
+  type StudentStatus,
+} from '@/types/students';
 
-export const STUDENT_STATUSES = ['active', 'inactive', 'archived'] as const;
-export type StudentStatus = (typeof STUDENT_STATUSES)[number];
-export type Student = {
-  id: string;
-  studentCode: string;
-  fullName: string;
-  phone: string | null;
-  guardianName: string | null;
-  guardianPhone: string | null;
-  address: string | null;
-  gender: 'male' | 'female' | 'other' | null;
-  admissionDate: string | null;
-  status: StudentStatus;
-  notes: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-export type StudentInput = {
-  studentCode: string;
-  fullName: string;
-  phone?: string | null;
-  guardianName?: string | null;
-  guardianPhone?: string | null;
-  address?: string | null;
-  gender?: 'male' | 'female' | 'other' | null;
-  admissionDate?: string | null;
-  status?: StudentStatus;
-  notes?: string | null;
-};
-export type StudentListParams = {
-  page: number;
-  limit: number;
-  search?: string;
-  status?: StudentStatus;
-};
-export type PaginationMeta = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-};
+export { STUDENT_STATUSES };
+export type { PaginationMeta, Student, StudentInput, StudentListParams, StudentStatus };
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
 export function getStudents(workspaceId: string, params: StudentListParams, signal?: AbortSignal) {

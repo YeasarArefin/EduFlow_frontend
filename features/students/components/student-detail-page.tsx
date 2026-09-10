@@ -1,7 +1,7 @@
 'use client';
 
-import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -40,14 +40,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { useEnrollStudent } from '@/features/batches/hooks/use-batch-enrollments';
-import { useBatchesQuery } from '@/features/batches/hooks/use-batches-query';
+import { useEnrollStudent } from '@/features/batches/queries/use-batch-enrollments';
+import { useBatchesQuery } from '@/features/batches/queries/use-batches-query';
 import type { FeeStatus, StudentFee } from '@/features/fees/api/fees';
 import { CollectPaymentSheet } from '@/features/fees/components/collect-payment-sheet';
 import { FeePaymentsHistoryDialog } from '@/features/fees/components/fee-payments-history-dialog';
 import { ReceiptDialog } from '@/features/fees/components/receipt-dialog';
-import { useStudentFeesQuery } from '@/features/fees/hooks/use-fees';
+import { useStudentFeesQuery } from '@/features/fees/queries/use-fees';
 import { cn } from '@/lib/utils';
+import type { StudentDetailPageProps } from '@/types/students';
 import {
   Archive,
   BookOpen,
@@ -156,13 +157,7 @@ function getInitials(name: string): string {
     .toUpperCase();
 }
 
-export function StudentDetailPage({
-  workspaceId,
-  studentId,
-}: {
-  workspaceId: string;
-  studentId: string;
-}) {
+export function StudentDetailPage({ workspaceId, studentId }: StudentDetailPageProps) {
   const [activeTab, setActiveTab] = useState<'fees' | 'enrollments' | 'profile'>('fees');
   const [editOpen, setEditOpen] = useState(false);
   const [archiveOpen, setArchiveOpen] = useState(false);

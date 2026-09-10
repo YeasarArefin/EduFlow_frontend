@@ -15,33 +15,23 @@ import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
 import { CalendarPlus } from 'lucide-react';
 import { toast } from 'sonner';
-import { useGenerateSalaries } from '../hooks/use-salaries';
-
-function formatMonth(value: string) {
-  return new Date(`${value.slice(0, 7)}-02T00:00:00`).toLocaleDateString('en-US', {
-    month: 'long',
-    year: 'numeric',
-  });
-}
+import { useGenerateSalaries } from '../queries/use-salaries';
+import type { GenerateSalariesDialogProps } from '@/types/salaries';
+import { formatSalaryMonth } from '@/utils/salary-formatters';
 
 export function GenerateSalariesDialog({
   workspaceId,
   salaryMonth,
   open,
   onOpenChange,
-}: {
-  workspaceId: string;
-  salaryMonth: string;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
+}: GenerateSalariesDialogProps) {
   const generation = useGenerateSalaries(workspaceId);
 
   async function handleGenerate() {
     try {
       const result = await generation.mutateAsync(salaryMonth);
       toast.success('Salary ledgers generated', {
-        description: `${result.created} created and ${result.existing} already existed for ${formatMonth(result.salaryMonth)}.`,
+        description: `${result.created} created and ${result.existing} already existed for ${formatSalaryMonth(result.salaryMonth)}.`,
       });
       onOpenChange(false);
     } catch (error) {
@@ -67,7 +57,7 @@ export function GenerateSalariesDialog({
             value={salaryMonth.slice(0, 7)}
             disabled
           />
-          <FieldDescription>Selected month: {formatMonth(salaryMonth)}</FieldDescription>
+          <FieldDescription>Selected month: {formatSalaryMonth(salaryMonth)}</FieldDescription>
         </Field>
         <AlertDialogFooter>
           <AlertDialogCancel disabled={generation.isPending}>Cancel</AlertDialogCancel>

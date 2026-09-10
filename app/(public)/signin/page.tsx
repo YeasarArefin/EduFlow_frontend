@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { AuthForm } from '@/components/auth/auth-form';
+import { AuthForm } from '@/features/auth/components/auth-form';
 import { getServerSession } from '@/lib/auth/server';
 import { validateSelectedPlanSlug } from '@/lib/selected-plan';
 

@@ -1,15 +1,7 @@
-import type { AttendanceRecordStatus } from '../api/attendance';
 import { cn } from '@/lib/utils';
+import type { AttendanceControlProps } from '@/types/attendance';
 
-export function AttendanceControl({
-  value,
-  disabled,
-  onChange,
-}: {
-  value: AttendanceRecordStatus;
-  disabled: boolean;
-  onChange: (status: AttendanceRecordStatus) => void;
-}) {
+export function AttendanceControl({ value, disabled, onChange }: AttendanceControlProps) {
   return (
     <div
       className="grid grid-cols-2 overflow-hidden rounded-lg border border-border-strong"

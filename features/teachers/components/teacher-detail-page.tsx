@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Archive, ChevronLeft, Pencil, RefreshCw } from 'lucide-react';
 import { useState } from 'react';
-import { ErrorState, LoadingState, PageHeader } from '@/components/dashboard-primitives';
+import { ErrorState, LoadingState, PageHeader } from '@/components/dashboard/dashboard-primitives';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import type { TeacherDetailPageProps } from '@/types/teachers';
 import {
   useArchiveTeacherMutation,
   useUpdateTeacherMutation,
@@ -26,13 +27,7 @@ import { TeacherNotesCard } from './teacher-notes-card';
 import { TeacherOverviewCard } from './teacher-overview-card';
 import { TeacherSheet } from './teacher-sheet';
 
-export function TeacherDetailPage({
-  workspaceId,
-  teacherId,
-}: {
-  workspaceId: string;
-  teacherId: string;
-}) {
+export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageProps) {
   const query = useTeacherQuery(workspaceId, teacherId);
   const archiveMutation = useArchiveTeacherMutation();
   const updateMutation = useUpdateTeacherMutation();

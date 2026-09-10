@@ -1,21 +1,12 @@
 import { apiRequest } from '@/lib/api/client';
-
-export type WorkspaceEntitlementOverride = {
-  id: string;
-  workspaceId: string;
-  featureKey: string;
-  enabledOverride: boolean | null;
-  limitOverride: string | null;
-  reason: string;
-  expiresAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-
-export type WorkspaceEntitlementOverrideInput = Omit<
+import type {
   WorkspaceEntitlementOverride,
-  'id' | 'workspaceId' | 'createdAt' | 'updatedAt'
->;
+  WorkspaceEntitlementOverrideInput,
+} from '@/types/platform';
+export type {
+  WorkspaceEntitlementOverride,
+  WorkspaceEntitlementOverrideInput,
+} from '@/types/platform';
 
 export function getWorkspaceEntitlementOverrides(workspaceId: string, signal?: AbortSignal) {
   return apiRequest<WorkspaceEntitlementOverride[]>(

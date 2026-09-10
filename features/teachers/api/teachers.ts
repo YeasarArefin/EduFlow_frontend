@@ -1,41 +1,15 @@
 import { apiListRequest, apiRequest } from '@/lib/api/client';
-export const TEACHER_STATUSES = ['active', 'inactive', 'archived'] as const;
-export type TeacherStatus = (typeof TEACHER_STATUSES)[number];
-export type Teacher = {
-  id: string;
-  teacherCode: string;
-  name: string;
-  phone: string | null;
-  email: string | null;
-  subjectSpecialty: string | null;
-  defaultSalaryMinor: string;
-  status: TeacherStatus;
-  notes: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
-export type TeacherInput = {
-  teacherCode: string;
-  name: string;
-  phone?: string | null;
-  email?: string | null;
-  subjectSpecialty?: string | null;
-  defaultSalaryMinor?: string;
-  status?: TeacherStatus;
-  notes?: string | null;
-};
-export type TeacherListParams = {
-  page: number;
-  limit: number;
-  search?: string;
-  status?: TeacherStatus;
-};
-export type PaginationMeta = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-};
+import {
+  TEACHER_STATUSES,
+  type PaginationMeta,
+  type Teacher,
+  type TeacherInput,
+  type TeacherListParams,
+  type TeacherStatus,
+} from '@/types/teachers';
+
+export { TEACHER_STATUSES };
+export type { PaginationMeta, Teacher, TeacherInput, TeacherListParams, TeacherStatus };
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 export function getTeachers(workspaceId: string, params: TeacherListParams, signal?: AbortSignal) {
   const query = new URLSearchParams({

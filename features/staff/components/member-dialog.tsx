@@ -25,7 +25,7 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { usePermissionConfigurationQuery } from '../queries/use-permission-queries';
-import { type WorkspaceMember } from '../api/members';
+import type { MemberDialogProps, MemberFormValues } from '@/types/staff';
 import {
   useAddMemberMutation,
   useUpdateMemberRoleMutation,
@@ -36,24 +36,13 @@ const schema = z.object({
   password: z.string().min(12, 'Use at least 12 characters.'),
   roleId: z.string().uuid('Select a role.'),
 });
-type Values = z.infer<typeof schema>;
-export function MemberDialog({
-  open,
-  onOpenChange,
-  workspaceId,
-  member,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  workspaceId: string;
-  member?: WorkspaceMember;
-}) {
+export function MemberDialog({ open, onOpenChange, workspaceId, member }: MemberDialogProps) {
   const roles = usePermissionConfigurationQuery(workspaceId),
     add = useAddMemberMutation(),
     update = useUpdateMemberRoleMutation(),
     editing = Boolean(member),
     pending = add.isPending || update.isPending;
-  const form = useForm<Values>({
+  const form = useForm<MemberFormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
       name: member?.name ?? '',
@@ -72,7 +61,7 @@ export function MemberDialog({
         roleId: member?.roleId ?? '',
       });
   }, [form, member, open]);
-  function submit(values: Values) {
+  function submit(values: MemberFormValues) {
     const options = {
       onSuccess: () => {
         toast.success(editing ? 'Member role updated.' : 'Account and workspace member created.');

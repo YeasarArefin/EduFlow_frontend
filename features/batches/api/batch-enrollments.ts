@@ -1,18 +1,7 @@
 import { apiRequest } from '@/lib/api/client';
+import type { Enrollment } from '@/types/batches';
 
-export type Enrollment = {
-  id: string;
-  studentId: string;
-  studentCode: string;
-  name: string;
-  phone: string | null;
-  joinedAt: string;
-  status: 'active' | 'inactive' | 'completed' | 'cancelled' | 'archived';
-  feeOverrideMinor: string | null;
-  discountMinor: string | null;
-  createdAt: string;
-  updatedAt: string;
-};
+export type { Enrollment };
 
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 

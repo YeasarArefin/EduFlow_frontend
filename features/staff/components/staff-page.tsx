@@ -40,10 +40,15 @@ import {
   LoadingState,
   PageHeader,
   Pagination,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { MEMBER_STATUSES, type MemberStatus, type WorkspaceMember } from '../api/members';
+import {
+  MEMBER_STATUSES,
+  type MemberStatus,
+  type StaffPageProps,
+  type WorkspaceMember,
+} from '@/types/staff';
 import {
   useRemoveMemberMutation,
   useUpdateMemberStatusMutation,
@@ -52,24 +57,9 @@ import { useMembersQuery } from '../queries/use-members-query';
 import { usePermissionConfigurationQuery } from '../queries/use-permission-queries';
 import { MemberDialog } from './member-dialog';
 import { MemberActions } from './member-actions';
+import { formatMemberJoinedDate, getMemberStatusVisual } from '@/utils/staff-formatters';
 
-function formatJoinedDate(value: string | null) {
-  if (!value) return 'Not joined yet';
-  return new Intl.DateTimeFormat('en-BD', {
-    day: 'numeric',
-    month: 'short',
-    year: 'numeric',
-  }).format(new Date(value));
-}
-
-function statusTone(status: MemberStatus): 'success' | 'warning' | 'danger' | 'info' {
-  if (status === 'active') return 'success';
-  if (status === 'suspended') return 'warning';
-  if (status === 'removed') return 'danger';
-  return 'info';
-}
-
-export function StaffPage({ workspaceId }: { workspaceId: string }) {
+export function StaffPage({ workspaceId }: StaffPageProps) {
   const pathname = usePathname();
   const router = useRouter();
   const params = useSearchParams();
@@ -257,9 +247,11 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
                     </TableCell>
                     <TableCell>{member.role}</TableCell>
                     <TableCell>
-                      <StatusBadge status={statusTone(member.status)}>{member.status}</StatusBadge>
+                      <StatusBadge status={getMemberStatusVisual(member.status)}>
+                        {member.status}
+                      </StatusBadge>
                     </TableCell>
-                    <TableCell>{formatJoinedDate(member.joinedAt)}</TableCell>
+                    <TableCell>{formatMemberJoinedDate(member.joinedAt)}</TableCell>
                     <TableCell>{actions(member)}</TableCell>
                   </TableRow>
                 ))}
@@ -282,12 +274,16 @@ export function StaffPage({ workspaceId }: { workspaceId: string }) {
                   <div>
                     <div className="text-xs text-muted-foreground">Status</div>
                     <div className="mt-1">
-                      <StatusBadge status={statusTone(member.status)}>{member.status}</StatusBadge>
+                      <StatusBadge status={getMemberStatusVisual(member.status)}>
+                        {member.status}
+                      </StatusBadge>
                     </div>
                   </div>
                   <div className="col-span-2">
                     <div className="text-xs text-muted-foreground">Joined</div>
-                    <div className="mt-1 font-medium">{formatJoinedDate(member.joinedAt)}</div>
+                    <div className="mt-1 font-medium">
+                      {formatMemberJoinedDate(member.joinedAt)}
+                    </div>
                   </div>
                 </CardContent>
               </Card>

@@ -1,32 +1,11 @@
 import { apiListRequest, apiRequest } from '@/lib/api/client';
-
-export const MEMBER_STATUSES = ['active', 'suspended', 'removed'] as const;
-export type MemberStatus = (typeof MEMBER_STATUSES)[number];
-export type WorkspaceMember = {
-  id: string;
-  userId: string;
-  name: string;
-  email: string;
-  role: string | null;
-  roleId: string | null;
-  roleCode: number;
-  status: MemberStatus;
-  joinedAt: string | null;
-  createdAt: string;
-};
-export type MemberListParams = {
-  page: number;
-  limit: number;
-  search?: string;
-  roleId?: string;
-  status?: MemberStatus;
-};
-export type PaginationMeta = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-};
+import type {
+  AddMemberInput,
+  MemberListParams,
+  StaffPaginationMeta,
+  WorkspaceMember,
+} from '@/types/staff';
+export { MEMBER_STATUSES, type MemberListParams, type WorkspaceMember } from '@/types/staff';
 
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
 
@@ -38,16 +17,13 @@ export function getMembers(workspaceId: string, params: MemberListParams, signal
   if (params.search) query.set('search', params.search);
   if (params.roleId) query.set('roleId', params.roleId);
   if (params.status) query.set('status', params.status);
-  return apiListRequest<WorkspaceMember[], PaginationMeta>(`/members?${query}`, {
+  return apiListRequest<WorkspaceMember[], StaffPaginationMeta>(`/members?${query}`, {
     headers: headers(workspaceId),
     signal,
   });
 }
 
-export const addMember = (
-  workspaceId: string,
-  input: { name: string; email: string; password: string; roleId: string }
-) =>
+export const addMember = (workspaceId: string, input: AddMemberInput) =>
   apiRequest<WorkspaceMember>('/members', {
     method: 'POST',
     headers: headers(workspaceId),

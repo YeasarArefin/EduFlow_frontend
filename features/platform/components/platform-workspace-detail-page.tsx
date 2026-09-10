@@ -11,14 +11,14 @@ import {
   PageHeader,
   SectionCard,
   StatCard,
-} from '@/components/dashboard-primitives';
-import { StatusBadge } from '@/components/status-badge';
+} from '@/components/dashboard/dashboard-primitives';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { ApiError } from '@/lib/api/client';
 import type { PlatformWorkspaceDetail } from '../api/workspaces';
-import { usePlatformWorkspaceDetail } from '../hooks/use-workspace-detail';
+import { usePlatformWorkspaceDetail } from '../queries/use-workspace-detail';
 import { WorkspaceEntitlementOverridesSheet } from './workspace-entitlement-overrides-sheet';
 import { WorkspaceSubscriptionLifecycleControls } from './workspace-subscription-lifecycle-controls';
 

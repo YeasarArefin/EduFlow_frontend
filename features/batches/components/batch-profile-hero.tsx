@@ -1,27 +1,9 @@
-import { StatusBadge } from '@/components/status-badge';
+import { StatusBadge } from '@/components/status/status-badge';
 import { Button } from '@/components/ui/button';
-import type { Batch } from '@/features/batches/api/batches';
-import { Calendar, DollarSign, GraduationCap, Pencil, Users } from 'lucide-react';
+import type { BatchProfileHeroProps } from '@/types/batches';
+import { Calendar, CalendarDays, DollarSign, GraduationCap, Pencil, Users } from 'lucide-react';
 import { BatchProfileMetadataItem } from './batch-profile-metadata-item';
-
-function formatMoney(value: string) {
-  return new Intl.NumberFormat('en-BD', {
-    style: 'currency',
-    currency: 'BDT',
-    maximumFractionDigits: 2,
-  }).format(Number(value) / 100);
-}
-
-function formatDate(value: string | null) {
-  if (!value) return 'Not set';
-  return new Intl.DateTimeFormat('en-BD', { dateStyle: 'medium' }).format(
-    new Date(`${value}T00:00:00`)
-  );
-}
-
-function statusVisual(status: Batch['status']) {
-  return status === 'active' ? 'success' : status === 'inactive' ? 'warning' : 'info';
-}
+import { formatBatchDate, formatBatchMoney, getBatchStatusVisual } from '@/utils/batch-formatters';
 
 export function BatchProfileHero({
   batch,
@@ -30,17 +12,13 @@ export function BatchProfileHero({
   teachersCount,
   isTeachersLoading,
   onEdit,
-}: {
-  batch: Batch;
-  activeStudentsCount: number;
-  isStudentsLoading: boolean;
-  teachersCount: number;
-  isTeachersLoading: boolean;
-  onEdit: () => void;
-}) {
+}: BatchProfileHeroProps) {
   const academicSummary = [batch.classLevel?.name, batch.medium?.name, batch.academicGroup?.name]
     .filter(Boolean)
     .join(' · ');
+  const classDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+    .filter((_, day) => batch.classDays.includes(day))
+    .join(', ');
 
   return (
     <div className="rounded-3xl border border-border/80 bg-card/40 p-6 backdrop-blur-md">
@@ -50,7 +28,7 @@ export function BatchProfileHero({
             <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               {batch.name}
             </h1>
-            <StatusBadge status={statusVisual(batch.status)}>{batch.status}</StatusBadge>
+            <StatusBadge status={getBatchStatusVisual(batch.status)}>{batch.status}</StatusBadge>
           </div>
           <p className="text-sm text-muted-foreground">
             {academicSummary || 'General Academic Batch'}
@@ -68,21 +46,26 @@ export function BatchProfileHero({
         </Button>
       </div>
 
-      <div className="mt-6 grid grid-cols-2 gap-4 border-t border-border/40 pt-5 sm:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-4 border-t border-border/40 pt-5 sm:grid-cols-5">
         <BatchProfileMetadataItem
           label="Monthly Tuition"
           icon={<DollarSign className="size-5" />}
           value={
             <>
-              {formatMoney(batch.monthlyFeeMinor)}{' '}
+              {formatBatchMoney(batch.monthlyFeeMinor)}{' '}
               <span className="text-xs font-normal text-muted-foreground">/ mo</span>
             </>
           }
         />
         <BatchProfileMetadataItem
+          label="Class Days"
+          icon={<CalendarDays className="size-5" />}
+          value={classDays || 'Not set'}
+        />
+        <BatchProfileMetadataItem
           label="Start Date"
           icon={<Calendar className="size-5" />}
-          value={formatDate(batch.startDate)}
+          value={formatBatchDate(batch.startDate)}
         />
         <BatchProfileMetadataItem
           label="Enrolled Students"
