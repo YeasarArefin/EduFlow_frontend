@@ -5,9 +5,11 @@ export const SETTING_TABS = [
   'salary',
   'sms',
   'reminders',
+  'security',
+  'imports',
 ] as const;
 export type SettingsTab = (typeof SETTING_TABS)[number];
-export type WorkspaceSettingsTab = Exclude<SettingsTab, 'academic'>;
+export type WorkspaceSettingsTab = Exclude<SettingsTab, 'academic' | 'security' | 'imports'>;
 export type EditableWorkspaceSettingsTab = Exclude<WorkspaceSettingsTab, 'salary'>;
 
 export type WorkspaceSettings = {
@@ -58,3 +60,17 @@ export type AcademicReferenceCardProps = {
   description: string;
 };
 export type WorkspaceSettingsCardsProps = { workspaceId: string; tab: WorkspaceSettingsTab };
+export type ActiveSession = {
+  id: string;
+  createdAt: string;
+  lastActiveAt: string;
+  expiresAt: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  deviceLabel: string;
+  isCurrent: boolean;
+};
+export type CsvImportKind = 'students' | 'teachers';
+export type CsvImportPreviewRow = { rowNumber: number; values: Record<string, string>; errors: { field: string; reason: string }[] };
+export type CsvImportSummary = { rows: CsvImportPreviewRow[]; total: number; valid: number; invalid: number; imported?: number; skipped?: number };
+export type CsvImportPanelProps = { workspaceId: string };

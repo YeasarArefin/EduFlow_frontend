@@ -4,6 +4,7 @@ import { validateSelectedPlanSlug } from '@/lib/selected-plan';
 import { getServerSession } from '@/lib/auth/server';
 
 export const postAuthDestinations = {
+  verifyEmail: '/verify-email',
   platform: '/platform',
   onboarding: '/onboarding',
   checkout: '/checkout',
@@ -40,6 +41,7 @@ export async function resolvePostAuthDestination({
 } = {}): Promise<string> {
   const session = await getServerSession();
   if (!session?.user?.id) return '/signin';
+  if (!session.user.emailVerified) return postAuthDestinations.verifyEmail;
 
   const requestHeaders = await headers();
   try {

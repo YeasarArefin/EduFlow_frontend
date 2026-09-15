@@ -15,6 +15,15 @@ export function StudentProfileSection({ student }: StudentProfileSectionProps) {
           <StudentProfileDetailRow label="Full Name">
             <span className="font-semibold">{student.fullName}</span>
           </StudentProfileDetailRow>
+          <StudentProfileDetailRow label="Email">
+            {student.email ? (
+              <a href={`mailto:${student.email}`} className="break-all hover:underline">
+                {student.email}
+              </a>
+            ) : (
+              'Not recorded'
+            )}
+          </StudentProfileDetailRow>
           <StudentProfileDetailRow label="Phone">
             {student.phone ? (
               <a href={`tel:${student.phone}`} className="font-mono hover:underline">

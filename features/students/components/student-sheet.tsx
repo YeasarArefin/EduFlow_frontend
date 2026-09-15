@@ -30,6 +30,7 @@ import { z } from 'zod';
 import type {
   Student,
   StudentInput,
+  StudentGender,
   StudentSheetFormValues,
   StudentSheetProps,
 } from '@/types/students';
@@ -40,24 +41,20 @@ const phone = /^(?:\+8801\d{9}|01\d{9})$/;
 const schema = z.object({
   studentCode: z.string().trim().min(1, 'Student code is required.').max(30),
   fullName: z.string().trim().min(1, 'Full name is required.').max(150),
-  phone: z
-    .string()
-    .trim()
-    .refine((value) => !value || phone.test(value), 'Enter a valid Bangladeshi mobile number.'),
+  email: z.string().trim().email('Enter a valid email address.').max(255),
+  phone: z.string().trim().regex(phone, 'Enter a valid Bangladeshi mobile number.'),
   guardianName: z.string().trim().max(150),
-  guardianPhone: z
-    .string()
-    .trim()
-    .refine((value) => !value || phone.test(value), 'Enter a valid Bangladeshi mobile number.'),
+  guardianPhone: z.string().trim().regex(phone, 'Enter a valid Bangladeshi mobile number.'),
   address: z.string().trim().max(2000),
-  gender: z.enum(['male', 'female', 'other', '']),
-  admissionDate: z.string(),
+  gender: z.enum(['male', 'female', '']).refine((value) => value !== '', 'Gender is required.'),
+  admissionDate: z.string().date('Admission date is required.'),
   status: z.enum(['active', 'inactive', 'archived']),
   notes: z.string().trim().max(5000),
 });
 const emptyValues: StudentSheetFormValues = {
   studentCode: '',
   fullName: '',
+  email: '',
   phone: '',
   guardianName: '',
   guardianPhone: '',
@@ -72,6 +69,7 @@ function valuesFromStudent(student?: Student | null): StudentSheetFormValues {
     ? {
         studentCode: student.studentCode,
         fullName: student.fullName,
+        email: student.email ?? '',
         phone: student.phone ?? '',
         guardianName: student.guardianName ?? '',
         guardianPhone: student.guardianPhone ?? '',
@@ -87,6 +85,7 @@ function toInput(values: StudentSheetFormValues): StudentInput {
   return {
     studentCode: values.studentCode.trim(),
     fullName: values.fullName.trim(),
+    email: values.email.trim() || null,
     phone: values.phone.trim() || null,
     guardianName: values.guardianName.trim() || null,
     guardianPhone: values.guardianPhone.trim() || null,
@@ -185,8 +184,27 @@ export function StudentSheet({ open, onOpenChange, workspaceId, student }: Stude
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
+                <Field data-invalid={Boolean(form.formState.errors.email)}>
+                  <FieldLabel htmlFor="student-email">Email *</FieldLabel>
+                  <Input
+                    id="student-email"
+                    type="email"
+                    autoComplete="email"
+                    placeholder="e.g. student@example.com"
+                    {...form.register('email')}
+                    aria-invalid={Boolean(form.formState.errors.email)}
+                  />
+                  <FieldError
+                    errors={
+                      form.formState.errors.email
+                        ? [{ message: form.formState.errors.email.message }]
+                        : []
+                    }
+                  />
+                </Field>
+
                 <Field data-invalid={Boolean(form.formState.errors.phone)}>
-                  <FieldLabel htmlFor="student-phone">Student Phone</FieldLabel>
+                  <FieldLabel htmlFor="student-phone">Student Phone *</FieldLabel>
                   <Input
                     id="student-phone"
                     type="tel"
@@ -205,7 +223,7 @@ export function StudentSheet({ open, onOpenChange, workspaceId, student }: Stude
                 </Field>
 
                 <Field data-invalid={Boolean(form.formState.errors.guardianPhone)}>
-                  <FieldLabel htmlFor="guardian-phone">Guardian Phone</FieldLabel>
+                  <FieldLabel htmlFor="guardian-phone">Guardian Phone *</FieldLabel>
                   <Input
                     id="guardian-phone"
                     type="tel"
@@ -243,7 +261,7 @@ export function StudentSheet({ open, onOpenChange, workspaceId, student }: Stude
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field data-invalid={Boolean(form.formState.errors.admissionDate)}>
-                  <FieldLabel htmlFor="admission-date">Admission Date</FieldLabel>
+                  <FieldLabel htmlFor="admission-date">Admission Date *</FieldLabel>
                   <Input
                     id="admission-date"
                     type="date"
@@ -292,28 +310,20 @@ export function StudentSheet({ open, onOpenChange, workspaceId, student }: Stude
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field data-invalid={Boolean(form.formState.errors.gender)}>
-                  <FieldLabel htmlFor="student-gender">Gender</FieldLabel>
+                  <FieldLabel htmlFor="student-gender">Gender *</FieldLabel>
                   <Select
-                    value={gender || 'unspecified'}
+                    value={gender}
                     onValueChange={(value) =>
-                      form.setValue(
-                        'gender',
-                        (value === 'unspecified'
-                          ? ''
-                          : (value ?? '')) as StudentSheetFormValues['gender'],
-                        { shouldDirty: true }
-                      )
+                      form.setValue('gender', value as StudentGender, { shouldDirty: true })
                     }
                   >
                     <SelectTrigger id="student-gender" className="w-full">
-                      <SelectValue placeholder="Not specified" />
+                      <SelectValue placeholder="Select gender" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectItem value="unspecified">Not specified</SelectItem>
                         <SelectItem value="female">Female</SelectItem>
                         <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

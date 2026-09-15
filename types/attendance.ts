@@ -75,3 +75,40 @@ export type AttendanceHistoryRowProps = {
   session: AttendanceSessionSummary;
   onOpen: () => void;
 };
+
+export type AttendanceSessionSelectorProps = {
+  batches: Array<{ id: string; name: string; classDays: number[]; status: string }>;
+  selectedBatchId: string;
+  onBatchChange: (batchId: string) => void;
+  sessionDate: string;
+  onDateChange: (date: string) => void;
+  onLoadSession?: () => void;
+  isLoading: boolean;
+};
+
+export type AttendanceSessionWorkbenchProps = {
+  session: AttendanceSession;
+  draftStatuses: Record<string, AttendanceRecordStatus>;
+  onStatusChange: (studentId: string, status: AttendanceRecordStatus) => void;
+  onMarkAll: (status: AttendanceRecordStatus) => void;
+  onSaveDraft: () => void;
+  onFinalize: () => void;
+  isSaving: boolean;
+  isFinalizing: boolean;
+  isDirty: boolean;
+};
+
+export type AttendanceHistoryTableProps = {
+  sessions: AttendanceSessionSummary[];
+  batches: Array<{ id: string; name: string }>;
+  selectedBatchId: string;
+  onBatchChange: (batchId: string) => void;
+  selectedDate: string;
+  onDateChange: (date: string) => void;
+  selectedStatus: string;
+  onStatusChange: (status: string) => void;
+  isLoading: boolean;
+  onOpenSession: (session: AttendanceSessionSummary) => void;
+  onRetry?: () => void;
+  isError?: boolean;
+};

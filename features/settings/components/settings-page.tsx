@@ -6,6 +6,8 @@ import { cn } from '@/lib/utils';
 import { SETTING_TABS, type SettingsPageProps, type SettingsTab } from '@/types/settings';
 import { AcademicSetup } from './academic-setup';
 import { WorkspaceSettingsCards } from './workspace-settings-cards';
+import { SecuritySettings } from './security-settings';
+import { CsvImportPanel } from './csv-import-panel';
 
 const tabs = SETTING_TABS;
 const labels = {
@@ -15,6 +17,8 @@ const labels = {
   salary: 'Salary Settings',
   sms: 'SMS Settings',
   reminders: 'Reminder Settings',
+  security: 'Security',
+  imports: 'Import CSV',
 };
 export function SettingsPage({ workspaceId }: SettingsPageProps) {
   const pathname = usePathname();
@@ -39,7 +43,7 @@ export function SettingsPage({ workspaceId }: SettingsPageProps) {
         description="Manage your center configuration and preferences."
       />
       <nav className="w-full overflow-x-auto border-b border-border" aria-label="Settings sections">
-        <div className="grid min-w-[720px] grid-cols-6">
+        <div className="grid min-w-[960px] grid-cols-8">
           {tabs.map((item) => (
             <button
               key={item}
@@ -59,6 +63,10 @@ export function SettingsPage({ workspaceId }: SettingsPageProps) {
       </nav>
       {tab === 'academic' ? (
         <AcademicSetup workspaceId={workspaceId} />
+      ) : tab === 'security' ? (
+        <SecuritySettings />
+      ) : tab === 'imports' ? (
+        <CsvImportPanel workspaceId={workspaceId} />
       ) : (
         <WorkspaceSettingsCards workspaceId={workspaceId} tab={tab} />
       )}

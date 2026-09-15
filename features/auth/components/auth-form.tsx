@@ -15,6 +15,7 @@ import { Spinner } from '@/components/ui/spinner';
 import { signIn, signUp } from '@/lib/auth/client';
 import { persistSelectedPlan } from '@/lib/actions/selected-plan';
 import { clearSelectedWorkspace } from '@/lib/workspace';
+import type { AuthFormValues } from '@/types/auth';
 
 const baseSchema = z.object({
   email: z.string().trim().email('Enter a valid email.'),
@@ -29,8 +30,6 @@ const signInSchema = baseSchema.extend({
   name: z.string().optional(),
 });
 
-type Values = z.infer<typeof signInSchema>;
-
 export function AuthForm({
   mode,
   selectedPlanSlug,
@@ -41,21 +40,26 @@ export function AuthForm({
   const signup = mode === 'signup';
   const router = useRouter();
   const [error, setError] = useState<string>();
-  const form = useForm<Values>({
+  const form = useForm<AuthFormValues>({
     resolver: zodResolver(signup ? signUpSchema : signInSchema),
     mode: 'onChange',
     defaultValues: { name: '', email: '', password: '' },
   });
 
-  const submit = async (values: Values) => {
+  const submit = async (values: AuthFormValues) => {
     setError(undefined);
     const result = signup
       ? await signUp.email({
           name: values.name ?? '',
           email: values.email,
           password: values.password,
+          callbackURL: `${window.location.origin}/verify-email?next=/post-auth`,
         })
-      : await signIn.email({ email: values.email, password: values.password });
+      : await signIn.email({
+          email: values.email,
+          password: values.password,
+          callbackURL: `${window.location.origin}/verify-email?next=/post-auth`,
+        });
 
     if (result.error) {
       setError(result.error.message ?? 'Unable to continue.');
@@ -69,7 +73,7 @@ export function AuthForm({
       await persistSelectedPlan(selectedPlanSlug);
     }
 
-    router.replace('/post-auth');
+    router.replace(result.data?.user.emailVerified ? '/post-auth' : '/verify-email');
   };
 
   const switchHref = selectedPlanSlug

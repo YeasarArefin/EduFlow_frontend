@@ -1,6 +1,12 @@
 'use client';
 
 import {
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  PageHeader,
+} from '@/components/dashboard/dashboard-primitives';
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -11,23 +17,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Calendar } from '@/components/ui/calendar';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import {
-  EmptyState,
-  ErrorState,
-  LoadingState,
-  PageHeader,
-} from '@/components/dashboard/dashboard-primitives';
-import { StatusBadge } from '@/components/status/status-badge';
 import { useBatchesQuery } from '@/features/batches/queries/use-batches-query';
 import type {
   AttendancePageProps,
@@ -35,12 +24,10 @@ import type {
   AttendanceRecordStatus,
   AttendanceSessionSummary,
 } from '@/types/attendance';
-import { CalendarDays, CheckCheck, CircleCheck, Clock3, Save, UsersRound } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { getAttendancePercentage, getTodayDate } from '@/utils/attendance-formatters';
+import { CalendarDays, CheckCircle2, History, PlusCircle, TrendingUp, Users } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { AttendanceHistoryRow } from './attendance-history-row';
-import { AttendanceRosterCard } from './attendance-roster-card';
-import { AttendanceRosterRow } from './attendance-roster-row';
 import {
   useAttendanceSessionQuery,
   useAttendanceSessionsQuery,
@@ -48,41 +35,45 @@ import {
   useFinalizeAttendanceSessionMutation,
   useSaveAttendanceMutation,
 } from '../queries/use-attendance';
-import {
-  formatAttendanceDate,
-  getAttendanceStatusBadge,
-  getAttendanceStatusLabel,
-  getTodayDate,
-} from '@/utils/attendance-formatters';
+import { AttendanceHistoryTable } from './attendance-history-table';
+import { AttendanceSessionSelector } from './attendance-session-selector';
+import { AttendanceSessionWorkbench } from './attendance-session-workbench';
 
 const emptyRecords: AttendanceRecord[] = [];
 
-const isoDate = (date: Date) =>
-  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
-
 export function AttendancePage({ workspaceId }: AttendancePageProps) {
+  const [activeTab, setActiveTab] = useState<'take' | 'history'>('take');
   const [batchId, setBatchId] = useState('');
   const [sessionDate, setSessionDate] = useState(getTodayDate);
   const [loadedSessionId, setLoadedSessionId] = useState<string | null>(null);
   const [hasLookedUpSession, setHasLookedUpSession] = useState(false);
+
+  // History Filter State
   const [historyBatchId, setHistoryBatchId] = useState('all');
   const [historyDate, setHistoryDate] = useState('');
+  const [historyStatus, setHistoryStatus] = useState('all');
+
+  // Active Draft Session State
   const [finalizeOpen, setFinalizeOpen] = useState(false);
   const [draftStatuses, setDraftStatuses] = useState<Record<string, AttendanceRecordStatus>>({});
   const [draftSessionId, setDraftSessionId] = useState<string | null>(null);
 
+  // Queries & Mutations
   const batchesQuery = useBatchesQuery(workspaceId, { page: 1, limit: 100 });
   const lookupQuery = useAttendanceSessionsQuery(
     workspaceId,
     { batchId: batchId || undefined, sessionDate: sessionDate || undefined, page: 1, limit: 1 },
     Boolean(batchId && sessionDate)
   );
+
   const historyQuery = useAttendanceSessionsQuery(workspaceId, {
     batchId: historyBatchId === 'all' ? undefined : historyBatchId,
     sessionDate: historyDate || undefined,
+    status: historyStatus === 'all' ? undefined : (historyStatus as 'draft' | 'finalized'),
     page: 1,
-    limit: 20,
+    limit: 50,
   });
+
   const sessionQuery = useAttendanceSessionQuery(workspaceId, loadedSessionId);
   const createMutation = useCreateAttendanceSessionMutation(workspaceId);
   const saveMutation = useSaveAttendanceMutation(workspaceId);
@@ -90,12 +81,46 @@ export function AttendancePage({ workspaceId }: AttendancePageProps) {
 
   const activeSession = sessionQuery.data;
   const batches = batchesQuery.data?.data ?? [];
-  const activeBatches = batches.filter((batch) => batch.status === 'active');
-  const selectedBatch = activeBatches.find((batch) => batch.id === batchId);
+  // Auto-select first active batch on load if none selected
+  const activeBatches = useMemo(
+    () => (batchesQuery.data?.data ?? []).filter((batch) => batch.status === 'active'),
+    [batchesQuery.data?.data]
+  );
+
+  useEffect(() => {
+    if (!batchId && activeBatches.length > 0) {
+      setBatchId(activeBatches[0].id);
+    }
+  }, [activeBatches, batchId]);
+
   const matchingSession = lookupQuery.data?.data[0];
   const records = activeSession?.records ?? emptyRecords;
-  const isFinalized = activeSession?.status === 'finalized';
 
+  // Reactively sync loaded session whenever lookup query succeeds
+  useEffect(() => {
+    if (batchId && sessionDate && !lookupQuery.isFetching) {
+      setHasLookedUpSession(true);
+      setLoadedSessionId(matchingSession?.id ?? null);
+    }
+  }, [batchId, sessionDate, matchingSession?.id, lookupQuery.isFetching]);
+
+  // Derive high-level workspace stats
+  const historySessions = historyQuery.data?.data ?? [];
+  const totalHistoryCount = historyQuery.data?.meta.total ?? historySessions.length;
+
+  const averageAttendanceRate = useMemo(() => {
+    if (!historySessions.length) return 0;
+    const totalPresent = historySessions.reduce((acc, s) => acc + s.presentCount, 0);
+    const totalRoster = historySessions.reduce((acc, s) => acc + s.rosterCount, 0);
+    return getAttendancePercentage(totalPresent, totalRoster);
+  }, [historySessions]);
+
+  const todaySessionsCount = useMemo(() => {
+    const today = getTodayDate();
+    return historySessions.filter((s) => s.sessionDate === today).length;
+  }, [historySessions]);
+
+  // Dirty checking
   const changedRecords = useMemo(
     () =>
       draftSessionId === activeSession?.id
@@ -108,33 +133,23 @@ export function AttendancePage({ workspaceId }: AttendancePageProps) {
     [activeSession?.id, draftSessionId, draftStatuses, records]
   );
   const isDirty = changedRecords.length > 0;
-  const presentCount = records.filter(
-    (record) =>
-      (draftSessionId === activeSession?.id
-        ? (draftStatuses[record.studentId] ?? record.status)
-        : record.status) === 'present'
-  ).length;
 
-  function resetLookup() {
+  function handleBatchChange(newBatchId: string) {
+    setBatchId(newBatchId);
     setLoadedSessionId(null);
-    setHasLookedUpSession(false);
   }
 
-  function loadSession() {
-    if (!batchId || !sessionDate) {
-      toast.error('Choose a batch and date first.');
-      return;
-    }
-    if (lookupQuery.isFetching) return;
-    setHasLookedUpSession(true);
-    setLoadedSessionId(matchingSession?.id ?? null);
+  function handleDateChange(newDate: string) {
+    setSessionDate(newDate);
+    setLoadedSessionId(null);
   }
 
-  function openSession(session: AttendanceSessionSummary) {
+  function openSessionFromHistory(session: AttendanceSessionSummary) {
     setBatchId(session.batchId);
     setSessionDate(session.sessionDate);
     setLoadedSessionId(session.id);
     setHasLookedUpSession(true);
+    setActiveTab('take');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -154,40 +169,38 @@ export function AttendancePage({ workspaceId }: AttendancePageProps) {
     );
   }
 
-  function markAllPresent() {
-    if (!activeSession) return;
-    setDraftSessionId(activeSession.id);
-    setDraftStatuses(Object.fromEntries(records.map((record) => [record.studentId, 'present'])));
-  }
-
-  function setRecordStatus(studentId: string, status: AttendanceRecordStatus) {
+  function handleStatusChange(studentId: string, status: AttendanceRecordStatus) {
     if (!activeSession) return;
     setDraftSessionId(activeSession.id);
     setDraftStatuses((current) => ({ ...current, [studentId]: status }));
   }
 
-  function displayStatus(record: AttendanceRecord) {
-    return draftSessionId === activeSession?.id
-      ? (draftStatuses[record.studentId] ?? record.status)
-      : record.status;
+  function handleMarkAll(status: AttendanceRecordStatus) {
+    if (!activeSession) return;
+    setDraftSessionId(activeSession.id);
+    setDraftStatuses(Object.fromEntries(records.map((r) => [r.studentId, status])));
   }
 
-  async function saveDraft() {
+  async function handleSaveDraft() {
     if (!activeSession || !isDirty) return;
-    await saveMutation.mutateAsync({
-      sessionId: activeSession.id,
-      records: changedRecords.map((record) => ({
-        studentId: record.studentId,
-        status: draftStatuses[record.studentId] ?? record.status,
-      })),
-    });
-    toast.success('Attendance draft saved.');
+    try {
+      await saveMutation.mutateAsync({
+        sessionId: activeSession.id,
+        records: changedRecords.map((record) => ({
+          studentId: record.studentId,
+          status: draftStatuses[record.studentId] ?? record.status,
+        })),
+      });
+      toast.success('Attendance draft saved.');
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not save attendance.');
+    }
   }
 
-  async function finalizeSession() {
+  async function handleFinalize() {
     if (!activeSession) return;
     try {
-      if (isDirty) await saveDraft();
+      if (isDirty) await handleSaveDraft();
       await finalizeMutation.mutateAsync(activeSession.id);
       setFinalizeOpen(false);
       toast.success('Attendance session finalized.');
@@ -197,284 +210,192 @@ export function AttendancePage({ workspaceId }: AttendancePageProps) {
   }
 
   return (
-    <div className="flex w-full max-w-6xl flex-col gap-6">
+    <div className="flex w-full flex-col gap-6">
+      {/* Page Header */}
       <PageHeader
-        title="Attendance"
-        description="Take daily attendance for active batch enrollments and keep finalized history ready to review."
+        title="Attendance Management"
+        description="Record daily batch attendance, track student turnout rates, and inspect finalized session records."
       />
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <CalendarDays className="size-4 text-primary" /> Take attendance
-          </CardTitle>
-          <CardDescription>
-            Select a batch and date, then load its existing session or start a new one.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end">
-          <label className="grid gap-1.5 text-sm font-medium text-foreground">
-            Batch
-            <Select
-              value={batchId}
-              onValueChange={(value) => {
-                setBatchId(value ?? '');
-                resetLookup();
-              }}
-            >
-              <SelectTrigger aria-label="Select batch">
-                <SelectValue placeholder="Select an active batch" />
-              </SelectTrigger>
-              <SelectContent>
-                {activeBatches.map((batch) => (
-                  <SelectItem key={batch.id} value={batch.id}>
-                    {batch.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </label>
-          <Button
-            className="h-9"
-            variant="outline"
-            onClick={loadSession}
-            disabled={!batchId || !sessionDate || lookupQuery.isFetching}
-          >
-            <Clock3 data-icon="inline-start" />{' '}
-            {lookupQuery.isFetching ? 'Loading' : 'Load session'}
-          </Button>
+      {/* KPI Overview Cards */}
+      <div className="grid grid-cols-2 gap-3.5 sm:grid-cols-4">
+        <div className="rounded-2xl border border-border/80 bg-card/40 p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-medium">Active Batches</span>
+            <Users className="size-4 text-primary" />
           </div>
-          <div className="flex flex-col gap-3">
-            <div>
-              <p className="text-sm font-medium text-foreground">Attendance date</p>
-              <p className="text-sm text-muted-foreground">
-                {selectedBatch
-                  ? `Class days: ${['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].filter((_, day) => selectedBatch.classDays.includes(day)).join(', ')}`
-                  : 'Select a batch to see its class days.'}
-              </p>
-            </div>
-            <Calendar
-              mode="single"
-              selected={sessionDate ? new Date(`${sessionDate}T00:00:00`) : undefined}
-              onSelect={(date) => {
-                if (!date) return;
-                setSessionDate(isoDate(date));
-                resetLookup();
-              }}
-              disabled={(date) =>
-                date > new Date(new Date().setHours(23, 59, 59, 999)) ||
-                !selectedBatch ||
-                !selectedBatch.classDays.includes(date.getDay())
-              }
-            />
+          <p className="mt-2 text-2xl font-bold text-foreground">{activeBatches.length}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">Running this term</p>
+        </div>
+
+        <div className="rounded-2xl border border-border/80 bg-card/40 p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-medium">Avg. Attendance</span>
+            <TrendingUp className="size-4 text-primary" />
           </div>
-        </CardContent>
-      </Card>
+          <p className="mt-2 text-2xl font-bold text-foreground">{averageAttendanceRate}%</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">Across logged sessions</p>
+        </div>
 
-      {hasLookedUpSession && lookupQuery.isError ? (
-        <ErrorState
-          message="Could not check for an attendance session."
-          onRetry={() => lookupQuery.refetch()}
-        />
-      ) : null}
-
-      {hasLookedUpSession && !loadedSessionId && !lookupQuery.isFetching && !lookupQuery.isError ? (
-        <EmptyState
-          title="No session for this batch and date"
-          description="Create a draft session to load the active enrollment roster and begin marking attendance."
-          action={
-            <Button onClick={createSession} disabled={createMutation.isPending}>
-              <CalendarDays data-icon="inline-start" />{' '}
-              {createMutation.isPending ? 'Creating' : 'Create session'}
-            </Button>
-          }
-        />
-      ) : null}
-
-      {sessionQuery.isPending && loadedSessionId ? <LoadingState rows={6} /> : null}
-      {sessionQuery.isError ? (
-        <ErrorState
-          message="Could not load this attendance session."
-          onRetry={() => sessionQuery.refetch()}
-        />
-      ) : null}
-
-      {activeSession ? (
-        <Card>
-          <CardHeader className="gap-3 sm:flex sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <CardTitle>{activeSession.batch.name}</CardTitle>
-              <CardDescription className="mt-1">
-                {formatAttendanceDate(activeSession.sessionDate)} · {records.length} enrolled
-                students
-              </CardDescription>
-            </div>
-            <StatusBadge status={getAttendanceStatusBadge(activeSession.status)}>
-              {getAttendanceStatusLabel(activeSession.status)}
-            </StatusBadge>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            {isFinalized ? (
-              <div className="flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/10 px-4 py-3 text-sm text-foreground">
-                <CircleCheck className="mt-0.5 size-4 shrink-0 text-primary" />
-                <p>This session is finalized. Its attendance records are read-only.</p>
-              </div>
-            ) : (
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-muted-foreground">
-                  {presentCount} present · {records.length - presentCount} absent
-                  {isDirty ? ' · unsaved changes' : ''}
-                </p>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={markAllPresent}
-                  disabled={records.length === 0}
-                >
-                  <CheckCheck data-icon="inline-start" /> Mark all present
-                </Button>
-              </div>
-            )}
-
-            {records.length === 0 ? (
-              <EmptyState
-                title="No enrolled students"
-                description="There were no active enrollments for this batch on the selected date."
-              />
-            ) : (
-              <>
-                <div className="hidden overflow-hidden rounded-xl border border-border md:block">
-                  <div className="grid grid-cols-[120px_minmax(0,1fr)_250px] items-center gap-4 border-b border-border bg-muted/30 px-4 py-2.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    <span>Student code</span>
-                    <span>Student</span>
-                    <span>Attendance</span>
-                  </div>
-                  {records.map((record) => (
-                    <AttendanceRosterRow
-                      key={record.id}
-                      record={record}
-                      value={displayStatus(record)}
-                      disabled={isFinalized}
-                      onChange={(status) => setRecordStatus(record.studentId, status)}
-                    />
-                  ))}
-                </div>
-                <div className="grid gap-3 md:hidden">
-                  {records.map((record) => (
-                    <AttendanceRosterCard
-                      key={record.id}
-                      record={record}
-                      value={displayStatus(record)}
-                      disabled={isFinalized}
-                      onChange={(status) => setRecordStatus(record.studentId, status)}
-                    />
-                  ))}
-                </div>
-              </>
-            )}
-
-            {!isFinalized && records.length > 0 ? (
-              <div className="flex flex-col gap-2 border-t border-border pt-4 sm:flex-row sm:justify-end">
-                <Button
-                  variant="outline"
-                  onClick={() =>
-                    void saveDraft().catch((error: unknown) =>
-                      toast.error(
-                        error instanceof Error ? error.message : 'Could not save attendance.'
-                      )
-                    )
-                  }
-                  disabled={!isDirty || saveMutation.isPending || finalizeMutation.isPending}
-                >
-                  <Save data-icon="inline-start" />{' '}
-                  {saveMutation.isPending ? 'Saving' : 'Save draft'}
-                </Button>
-                <Button
-                  onClick={() => setFinalizeOpen(true)}
-                  disabled={saveMutation.isPending || finalizeMutation.isPending}
-                >
-                  <CircleCheck data-icon="inline-start" /> Finalize
-                </Button>
-              </div>
-            ) : null}
-          </CardContent>
-        </Card>
-      ) : null}
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <UsersRound className="size-4 text-primary" /> Attendance history
-          </CardTitle>
-          <CardDescription>
-            Filter past sessions by batch or date, then open one to review its roster.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_190px]">
-            <Select
-              value={historyBatchId}
-              onValueChange={(value) => setHistoryBatchId(value ?? 'all')}
-            >
-              <SelectTrigger aria-label="Filter attendance history by batch">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All batches</SelectItem>
-                {batches.map((batch) => (
-                  <SelectItem key={batch.id} value={batch.id}>
-                    {batch.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Input
-              type="date"
-              value={historyDate}
-              onChange={(event) => setHistoryDate(event.target.value)}
-              aria-label="Filter attendance history by date"
-            />
+        <div className="rounded-2xl border border-border/80 bg-card/40 p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-medium">Today&apos;s Sessions</span>
+            <CheckCircle2 className="size-4 text-primary" />
           </div>
-          {historyQuery.isPending ? <LoadingState rows={4} /> : null}
-          {historyQuery.isError ? (
+          <p className="mt-2 text-2xl font-bold text-foreground">{todaySessionsCount}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">Recorded today</p>
+        </div>
+
+        <div className="rounded-2xl border border-border/80 bg-card/40 p-4 backdrop-blur-md">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-medium">Total Sessions</span>
+            <History className="size-4 text-primary" />
+          </div>
+          <p className="mt-2 text-2xl font-bold text-foreground">{totalHistoryCount}</p>
+          <p className="mt-0.5 text-[11px] text-muted-foreground">Historical records</p>
+        </div>
+      </div>
+
+      {/* Main View Navigation Tabs */}
+      <div className="inline-flex rounded-full border border-border/80 bg-muted/20 p-1 self-start">
+        <button
+          type="button"
+          onClick={() => setActiveTab('take')}
+          className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+            activeTab === 'take'
+              ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <CalendarDays className="size-3.5" />
+          <span>Mark Attendance</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('history')}
+          className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all ${
+            activeTab === 'history'
+              ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/25'
+              : 'text-muted-foreground hover:text-foreground'
+          }`}
+        >
+          <History className="size-3.5" />
+          <span>Session History & Logs</span>
+          <span className="rounded-full bg-muted/60 px-1.5 py-0.2 text-[10px] font-mono">
+            {totalHistoryCount}
+          </span>
+        </button>
+      </div>
+
+      {/* TAB 1: Mark Attendance */}
+      {activeTab === 'take' && (
+        <div className="space-y-6">
+          {/* Session Selector Card */}
+          <AttendanceSessionSelector
+            batches={batches}
+            selectedBatchId={batchId}
+            onBatchChange={handleBatchChange}
+            sessionDate={sessionDate}
+            onDateChange={handleDateChange}
+            isLoading={lookupQuery.isFetching}
+          />
+
+          {/* Lookup Error */}
+          {hasLookedUpSession && lookupQuery.isError && (
             <ErrorState
-              message="Could not load attendance history."
-              onRetry={() => historyQuery.refetch()}
+              message="Could not check for an existing attendance session."
+              onRetry={() => lookupQuery.refetch()}
             />
-          ) : null}
-          {historyQuery.isSuccess && (historyQuery.data?.data.length ?? 0) === 0 ? (
-            <EmptyState
-              title="No attendance history"
-              description="No sessions match these filters yet."
-            />
-          ) : null}
-          {historyQuery.data?.data.map((session) => (
-            <AttendanceHistoryRow
-              key={session.id}
-              session={session}
-              onOpen={() => openSession(session)}
-            />
-          ))}
-        </CardContent>
-      </Card>
+          )}
 
+          {/* No Session Found Empty State */}
+          {hasLookedUpSession &&
+            !loadedSessionId &&
+            !lookupQuery.isFetching &&
+            !lookupQuery.isError && (
+              <EmptyState
+                title="No attendance session found"
+                description="No session has been recorded for this batch on the selected date. Start a new draft session to take attendance."
+                action={
+                  <Button
+                    onClick={createSession}
+                    disabled={createMutation.isPending}
+                    className="rounded-full font-semibold shadow-xs"
+                  >
+                    <PlusCircle data-icon="inline-start" />
+                    {createMutation.isPending ? 'Starting session…' : 'Start Attendance Session'}
+                  </Button>
+                }
+              />
+            )}
+
+          {/* Loading Session */}
+          {sessionQuery.isPending && loadedSessionId && <LoadingState rows={6} />}
+
+          {/* Session Error */}
+          {sessionQuery.isError && (
+            <ErrorState
+              message="Could not load attendance session details."
+              onRetry={() => sessionQuery.refetch()}
+            />
+          )}
+
+          {/* Active Session Workbench */}
+          {activeSession && (
+            <AttendanceSessionWorkbench
+              session={activeSession}
+              draftStatuses={draftStatuses}
+              onStatusChange={handleStatusChange}
+              onMarkAll={handleMarkAll}
+              onSaveDraft={() => void handleSaveDraft()}
+              onFinalize={() => setFinalizeOpen(true)}
+              isSaving={saveMutation.isPending}
+              isFinalizing={finalizeMutation.isPending}
+              isDirty={isDirty}
+            />
+          )}
+        </div>
+      )}
+
+      {/* TAB 2: Session History & Records */}
+      {activeTab === 'history' && (
+        <AttendanceHistoryTable
+          sessions={historySessions}
+          batches={batches}
+          selectedBatchId={historyBatchId}
+          onBatchChange={setHistoryBatchId}
+          selectedDate={historyDate}
+          onDateChange={setHistoryDate}
+          selectedStatus={historyStatus}
+          onStatusChange={setHistoryStatus}
+          isLoading={historyQuery.isPending}
+          onOpenSession={openSessionFromHistory}
+          onRetry={() => historyQuery.refetch()}
+          isError={historyQuery.isError}
+        />
+      )}
+
+      {/* Finalize Confirmation Dialog */}
       <AlertDialog open={finalizeOpen} onOpenChange={setFinalizeOpen}>
-        <AlertDialogContent>
+        <AlertDialogContent className="rounded-3xl">
           <AlertDialogHeader>
-            <AlertDialogTitle>Finalize attendance?</AlertDialogTitle>
+            <AlertDialogTitle>Finalize attendance session?</AlertDialogTitle>
             <AlertDialogDescription>
-              Finalized sessions cannot be edited. Any unsaved roster changes will be saved before
-              the session is finalized.
+              Once finalized, attendance records become permanently read-only and immutable for
+              official auditing and reporting. Any unsaved changes will be saved automatically.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel disabled={finalizeMutation.isPending}>Cancel</AlertDialogCancel>
+            <AlertDialogCancel disabled={finalizeMutation.isPending} className="rounded-full">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => void finalizeSession()}
+              onClick={() => void handleFinalize()}
               disabled={finalizeMutation.isPending}
+              className="rounded-full font-semibold shadow-xs"
             >
-              {finalizeMutation.isPending ? 'Finalizing' : 'Finalize session'}
+              {finalizeMutation.isPending ? 'Finalizing…' : 'Finalize Session'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

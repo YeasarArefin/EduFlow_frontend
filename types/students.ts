@@ -1,16 +1,18 @@
 export const STUDENT_STATUSES = ['active', 'inactive', 'archived'] as const;
 
 export type StudentStatus = (typeof STUDENT_STATUSES)[number];
+export type StudentGender = 'male' | 'female';
 
 export type Student = {
   id: string;
   studentCode: string;
   fullName: string;
+  email: string | null;
   phone: string | null;
   guardianName: string | null;
   guardianPhone: string | null;
   address: string | null;
-  gender: 'male' | 'female' | 'other' | null;
+  gender: StudentGender | null;
   admissionDate: string | null;
   status: StudentStatus;
   notes: string | null;
@@ -21,11 +23,12 @@ export type Student = {
 export type StudentInput = {
   studentCode: string;
   fullName: string;
+  email?: string | null;
   phone?: string | null;
   guardianName?: string | null;
   guardianPhone?: string | null;
   address?: string | null;
-  gender?: 'male' | 'female' | 'other' | null;
+  gender?: StudentGender | null;
   admissionDate?: string | null;
   status?: StudentStatus;
   notes?: string | null;
@@ -65,11 +68,12 @@ export type ArchiveStudentMutationInput = { workspaceId: string; studentId: stri
 export type StudentSheetFormValues = {
   studentCode: string;
   fullName: string;
+  email: string;
   phone: string;
   guardianName: string;
   guardianPhone: string;
   address: string;
-  gender: 'male' | 'female' | 'other' | '';
+  gender: StudentGender | '';
   admissionDate: string;
   status: StudentStatus;
   notes: string;

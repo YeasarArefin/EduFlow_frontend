@@ -1,7 +1,9 @@
 import { headers } from 'next/headers';
 import { env } from '@/config/env';
 
-export type ServerSession = { user?: { id: string; name?: string | null; email?: string | null } };
+export type ServerSession = {
+  user?: { id: string; name?: string | null; email?: string | null; emailVerified?: boolean };
+};
 
 export async function getServerSession(): Promise<ServerSession | null> {
   const cookie = (await headers()).get('cookie');

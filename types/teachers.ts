@@ -70,3 +70,5 @@ export type TeacherOverviewCardProps = { teacher: Teacher };
 export type TeacherContactCardProps = { teacher: Teacher };
 export type TeacherCompensationCardProps = { teacher: Teacher };
 export type TeacherNotesCardProps = { notes: string };
+export type TeacherProfileSectionProps = { teacher: Teacher };
+export type TeacherProfileDetailRowProps = { label: string; children: React.ReactNode };

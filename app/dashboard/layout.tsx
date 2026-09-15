@@ -8,6 +8,7 @@ import {
   Layers3,
   Wallet,
   ShieldCheck,
+  Bell,
 } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -35,6 +36,7 @@ const navigation: AppShellNavGroup[] = [
         icon: <GraduationCap className="size-4" />,
       },
       { label: 'Batches', href: '/dashboard/batches', icon: <Layers3 className="size-4" /> },
+      { label: 'Notices', href: '/dashboard/notices', icon: <Bell className="size-4" /> },
       {
         label: 'Attendance',
         href: '/dashboard/attendance',

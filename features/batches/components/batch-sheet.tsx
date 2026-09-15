@@ -1,8 +1,15 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '@/components/ui/field';
+import {
+  Field,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet,
+} from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -22,11 +29,13 @@ import {
 } from '@/components/ui/sheet';
 import { Spinner } from '@/components/ui/spinner';
 import { useAcademicReferences } from '@/features/settings/queries/use-academic-references';
+import { cn } from '@/lib/utils';
 import type { Batch, BatchSheetProps, BatchSheetValues } from '@/types/batches';
-import { useMemo, useState } from 'react';
-import { toast } from 'sonner';
-import { useCreateBatchMutation, useUpdateBatchMutation } from '../mutations/use-batch-mutations';
 import { formatBatchTakaPreview, getBatchMonthlyFeeInTaka } from '@/utils/batch-formatters';
+import { useMemo, useState, useEffect } from 'react';
+import { toast } from 'sonner';
+import { CalendarDays, Check, RotateCcw, Sparkles } from 'lucide-react';
+import { useCreateBatchMutation, useUpdateBatchMutation } from '../mutations/use-batch-mutations';
 
 const initialValues = (batch?: Batch): BatchSheetValues => ({
   name: batch?.name ?? '',
@@ -40,12 +49,36 @@ const initialValues = (batch?: Batch): BatchSheetValues => ({
 });
 
 const weekdays = [
-  ['Sun', 0], ['Mon', 1], ['Tue', 2], ['Wed', 3], ['Thu', 4], ['Fri', 5], ['Sat', 6],
+  { label: 'Sun', full: 'Sunday', day: 0 },
+  { label: 'Mon', full: 'Monday', day: 1 },
+  { label: 'Tue', full: 'Tuesday', day: 2 },
+  { label: 'Wed', full: 'Wednesday', day: 3 },
+  { label: 'Thu', full: 'Thursday', day: 4 },
+  { label: 'Fri', full: 'Friday', day: 5 },
+  { label: 'Sat', full: 'Saturday', day: 6 },
+] as const;
+
+const ALL_DAYS = weekdays.map((w) => w.day);
+
+const PRESETS = [
+  { id: 'stt', label: 'Sun, Tue, Thu', shortLabel: 'STT (Sun-Tue-Thu)', days: [0, 2, 4] },
+  { id: 'smw', label: 'Sat, Mon, Wed', shortLabel: 'SMW (Sat-Mon-Wed)', days: [6, 1, 3] },
+  { id: 'mwf', label: 'Mon, Wed, Fri', shortLabel: 'MWF (Mon-Wed-Fri)', days: [1, 3, 5] },
+  { id: 'weekend', label: 'Fri, Sat', shortLabel: 'Weekend (Fri-Sat)', days: [5, 6] },
+  { id: 'weekdays', label: 'Sun - Thu', shortLabel: 'Weekdays (Sun-Thu)', days: [0, 1, 2, 3, 4] },
+  { id: 'daily', label: 'Everyday', shortLabel: 'Daily (7 days)', days: [0, 1, 2, 3, 4, 5, 6] },
 ] as const;
 
 export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchSheetProps) {
   const [values, setValues] = useState<BatchSheetValues>(() => initialValues(batch));
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setValues(initialValues(batch));
+      setSubmitted(false);
+    }
+  }, [batch, open]);
 
   const classLevels = useAcademicReferences(workspaceId, 'class-levels');
   const mediums = useAcademicReferences(workspaceId, 'mediums');
@@ -68,23 +101,73 @@ export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchShee
   const isDirty = useMemo(() => {
     if (!batch) return true;
     const initial = initialValues(batch);
+    const sortedCurrent = [...values.classDays].sort((a, b) => a - b).join(',');
+    const sortedInitial = [...initial.classDays].sort((a, b) => a - b).join(',');
     return (
       values.name.trim() !== initial.name.trim() ||
       values.classLevelId !== initial.classLevelId ||
       values.mediumId !== initial.mediumId ||
       values.academicGroupId !== initial.academicGroupId ||
       values.startDate !== initial.startDate ||
-      values.classDays.join(',') !== initial.classDays.join(',') ||
+      sortedCurrent !== sortedInitial ||
       values.monthlyFee.trim() !== initial.monthlyFee.trim() ||
       values.status !== initial.status
     );
   }, [batch, values]);
 
+  const selectedDaysSorted = useMemo(() => {
+    return weekdays.filter((w) => values.classDays.includes(w.day));
+  }, [values.classDays]);
+
+  const selectedDaysLabel = useMemo(() => {
+    if (!selectedDaysSorted.length) return '';
+    return selectedDaysSorted.map((w) => w.label).join(', ');
+  }, [selectedDaysSorted]);
+
+  const activePresetId = useMemo(() => {
+    const currentKey = [...values.classDays].sort((a, b) => a - b).join(',');
+    const match = PRESETS.find(
+      (p) => [...p.days].sort((a, b) => a - b).join(',') === currentKey
+    );
+    return match?.id ?? null;
+  }, [values.classDays]);
+
+  function toggleDay(day: number) {
+    setValues((current) => ({
+      ...current,
+      classDays: current.classDays.includes(day)
+        ? current.classDays.filter((item) => item !== day)
+        : [...current.classDays, day].sort((a, b) => a - b),
+    }));
+  }
+
+  function applyPreset(days: readonly number[]) {
+    setValues((current) => ({
+      ...current,
+      classDays: [...days].sort((a, b) => a - b),
+    }));
+  }
+
+  function clearAllDays() {
+    setValues((current) => ({
+      ...current,
+      classDays: [],
+    }));
+  }
+
+  function selectAllDays() {
+    setValues((current) => ({
+      ...current,
+      classDays: [...ALL_DAYS],
+    }));
+  }
+
   function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSubmitted(true);
 
-    if (!values.name.trim() || !values.classLevelId || !values.classDays.length || !isFeeValid) return;
+    if (!values.name.trim() || !values.classLevelId || !values.classDays.length || !isFeeValid)
+      return;
 
     const feeNum = Number(values.monthlyFee.trim() || 0);
     const feeMinor = Math.round(feeNum * 100).toString();
@@ -95,7 +178,7 @@ export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchShee
       mediumId: values.mediumId || null,
       academicGroupId: values.academicGroupId || null,
       startDate: values.startDate || null,
-      classDays: values.classDays,
+      classDays: [...values.classDays].sort((a, b) => a - b),
       monthlyFee: feeNum,
       monthlyFeeMinor: feeMinor,
       status: values.status,
@@ -120,7 +203,7 @@ export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchShee
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-2xl lg:max-w-3xl data-[side=right]:w-full data-[side=right]:sm:max-w-2xl data-[side=right]:lg:max-w-3xl">
+      <SheetContent className="w-full sm:max-w-2xl lg:max-w-3xl">
         <SheetHeader className="border-b border-border/40 pb-4 pr-12">
           <SheetTitle>{isEditing ? 'Edit batch' : 'Create batch'}</SheetTitle>
           <SheetDescription>
@@ -250,33 +333,111 @@ export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchShee
                 </Field>
               </div>
 
-              <FieldSet>
-                <FieldLegend variant="label">Class Days *</FieldLegend>
-                <FieldDescription>Select every weekday this batch meets.</FieldDescription>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" data-slot="checkbox-group">
-                  {weekdays.map(([label, day]) => {
+              <FieldSet data-invalid={submitted && !values.classDays.length}>
+                <div className="flex items-center justify-between gap-2">
+                  <FieldLegend variant="label">Class Days *</FieldLegend>
+                  <div className="flex items-center gap-1.5">
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="xs"
+                      onClick={selectAllDays}
+                      className="h-6 rounded-full px-2 text-[11px] text-muted-foreground hover:text-foreground"
+                    >
+                      <Check className="size-3 mr-1" />
+                      Select all
+                    </Button>
+                    {values.classDays.length > 0 && (
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="xs"
+                        onClick={clearAllDays}
+                        className="h-6 rounded-full px-2 text-[11px] text-muted-foreground hover:text-destructive"
+                      >
+                        <RotateCcw className="size-3 mr-1" />
+                        Clear
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                <FieldDescription>
+                  Select the recurring days this batch holds classes.
+                </FieldDescription>
+
+                {/* Day Selection Pills */}
+                <div className="grid grid-cols-7 gap-1.5 sm:gap-2" data-slot="checkbox-group">
+                  {weekdays.map(({ label, full, day }) => {
                     const checked = values.classDays.includes(day);
                     return (
-                      <FieldLabel key={day} className="cursor-pointer rounded-lg border border-border px-3 py-2 text-sm">
-                        <Field orientation="horizontal">
-                          <Checkbox
-                            checked={checked}
-                            onCheckedChange={(next) =>
-                              setValues((current) => ({
-                                ...current,
-                                classDays: next
-                                  ? [...current.classDays, day].sort((a, b) => a - b)
-                                  : current.classDays.filter((item) => item !== day),
-                              }))
-                            }
-                            aria-label={`${label} class day`}
-                          />
-                          <span>{label}</span>
-                        </Field>
-                      </FieldLabel>
+                      <button
+                        key={day}
+                        type="button"
+                        role="checkbox"
+                        aria-checked={checked}
+                        aria-label={`${full} (${label})`}
+                        onClick={() => toggleDay(day)}
+                        className={cn(
+                          'flex flex-col items-center justify-center rounded-xl py-2 px-1 text-center transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring',
+                          checked
+                            ? 'bg-primary text-primary-foreground font-semibold shadow-xs shadow-primary/20 scale-[1.02]'
+                            : 'bg-card/70 text-muted-foreground hover:text-foreground hover:bg-muted/50 border border-border/70'
+                        )}
+                      >
+                        <span className="text-xs font-semibold tracking-tight">{label}</span>
+                        <span
+                          className={cn(
+                            'mt-0.5 text-[9px] uppercase tracking-wider',
+                            checked ? 'text-primary-foreground/80' : 'text-muted-foreground/60'
+                          )}
+                        >
+                          {day === 5 || day === 6 ? 'Wknd' : 'Wkdy'}
+                        </span>
+                      </button>
                     );
                   })}
                 </div>
+
+                {/* Live Selection Summary */}
+                {values.classDays.length > 0 && (
+                  <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border/50 bg-muted/30 px-3 py-2 text-xs">
+                    <span className="flex items-center gap-1 font-medium text-foreground">
+                      <CalendarDays className="size-3.5 text-primary" />
+                      {selectedDaysSorted.length} {selectedDaysSorted.length === 1 ? 'day' : 'days'} / week:
+                    </span>
+                    <span className="text-muted-foreground">{selectedDaysLabel}</span>
+                  </div>
+                )}
+
+                {/* Quick Presets */}
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center gap-1 text-[11px] font-medium text-muted-foreground">
+                    <Sparkles className="size-3 text-primary" />
+                    <span>Quick Routine Presets:</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {PRESETS.map((preset) => {
+                      const isActive = activePresetId === preset.id;
+                      return (
+                        <button
+                          key={preset.id}
+                          type="button"
+                          onClick={() => applyPreset(preset.days)}
+                          className={cn(
+                            'rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors border',
+                            isActive
+                              ? 'border-primary/40 bg-primary/15 text-primary shadow-xs'
+                              : 'border-border/60 bg-card/40 text-muted-foreground hover:border-border hover:bg-muted/40 hover:text-foreground'
+                          )}
+                        >
+                          {preset.shortLabel}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
                 {submitted && !values.classDays.length ? (
                   <FieldError errors={[{ message: 'Select at least one class day.' }]} />
                 ) : null}
