@@ -67,7 +67,7 @@ export function NoticeDetailPage({ workspaceId, id }: { workspaceId: string; id:
   return (
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between gap-3">
-        <Button variant="ghost" render={<Link href="/dashboard/notices" />}>
+        <Button variant="ghost" render={<Link href="/workspace/notices" />}>
           <ArrowLeft data-icon="inline-start" />
           Notices
         </Button>

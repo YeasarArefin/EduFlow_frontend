@@ -40,7 +40,7 @@ export function WorkspaceOnboarding() {
   const submit = async (values: Values) => {
     try {
       await mutation.mutateAsync(values);
-      router.replace('/dashboard');
+      router.replace('/workspace/dashboard');
       router.refresh();
     } catch {
       // The mutation state renders the persistent, actionable error below the fields.

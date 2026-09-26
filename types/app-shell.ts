@@ -17,19 +17,36 @@ export type AppShellUser = {
   onSignOut?: () => void;
 };
 
+export type AppShellWorkspaceSubscription = {
+  status: string;
+  planName: string | null;
+  startsAt?: string | null;
+  expiresAt?: string | null;
+  trialEndsAt?: string | null;
+  renewalDueAt?: string | null;
+};
+
+export type AppShellWorkspace = {
+  id?: string;
+  name?: string | null;
+  status?: string;
+  subscription?: AppShellWorkspaceSubscription | null;
+};
+
 export type AppShellProps = {
   children: ReactNode;
   navigation: AppShellNavGroup[];
   productName?: string;
   isAdmin?: boolean;
   user?: AppShellUser;
+  workspace?: AppShellWorkspace;
 };
 
 export type ShellBrandProps = Pick<AppShellProps, 'productName' | 'isAdmin'> & {
   productName: string;
 };
 
-export type ShellFooterProps = Pick<AppShellProps, 'isAdmin' | 'user'>;
+export type ShellFooterProps = Pick<AppShellProps, 'isAdmin' | 'user' | 'workspace'>;
 
 export type ShellNavigationProps = {
   groups: AppShellNavGroup[];

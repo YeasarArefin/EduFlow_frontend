@@ -24,6 +24,16 @@ export type WorkspaceSettings = {
   smsDefaultSenderId: string | null;
   absenceEmailEnabled: boolean;
   absenceEmailRecipient: 'guardian' | 'student' | 'both';
+  absenceSmsEnabled: boolean;
+  noticeEmailEnabled: boolean;
+  noticeSmsEnabled: boolean;
+  noticeRecipient: 'guardian' | 'student' | 'both';
+  paymentSmsEnabled: boolean;
+  reminderSmsEnabled: boolean;
+  overdueSmsEnabled: boolean;
+  paymentReminderDaysBefore: number;
+  graceReminderDaysAfter: number;
+  overdueWarningDaysAfter: number;
   paymentConfirmationEnabled: boolean;
   paymentReminderEnabled: boolean;
   graceReminderEnabled: boolean;
@@ -71,6 +81,17 @@ export type ActiveSession = {
   isCurrent: boolean;
 };
 export type CsvImportKind = 'students' | 'teachers';
-export type CsvImportPreviewRow = { rowNumber: number; values: Record<string, string>; errors: { field: string; reason: string }[] };
-export type CsvImportSummary = { rows: CsvImportPreviewRow[]; total: number; valid: number; invalid: number; imported?: number; skipped?: number };
+export type CsvImportPreviewRow = {
+  rowNumber: number;
+  values: Record<string, string>;
+  errors: { field: string; reason: string }[];
+};
+export type CsvImportSummary = {
+  rows: CsvImportPreviewRow[];
+  total: number;
+  valid: number;
+  invalid: number;
+  imported?: number;
+  skipped?: number;
+};
 export type CsvImportPanelProps = { workspaceId: string };

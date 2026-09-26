@@ -11,6 +11,7 @@ import {
   Plus,
   Power,
   PowerOff,
+  Trash2,
   SlidersHorizontal,
 } from 'lucide-react';
 import {
@@ -49,6 +50,7 @@ import {
   usePlatformPlans,
   useSavePlatformPlan,
   useSetPlatformPlanActive,
+  useDeletePlatformPlan,
 } from '../queries/use-platform-plans';
 import { PlanFeaturesSheet } from './plan-features-sheet';
 import {
@@ -291,6 +293,7 @@ export function PlatformPlansPage() {
   const [selectedPlan, setSelectedPlan] = useState<PlatformPlan | null>(null);
   const [featurePlan, setFeaturePlan] = useState<PlatformPlan | null>(null);
   const plans = planQuery.data ?? [];
+  const deletePlan = useDeletePlatformPlan();
 
   function openCreate() {
     setSelectedPlan(null);
@@ -392,6 +395,17 @@ export function PlatformPlansPage() {
                       <SlidersHorizontal data-icon="inline-start" /> Features
                     </Button>
                     <PlanStateAction plan={plan} />
+                    <AlertDialog>
+                      <AlertDialogTrigger
+                        render={<Button size="sm" variant="destructive" className="rounded-full" disabled={deletePlan.isPending} />}
+                      >
+                        <Trash2 data-icon="inline-start" /> Delete
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader><AlertDialogTitle>Delete {plan.name}?</AlertDialogTitle><AlertDialogDescription>This permanently removes the plan and its feature configuration. Plans with subscription or payment history cannot be deleted; deactivate them instead.</AlertDialogDescription></AlertDialogHeader>
+                        <AlertDialogFooter><AlertDialogCancel disabled={deletePlan.isPending}>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => deletePlan.mutate(plan.id)} disabled={deletePlan.isPending}>Delete plan</AlertDialogAction></AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </TableCell>
               </TableRow>

@@ -37,7 +37,7 @@ export function BatchDetailPage({ workspaceId, id }: BatchDetailPageProps) {
       {/* Breadcrumb */}
       <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
         <Link
-          href="/dashboard/batches"
+          href="/workspace/batches"
           className="inline-flex items-center gap-1 transition-colors hover:text-foreground"
         >
           <ArrowLeft className="size-3.5" />

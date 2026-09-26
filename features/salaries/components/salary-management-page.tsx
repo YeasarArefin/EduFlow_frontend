@@ -41,12 +41,7 @@ export function SalaryManagementPage({ workspaceId }: SalaryManagementPageProps)
   const [historySalary, setHistorySalary] = useState<Salary | null>(null);
   const [isGenerateOpen, setIsGenerateOpen] = useState(false);
   const salaries = useSalaries(workspaceId, { salaryMonth, status, page: 1, limit: 100, search });
-  const rows = (salaries.data?.data ?? []).filter(
-    (salary) =>
-      !search ||
-      salary.teacher?.name.toLowerCase().includes(search.toLowerCase()) ||
-      salary.teacher?.teacherCode.toLowerCase().includes(search.toLowerCase())
-  );
+  const rows = useMemo(() => salaries.data?.data ?? [], [salaries.data?.data]);
   const totals = useMemo(
     () =>
       rows.reduce(

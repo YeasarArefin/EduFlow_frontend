@@ -42,6 +42,7 @@ import {
 } from '@/components/ui/table';
 import { useEnrollStudent } from '@/features/batches/queries/use-batch-enrollments';
 import { useBatchesQuery } from '@/features/batches/queries/use-batches-query';
+import { useDebouncedValue } from '@/utils/use-debounced-value';
 import type { FeeStatus, StudentFee } from '@/features/fees/api/fees';
 import { CollectPaymentSheet } from '@/features/fees/components/collect-payment-sheet';
 import { FeePaymentsHistoryDialog } from '@/features/fees/components/fee-payments-history-dialog';
@@ -171,6 +172,7 @@ export function StudentDetailPage({ workspaceId, studentId }: StudentDetailPageP
   // Enrollment form state
   const [batchId, setBatchId] = useState('');
   const [batchSearch, setBatchSearch] = useState('');
+  const debouncedBatchSearch = useDebouncedValue(batchSearch.trim());
   const [joinedAt, setJoinedAt] = useState(new Date().toISOString().slice(0, 10));
   const [feeOverrideTaka, setFeeOverrideTaka] = useState('');
   const [discountTaka, setDiscountTaka] = useState('');
@@ -180,7 +182,8 @@ export function StudentDetailPage({ workspaceId, studentId }: StudentDetailPageP
   const feesQuery = useStudentFeesQuery(workspaceId, studentId);
   const batchesQuery = useBatchesQuery(workspaceId, {
     page: 1,
-    limit: 100,
+    limit: 20,
+    search: debouncedBatchSearch || undefined,
     status: 'active',
   });
 
@@ -223,11 +226,7 @@ export function StudentDetailPage({ workspaceId, studentId }: StudentDetailPageP
     };
   }, [fees, enrollments]);
 
-  const activeBatchesList = useMemo(() => {
-    return (batchesQuery.data?.data ?? []).filter((batch) =>
-      batch.name.toLowerCase().includes(batchSearch.toLowerCase())
-    );
-  }, [batchesQuery.data?.data, batchSearch]);
+  const activeBatchesList = batchesQuery.data?.data ?? [];
 
   const closeEnrollment = () => {
     setEnrollOpen(false);
@@ -291,7 +290,7 @@ export function StudentDetailPage({ workspaceId, studentId }: StudentDetailPageP
         <Button
           variant="outline"
           size="sm"
-          render={<Link href="/dashboard/students" />}
+          render={<Link href="/workspace/students" />}
           className="rounded-full shadow-xs"
         >
           <ChevronLeft data-icon="inline-start" /> Back to Students
@@ -557,7 +556,7 @@ export function StudentDetailPage({ workspaceId, studentId }: StudentDetailPageP
                 <Button
                   variant="outline"
                   size="sm"
-                  render={<Link href="/dashboard/fees" />}
+                  render={<Link href="/workspace/fees" />}
                   className="mt-4 rounded-full"
                 >
                   Go to Fee Management

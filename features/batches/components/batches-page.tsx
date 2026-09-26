@@ -121,7 +121,7 @@ export function BatchesPage({ workspaceId }: BatchesPageProps) {
                   <TableCell>
                     <Link
                       className="font-medium hover:text-accent-foreground"
-                      href={`/dashboard/batches/${batch.id}`}
+                      href={`/workspace/batches/${batch.id}`}
                     >
                       {batch.name}
                     </Link>

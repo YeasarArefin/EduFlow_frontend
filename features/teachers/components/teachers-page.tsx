@@ -247,7 +247,7 @@ export function TeachersPage({ workspaceId }: TeachersPageProps) {
                     >
                       <TableCell className="min-w-64">
                         <Link
-                          href={`/dashboard/teachers/${teacher.id}`}
+                          href={`/workspace/teachers/${teacher.id}`}
                           className="group flex items-center gap-3 rounded-lg outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                           <span className="flex size-9 shrink-0 items-center justify-center rounded-xl border border-lime-500/20 bg-lime-500/10 text-xs font-bold text-lime-400">
@@ -307,7 +307,7 @@ export function TeachersPage({ workspaceId }: TeachersPageProps) {
                         <Button
                           variant="outline"
                           size="sm"
-                          render={<Link href={`/dashboard/teachers/${teacher.id}`} />}
+                          render={<Link href={`/workspace/teachers/${teacher.id}`} />}
                           className="h-7 rounded-full px-2.5 text-xs"
                         >
                           <Eye className="size-3" />
@@ -328,7 +328,7 @@ export function TeachersPage({ workspaceId }: TeachersPageProps) {
               return (
                 <Link
                   key={teacher.id}
-                  href={`/dashboard/teachers/${teacher.id}`}
+                  href={`/workspace/teachers/${teacher.id}`}
                   className="flex flex-col gap-3 rounded-2xl border border-border/70 bg-card/50 p-4 transition-colors hover:border-border"
                 >
                   <div className="flex items-start justify-between gap-2">

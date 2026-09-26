@@ -11,7 +11,9 @@ import {
   SheetTitle,
 } from '@/components/ui/sheet';
 import { Spinner } from '@/components/ui/spinner';
+import { useStudentsQuery } from '@/features/students/queries/use-students-query';
 import type { BatchEnrollStudentSheetProps } from '@/types/batches';
+import { useDebouncedValue } from '@/utils/use-debounced-value';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { useEnrollStudent } from '../queries/use-batch-enrollments';
@@ -24,11 +26,16 @@ export function BatchEnrollStudentSheet({
   batchName,
   defaultMonthlyFeeMinor,
   existingEnrollments,
-  allStudents,
-  isLoadingStudents,
 }: BatchEnrollStudentSheetProps) {
   const enroll = useEnrollStudent();
   const [search, setSearch] = useState('');
+  const debouncedSearch = useDebouncedValue(search.trim());
+  const studentsQuery = useStudentsQuery(workspaceId, {
+    page: 1,
+    limit: 20,
+    search: debouncedSearch || undefined,
+    status: 'active',
+  });
   const [studentId, setStudentId] = useState('');
   const [joinedAt, setJoinedAt] = useState(() => new Date().toISOString().slice(0, 10));
   const [fee, setFee] = useState('');
@@ -37,16 +44,8 @@ export function BatchEnrollStudentSheet({
     const ids = new Set(
       existingEnrollments.filter((item) => item.status === 'active').map((item) => item.studentId)
     );
-    const term = search.toLowerCase();
-    return allStudents.filter(
-      (student) =>
-        !ids.has(student.id) &&
-        student.status === 'active' &&
-        `${student.fullName} ${student.studentCode} ${student.phone ?? ''}`
-          .toLowerCase()
-          .includes(term)
-    );
-  }, [allStudents, existingEnrollments, search]);
+    return (studentsQuery.data?.data ?? []).filter((student) => !ids.has(student.id));
+  }, [existingEnrollments, studentsQuery.data?.data]);
   const base = fee ? Number(fee) : Number(defaultMonthlyFeeMinor) / 100;
   const valid =
     Number.isFinite(base) &&
@@ -100,10 +99,10 @@ export function BatchEnrollStudentSheet({
               className="w-full rounded-md border bg-background p-2"
               value={studentId}
               onChange={(event) => setStudentId(event.target.value)}
-              disabled={isLoadingStudents || enroll.isPending}
+              disabled={studentsQuery.isPending || enroll.isPending}
             >
               <option value="">
-                {isLoadingStudents ? 'Loading students…' : 'Choose an active student'}
+                {studentsQuery.isPending ? 'Loading students…' : 'Choose an active student'}
               </option>
               {students.map((student) => (
                 <option key={student.id} value={student.id}>

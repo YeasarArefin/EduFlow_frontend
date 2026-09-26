@@ -1,6 +1,6 @@
 'use client';
 
-import { Crown, Trash2, UserPlus } from 'lucide-react';
+import { Crown, Search, Trash2, UserPlus } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { ErrorState, LoadingState, SectionCard } from '@/components/dashboard/dashboard-primitives';
@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -25,6 +26,7 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { cn } from '@/lib/utils';
+import { useDebouncedValue } from '@/utils/use-debounced-value';
 import { useTeachersQuery } from '@/features/teachers/queries/use-teachers-query';
 import type { BatchTeacher, BatchTeachersCardProps } from '@/types/batches';
 import {
@@ -36,31 +38,26 @@ import {
 
 export function BatchTeachersCard({ workspaceId, batchId }: BatchTeachersCardProps) {
   const assignments = useBatchTeachersQuery(workspaceId, batchId);
+  const [teacherSearch, setTeacherSearch] = useState('');
+  const debouncedTeacherSearch = useDebouncedValue(teacherSearch.trim());
   const teachers = useTeachersQuery(workspaceId, {
     page: 1,
-    limit: 100,
+    limit: 20,
+    search: debouncedTeacherSearch || undefined,
     status: 'active',
   });
   const assign = useAssignBatchTeacherMutation();
   const update = useUpdateBatchTeacherMutation();
   const remove = useRemoveBatchTeacherMutation();
 
-  const [teacherSearch, setTeacherSearch] = useState('');
   const [teacherId, setTeacherId] = useState('');
   const [makePrimary, setMakePrimary] = useState(false);
   const [removing, setRemoving] = useState<BatchTeacher | null>(null);
 
   const options = useMemo(() => {
     const assignedIds = new Set(assignments.data?.map((teacher) => teacher.teacherId));
-    return (teachers.data?.data ?? []).filter(
-      (teacher) =>
-        !assignedIds.has(teacher.id) &&
-        (!teacherSearch.trim() ||
-          `${teacher.name} ${teacher.teacherCode} ${teacher.subjectSpecialty ?? ''}`
-            .toLowerCase()
-            .includes(teacherSearch.toLowerCase().trim()))
-    );
-  }, [assignments.data, teacherSearch, teachers.data?.data]);
+    return (teachers.data?.data ?? []).filter((teacher) => !assignedIds.has(teacher.id));
+  }, [assignments.data, teachers.data?.data]);
 
   const pending = assign.isPending || update.isPending || remove.isPending;
 
@@ -140,6 +137,16 @@ export function BatchTeachersCard({ workspaceId, batchId }: BatchTeachersCardPro
           <p className="text-xs font-medium text-foreground">Assign instructor to batch</p>
 
           <div className="space-y-2">
+            <div className="relative">
+              <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                value={teacherSearch}
+                onChange={(event) => setTeacherSearch(event.target.value)}
+                placeholder="Search teacher name, code, or specialty"
+                className="h-10 rounded-full bg-input/80 pl-9"
+                disabled={pending}
+              />
+            </div>
             <Select
               value={teacherId}
               onValueChange={(value) => setTeacherId(value ?? '')}

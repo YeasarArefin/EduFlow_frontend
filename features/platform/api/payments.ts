@@ -2,8 +2,9 @@ import { apiRequest } from '@/lib/api/client';
 import type { PlatformPayment } from '@/types/platform';
 export type { PlatformPayment } from '@/types/platform';
 
-export function getPendingPlatformPayments(signal?: AbortSignal) {
-  return apiRequest<PlatformPayment[]>('/payment-requests/pending', { signal });
+export function getPendingPlatformPayments(search?: string, signal?: AbortSignal) {
+  const query = search ? `?${new URLSearchParams({ search })}` : '';
+  return apiRequest<PlatformPayment[]>(`/payment-requests/pending${query}`, { signal });
 }
 
 export function approvePlatformPayment(paymentId: string) {

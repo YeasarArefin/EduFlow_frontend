@@ -35,7 +35,7 @@ import { getMemberInitials } from '@/utils/staff-formatters';
 const schema = z.object({
   name: z.string().trim().min(1, 'Enter a name.'),
   email: z.string().trim().email('Enter a valid email address.'),
-  password: z.string().min(12, 'Use at least 12 characters.'),
+  password: z.string().min(8, 'Use at least 8 characters.'),
   roleId: z.string().uuid('Select a role.'),
 });
 
@@ -151,12 +151,12 @@ export function MemberDialog({ open, onOpenChange, workspaceId, member }: Member
                   <Input
                     id="member-password"
                     type="password"
-                    placeholder="At least 12 characters"
+                    placeholder="At least 8 characters"
                     disabled={pending}
                     {...form.register('password')}
                   />
                   <p className="text-[11px] text-muted-foreground">
-                    Must be at least 12 characters. The member can change this upon sign in.
+                    Must be at least 8 characters. The member can change this upon sign in.
                   </p>
                   <FieldError
                     errors={

@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import {
   AlertDialog,
@@ -73,6 +73,7 @@ import {
   getMemberStatusVisual,
   isProtectedOwner,
 } from '@/utils/staff-formatters';
+import { useDebouncedValue } from '@/utils/use-debounced-value';
 
 export function StaffPage({ workspaceId }: StaffPageProps) {
   const pathname = usePathname();
@@ -89,6 +90,13 @@ export function StaffPage({ workspaceId }: StaffPageProps) {
   const search = params.get('search') || undefined;
   const roleId = params.get('roleId') || undefined;
   const status = params.get('status') as MemberStatus | undefined;
+  const [searchDraft, setSearchDraft] = useState(search ?? '');
+  const debouncedSearch = useDebouncedValue(searchDraft.trim());
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSearchDraft(search ?? ''), 0);
+    return () => window.clearTimeout(timer);
+  }, [search]);
 
   const query = useMembersQuery(workspaceId, {
     page,
@@ -103,18 +111,27 @@ export function StaffPage({ workspaceId }: StaffPageProps) {
   const removeMutation = useRemoveMemberMutation();
   const isActionPending = statusMutation.isPending || removeMutation.isPending;
 
-  function update(values: Record<string, string | undefined>) {
-    const next = new URLSearchParams(params);
-    for (const [key, value] of Object.entries(values)) {
-      if (value) next.set(key, value);
-      else next.delete(key);
-    }
-    router.replace(next.size ? `${pathname}?${next}` : pathname);
-  }
+  const update = useCallback(
+    (values: Record<string, string | undefined>) => {
+      const next = new URLSearchParams(params);
+      for (const [key, value] of Object.entries(values)) {
+        if (value) next.set(key, value);
+        else next.delete(key);
+      }
+      router.replace(next.size ? `${pathname}?${next}` : pathname);
+    },
+    [params, pathname, router]
+  );
 
   function resetFilters() {
     router.replace(pathname);
   }
+
+  useEffect(() => {
+    if (debouncedSearch !== (search ?? '')) {
+      update({ search: debouncedSearch || undefined, page: undefined });
+    }
+  }, [debouncedSearch, search, update]);
 
   function openAddDialog() {
     setDialogMember(undefined);
@@ -184,7 +201,7 @@ export function StaffPage({ workspaceId }: StaffPageProps) {
             <Button
               variant="outline"
               className="gap-2"
-              render={<Link href="/dashboard/staff/permissions" />}
+              render={<Link href="/workspace/staff/permissions" />}
             >
               <Shield className="size-4 text-muted-foreground" />
               <span>Roles & permissions</span>
@@ -280,25 +297,15 @@ export function StaffPage({ workspaceId }: StaffPageProps) {
             <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              defaultValue={search ?? ''}
+              value={searchDraft}
               placeholder="Search by name or email..."
               className="h-9 w-full rounded-lg border border-border/70 bg-card/70 pl-9 pr-8 text-xs text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  const target = e.target as HTMLInputElement;
-                  update({ search: target.value || undefined, page: undefined });
-                }
-              }}
-              onBlur={(e) => {
-                if (e.target.value !== (search ?? '')) {
-                  update({ search: e.target.value || undefined, page: undefined });
-                }
-              }}
+              onChange={(event) => setSearchDraft(event.target.value)}
             />
             {search ? (
               <button
                 type="button"
-                onClick={() => update({ search: undefined, page: undefined })}
+                onClick={() => setSearchDraft('')}
                 className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 aria-label="Clear search"
               >
@@ -317,7 +324,10 @@ export function StaffPage({ workspaceId }: StaffPageProps) {
               })
             }
           >
-            <SelectTrigger className="h-9 w-[160px] text-xs bg-card/70" aria-label="Filter member role">
+            <SelectTrigger
+              className="h-9 w-[160px] text-xs bg-card/70"
+              aria-label="Filter member role"
+            >
               <SelectValue placeholder="All roles" />
             </SelectTrigger>
             <SelectContent>
@@ -342,7 +352,10 @@ export function StaffPage({ workspaceId }: StaffPageProps) {
               })
             }
           >
-            <SelectTrigger className="h-9 w-[140px] text-xs bg-card/70" aria-label="Filter member status">
+            <SelectTrigger
+              className="h-9 w-[140px] text-xs bg-card/70"
+              aria-label="Filter member status"
+            >
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>
             <SelectContent>
@@ -456,7 +469,11 @@ export function StaffPage({ workspaceId }: StaffPageProps) {
                               : 'border-border/60 bg-muted/60 text-foreground/90'
                           }`}
                         >
-                          {isOwner ? <Crown className="size-3 text-amber-500" /> : <Shield className="size-3 text-muted-foreground" />}
+                          {isOwner ? (
+                            <Crown className="size-3 text-amber-500" />
+                          ) : (
+                            <Shield className="size-3 text-muted-foreground" />
+                          )}
                           {member.role}
                         </span>
                       </TableCell>

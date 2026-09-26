@@ -187,6 +187,11 @@ export type PlatformPlanInput = Pick<
   PlatformPlan,
   'name' | 'slug' | 'priceMinor' | 'durationDays' | 'trialDays'
 >;
+export type PlatformPlanDeleteResult = {
+  id: string;
+  name: string;
+  slug: string;
+};
 export type RevenueOverview = {
   metrics: {
     approvedRevenueMinor: string;

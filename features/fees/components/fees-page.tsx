@@ -265,7 +265,7 @@ export function FeesPage({ workspaceId }: FeesPageProps) {
                           </div>
                           <div className="min-w-0">
                             <Link
-                              href={`/dashboard/students/${fee.studentId}`}
+                              href={`/workspace/students/${fee.studentId}`}
                               className="font-semibold text-foreground hover:text-primary transition-colors truncate block text-sm"
                             >
                               {fee.student?.fullName || 'Student'}
@@ -371,7 +371,7 @@ export function FeesPage({ workspaceId }: FeesPageProps) {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <Link
-                        href={`/dashboard/students/${fee.studentId}`}
+                        href={`/workspace/students/${fee.studentId}`}
                         className="font-semibold text-foreground text-base hover:text-primary transition-colors block truncate"
                       >
                         {fee.student?.fullName || 'Student'}

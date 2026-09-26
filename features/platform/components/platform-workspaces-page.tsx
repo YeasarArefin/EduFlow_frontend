@@ -153,6 +153,7 @@ export function PlatformWorkspacesPage() {
         placeholder="Search by workspace name or identifier"
         searchValue={params.search}
         onSearch={(search) => updateUrl({ search: search || undefined, page: undefined })}
+        singleRow
       >
         <Select
           items={[

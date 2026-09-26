@@ -14,7 +14,9 @@ export function ShellNavigation({ groups, pathname, onNavigate }: ShellNavigatio
           )}
           {group.items.map((item) => {
             const isRootSection =
-              item.href === '/platform' || item.href === '/dashboard' || item.href === '/';
+              item.href === '/platform' ||
+              item.href === '/workspace/dashboard' ||
+              item.href === '/';
             const isActive =
               pathname === item.href || (!isRootSection && pathname.startsWith(`${item.href}/`));
 

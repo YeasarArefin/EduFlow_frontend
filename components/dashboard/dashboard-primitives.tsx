@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
-import { AlertCircle, Inbox, RefreshCw, Search } from 'lucide-react';
+import { AlertCircle, Inbox, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+
+export { FilterToolbar } from './filter-toolbar';
 
 const statStatusStyles = {
   success: 'bg-primary',
@@ -160,33 +161,6 @@ export function ErrorState({
           <RefreshCw data-icon="inline-start" /> Try again
         </Button>
       )}
-    </div>
-  );
-}
-
-export function FilterToolbar({
-  placeholder = 'Search',
-  children,
-  onSearch,
-  searchValue,
-}: {
-  placeholder?: string;
-  children?: ReactNode;
-  onSearch?: (value: string) => void;
-  searchValue?: string;
-}) {
-  return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="relative w-full sm:max-w-xs">
-        <Search className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-        <Input
-          className="h-9 pl-9 pr-4 text-sm"
-          placeholder={placeholder}
-          value={searchValue ?? ''}
-          onChange={(e) => onSearch?.(e.target.value)}
-        />
-      </div>
-      <div className="flex flex-wrap items-center gap-2.5">{children}</div>
     </div>
   );
 }

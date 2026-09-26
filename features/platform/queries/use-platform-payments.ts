@@ -11,10 +11,10 @@ import {
 } from '../api/payments';
 import { platformPaymentQueryKeys } from '../payment-query-keys';
 
-export function usePendingPlatformPayments() {
+export function usePendingPlatformPayments(search?: string) {
   return useQuery({
-    queryKey: platformPaymentQueryKeys.pending(),
-    queryFn: ({ signal }) => getPendingPlatformPayments(signal),
+    queryKey: platformPaymentQueryKeys.pending(search),
+    queryFn: ({ signal }) => getPendingPlatformPayments(search, signal),
     staleTime: 15_000,
   });
 }

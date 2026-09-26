@@ -188,6 +188,7 @@ export function PlatformSubscriptionsPage() {
         placeholder="Search by workspace name or identifier"
         searchValue={params.search}
         onSearch={(search) => updateUrl({ search: search || undefined, page: undefined })}
+        singleRow
       >
         <Select
           items={reviewGroups.map((item) => ({ label: item.label, value: item.value }))}

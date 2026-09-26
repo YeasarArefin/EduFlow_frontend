@@ -4,6 +4,15 @@ import { useForm, useWatch } from 'react-hook-form';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Switch } from '@/components/ui/switch';
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldGroup,
+  FieldLabel,
+  FieldTitle,
+} from '@/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -30,6 +39,17 @@ const tabFields = {
     'graceReminderEnabled',
     'overdueWarningEnabled',
     'absenceEmailRecipient',
+    'absenceEmailEnabled',
+    'absenceSmsEnabled',
+    'noticeEmailEnabled',
+    'noticeSmsEnabled',
+    'noticeRecipient',
+    'paymentSmsEnabled',
+    'reminderSmsEnabled',
+    'overdueSmsEnabled',
+    'paymentReminderDaysBefore',
+    'graceReminderDaysAfter',
+    'overdueWarningDaysAfter',
   ],
 } as const satisfies Record<string, readonly (keyof UpdateWorkspaceSettingsInput)[]>;
 export function WorkspaceSettingsCards({ workspaceId, tab }: WorkspaceSettingsCardsProps) {
@@ -37,6 +57,7 @@ export function WorkspaceSettingsCards({ workspaceId, tab }: WorkspaceSettingsCa
   const save = useSaveWorkspaceSettings();
   const form = useForm<Partial<WorkspaceSettings>>();
   const absenceEmailRecipient = useWatch({ control: form.control, name: 'absenceEmailRecipient' });
+  const values = useWatch({ control: form.control });
   useEffect(() => {
     if (query.data) form.reset(query.data);
   }, [query.data, form]);
@@ -129,47 +150,130 @@ export function WorkspaceSettingsCards({ workspaceId, tab }: WorkspaceSettingsCa
         </SectionCard>
       </form>
     );
+  const setEnabled = (name: keyof WorkspaceSettings, checked: boolean) =>
+    form.setValue(name, checked as never, { shouldDirty: true });
+  const toggle = (
+    name: keyof WorkspaceSettings,
+    title: string,
+    description: string,
+    sms = false
+  ) => (
+    <Field orientation="horizontal" className="rounded-xl border border-border bg-card/40 p-4">
+      <FieldContent>
+        <FieldTitle>{title}</FieldTitle>
+        <FieldDescription>
+          {description}
+          {sms ? ' SMS messages use wallet credits.' : ''}
+        </FieldDescription>
+      </FieldContent>
+      <Switch
+        checked={Boolean(values[name])}
+        onCheckedChange={(checked) => setEnabled(name, checked)}
+      />
+    </Field>
+  );
   return (
     <form onSubmit={form.handleSubmit(submit)}>
       <SectionCard
-        title="Payment reminders"
-        description="Choose which reminder events are enabled."
+        title="Notification channels"
+        description="Choose exactly how families receive each operational update. Changes apply to future events."
         action={saveButton}
       >
-        <div className="grid gap-3">
-          <label>
-            <input type="checkbox" {...form.register('paymentConfirmationEnabled')} /> Payment
-            confirmation
-          </label>
-          <label>
-            <input type="checkbox" {...form.register('paymentReminderEnabled')} /> Payment reminder
-          </label>
-          <label>
-            <input type="checkbox" {...form.register('graceReminderEnabled')} /> Grace reminder
-          </label>
-          <label>
-            <input type="checkbox" {...form.register('overdueWarningEnabled')} /> Overdue warning
-          </label>
-          <Select
-            value={absenceEmailRecipient}
-            onValueChange={(value) =>
-              form.setValue(
-                'absenceEmailRecipient',
-                value as WorkspaceSettings['absenceEmailRecipient'],
-                { shouldDirty: true }
-              )
-            }
+        <FieldGroup>
+          <div className="grid gap-3 lg:grid-cols-2">
+            {toggle('absenceEmailEnabled', 'Absence email', 'Send an absence update by email.')}
+            {toggle('absenceSmsEnabled', 'Absence SMS', 'Send an absence update by text.', true)}
+            {toggle('noticeEmailEnabled', 'Notice email', 'Deliver new notices by email.')}
+            {toggle('noticeSmsEnabled', 'Notice SMS', 'Deliver new notices by text.', true)}
+            {toggle(
+              'paymentConfirmationEnabled',
+              'Payment confirmation email',
+              'Confirm recorded fee payments by email.'
+            )}
+            {toggle(
+              'paymentSmsEnabled',
+              'Payment confirmation SMS',
+              'Confirm recorded fee payments by text.',
+              true
+            )}
+          </div>
+          <div className="rounded-xl border border-border bg-muted/20 p-4">
+            <p className="font-medium text-foreground">Fee reminder automation</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Choose the events, then set when each one should be evaluated.
+            </p>
+            <div className="mt-4 grid gap-3 lg:grid-cols-3">
+              {toggle('paymentReminderEnabled', 'Due reminder email', 'Email before a fee is due.')}
+              {toggle(
+                'graceReminderEnabled',
+                'Grace reminder email',
+                'Email once the grace period begins.'
+              )}
+              {toggle(
+                'overdueWarningEnabled',
+                'Overdue warning email',
+                'Email when a fee remains unpaid.'
+              )}
+              {toggle(
+                'reminderSmsEnabled',
+                'Reminder SMS',
+                'Text for due and grace reminders.',
+                true
+              )}
+              {toggle('overdueSmsEnabled', 'Overdue SMS', 'Text for overdue fees.', true)}
+            </div>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              <Input
+                type="number"
+                min="0"
+                placeholder="Days before due"
+                {...form.register('paymentReminderDaysBefore', { valueAsNumber: true })}
+              />
+              <Input
+                type="number"
+                min="0"
+                placeholder="Days after grace"
+                {...form.register('graceReminderDaysAfter', { valueAsNumber: true })}
+              />
+              <Input
+                type="number"
+                min="0"
+                placeholder="Days after due"
+                {...form.register('overdueWarningDaysAfter', { valueAsNumber: true })}
+              />
+            </div>
+          </div>
+          <Field
+            orientation="responsive"
+            className="rounded-xl border border-border bg-card/40 p-4"
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Default recipient" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="guardian">Guardian</SelectItem>
-              <SelectItem value="student">Student</SelectItem>
-              <SelectItem value="both">Both</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
+            <FieldContent>
+              <FieldTitle>Default absence recipient</FieldTitle>
+              <FieldDescription>
+                Choose who receives absence messages when the event is enabled.
+              </FieldDescription>
+            </FieldContent>
+            <Select
+              value={absenceEmailRecipient}
+              onValueChange={(value) =>
+                form.setValue(
+                  'absenceEmailRecipient',
+                  value as WorkspaceSettings['absenceEmailRecipient'],
+                  { shouldDirty: true }
+                )
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Default recipient" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="guardian">Guardian</SelectItem>
+                <SelectItem value="student">Student</SelectItem>
+                <SelectItem value="both">Both</SelectItem>
+              </SelectContent>
+            </Select>
+          </Field>
+        </FieldGroup>
       </SectionCard>
     </form>
   );

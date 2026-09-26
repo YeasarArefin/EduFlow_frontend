@@ -1,27 +1,17 @@
 'use client';
 
-import {
-  ErrorState,
-  LoadingState,
-  PageHeader,
-  SectionCard,
-  StatCard,
-} from '@/components/dashboard/dashboard-primitives';
-import { StatusBadge } from '@/components/status/status-badge';
+import { ErrorState, LoadingState, PageHeader } from '@/components/dashboard/dashboard-primitives';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import type { WorkspaceDashboardOverviewProps } from '@/types/dashboard';
-import { ArrowRight, RefreshCw } from 'lucide-react';
+import { BookOpen, CalendarCheck, GraduationCap, RefreshCw, UserCheck, Wallet } from 'lucide-react';
 import Link from 'next/link';
 import { useDashboardSummary } from '../queries/use-dashboard-summary';
-import {
-  dashboardQuickActions,
-  formatDashboardDate,
-  getAccessLabel,
-  getAccessVisual,
-  getEntitlementSummary,
-} from '@/utils/dashboard-formatters';
-import { DashboardDetailRow } from './dashboard-detail-row';
+import { formatDashboardMoney } from '@/utils/dashboard-formatters';
+import { FinancialOverviewPanel } from '@/features/expenses/components/finance-page';
+import { FinancialCharts } from './financial-charts';
+import { TodayBatches } from './today-batches';
+import { RecentActivity } from './recent-activity';
+import { QuickActions } from './quick-actions';
 
 export function WorkspaceDashboardOverview({
   workspaceId,
@@ -39,152 +29,123 @@ export function WorkspaceDashboardOverview({
     );
 
   const summary = query.data;
-  const accessLabel = getAccessLabel(summary.access.status);
-  const accessVisual = getAccessVisual(summary.access.status);
-  const dateLabel = summary.subscription?.status === 'trial' ? 'Trial ends' : 'Access until';
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-6">
+      {/* Top Header */}
       <PageHeader
-        title={summary.workspace.name || 'Coaching overview'}
-        description="Your workspace access, plan, and setup at a glance."
+        title={summary.workspace.name || 'Coaching Overview'}
+        description="Daily coaching operations, student attendance, tuition revenue, and schedule at a glance."
         actions={
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => void query.refetch()}
-            disabled={query.isFetching}
-          >
-            <RefreshCw
-              className={query.isFetching ? 'animate-spin' : undefined}
-              data-icon="inline-start"
-            />
-            Refresh
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => void query.refetch()}
+              disabled={query.isFetching}
+              className="rounded-full text-xs"
+            >
+              <RefreshCw
+                className={`size-3.5 ${query.isFetching ? 'animate-spin' : ''}`}
+                data-icon="inline-start"
+              />
+              Refresh
+            </Button>
+            <Button
+              size="sm"
+              render={<Link href="/workspace/attendance" />}
+              className="rounded-full shadow-sm text-xs"
+            >
+              <CalendarCheck data-icon="inline-start" /> Take Attendance
+            </Button>
+          </div>
         }
       />
 
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatCard
-          label="Current plan"
-          value={summary.subscription?.planName || 'No active plan'}
-          detail={summary.subscription ? 'Workspace subscription' : 'Subscription setup required'}
-        />
-        <StatCard
-          label="Workspace access"
-          value={<StatusBadge status={accessVisual}>{accessLabel}</StatusBadge>}
-          detail={summary.access.reason}
-        />
-        <StatCard
-          label="Workspace members"
-          value={summary.memberCount}
-          detail="All workspace memberships"
-        />
-        <StatCard
-          label="Features"
-          value={summary.entitlements.filter((item) => item.enabled).length}
-          detail={getEntitlementSummary(summary)}
-        />
-      </div>
-
-      <div className="grid gap-6 lg:grid-cols-5">
-        <SectionCard
-          title="Subscription status"
-          description="Current access is derived from your workspace and subscription records."
-          action={<StatusBadge status={accessVisual}>{accessLabel}</StatusBadge>}
+      {/* Row 1: General Info (4 KPI Stat Cards) */}
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {/* Active Students */}
+        <Link
+          href="/workspace/students"
+          className="group rounded-2xl border border-border bg-card p-4 transition-colors hover:border-border-strong hover:bg-muted/10"
         >
-          <dl className="grid gap-4 sm:grid-cols-2">
-            <DashboardDetailRow
-              label="Plan"
-              value={summary.subscription?.planName || 'No current plan'}
-            />
-            <DashboardDetailRow
-              label={dateLabel}
-              value={formatDashboardDate(
-                summary.subscription?.status === 'trial'
-                  ? (summary.subscription?.trialEndsAt ?? null)
-                  : (summary.subscription?.expiresAt ?? null)
-              )}
-            />
-            <DashboardDetailRow
-              label="Renewal due"
-              value={formatDashboardDate(summary.subscription?.renewalDueAt ?? null)}
-            />
-            <DashboardDetailRow
-              label="Latest payment"
-              value={
-                summary.latestPayment
-                  ? `${summary.latestPayment.status[0].toUpperCase()}${summary.latestPayment.status.slice(1)} · ${formatDashboardDate(summary.latestPayment.createdAt)}`
-                  : 'No payment request'
-              }
-            />
-          </dl>
-        </SectionCard>
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-medium">Active Students</span>
+            <GraduationCap className="size-4 text-lime-400" />
+          </div>
+          <div className="mt-2 text-2xl font-bold tracking-tight text-foreground group-hover:text-lime-400 transition-colors">
+            {summary.operational.activeStudents}
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">Currently enrolled learners</p>
+        </Link>
 
-        <SectionCard
-          title="Plan features"
-          description={getEntitlementSummary(summary)}
-          className="lg:col-span-2"
+        {/* Active Batches */}
+        <Link
+          href="/workspace/batches"
+          className="group rounded-2xl border border-border bg-card p-4 transition-colors hover:border-border-strong hover:bg-muted/10"
         >
-          {summary.entitlements.length ? (
-            <div className="flex flex-wrap gap-2">
-              {summary.entitlements.map((feature) => (
-                <StatusBadge key={feature.key} status={feature.enabled ? 'success' : 'info'}>
-                  {feature.key.replaceAll('_', ' ')}
-                  {feature.limit ? ` · ${feature.limit}` : ''}
-                </StatusBadge>
-              ))}
-            </div>
-          ) : (
-            <p className="text-sm text-muted-foreground">
-              Plan features will be shown once your subscription is configured.
-            </p>
-          )}
-        </SectionCard>
-      </div>
-
-      <section aria-labelledby="quick-actions-heading" className="flex flex-col gap-4">
-        <div>
-          <h2
-            id="quick-actions-heading"
-            className="text-lg font-semibold tracking-tight text-foreground"
-          >
-            Quick actions
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Start with the workspace areas available as EduFlow grows with your center.
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-medium">Active Batches</span>
+            <BookOpen className="size-4 text-lime-400" />
+          </div>
+          <div className="mt-2 text-2xl font-bold tracking-tight text-foreground group-hover:text-lime-400 transition-colors">
+            {summary.operational.activeBatches}
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {summary.operational.today.scheduledBatchCount} scheduled for today
           </p>
-        </div>
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          {dashboardQuickActions.map((action) => {
-            const Icon = action.icon;
-            return (
-              <Link
-                key={action.title}
-                href={action.href}
-                className="group rounded-2xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-              >
-                <Card className="h-full transition-colors duration-200 group-hover:border-accent-border group-hover:bg-card-strong">
-                  <CardContent className="flex h-full flex-col items-start gap-4">
-                    <span className="flex size-10 items-center justify-center rounded-xl border border-border bg-accent text-accent-foreground">
-                      <Icon className="size-4" />
-                    </span>
-                    <div className="flex w-full items-start justify-between gap-4">
-                      <div>
-                        <h3 className="font-medium text-foreground">{action.title}</h3>
-                        <p className="mt-1 text-sm leading-6 text-muted-foreground">
-                          {action.description}
-                        </p>
-                      </div>
-                      <ArrowRight className="mt-1 size-4 shrink-0 text-subtle-foreground transition-transform group-hover:translate-x-1 group-hover:text-foreground" />
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
+        </Link>
+
+        {/* Attendance Today */}
+        <Link
+          href="/workspace/attendance"
+          className="group rounded-2xl border border-border bg-card p-4 transition-colors hover:border-border-strong hover:bg-muted/10"
+        >
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-medium">Today&apos;s Attendance</span>
+            <UserCheck className="size-4 text-emerald-400" />
+          </div>
+          <div className="mt-2 text-2xl font-bold tracking-tight text-emerald-400">
+            {summary.operational.today.attendance.presentCount} Present
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {summary.operational.today.attendance.finalizedSessionCount} finalized session
+            {summary.operational.today.attendance.finalizedSessionCount === 1 ? '' : 's'}
+          </p>
+        </Link>
+
+        {/* Fees Collected */}
+        <Link
+          href="/workspace/fees"
+          className="group rounded-2xl border border-border bg-card p-4 transition-colors hover:border-border-strong hover:bg-muted/10"
+        >
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-medium">Fees Collected (This Month)</span>
+            <Wallet className="size-4 text-emerald-400" />
+          </div>
+          <div className="mt-2 font-mono text-2xl font-bold tracking-tight text-foreground group-hover:text-emerald-400 transition-colors">
+            {formatDashboardMoney(summary.operational.monthlyFinance.collectedFees)}
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {formatDashboardMoney(summary.operational.monthlyFinance.outstandingFees)} outstanding
+          </p>
+        </Link>
+      </div>
+
+      {/* Row 2: Financial Overview */}
+      <FinancialCharts summary={summary} />
+
+      {/* Row 3: Detailed financial overview */}
+      <FinancialOverviewPanel workspaceId={workspaceId} />
+
+      {/* Row 4: Class Schedule */}
+      <TodayBatches summary={summary} />
+
+      {/* Row 5: Quick Actions & Recent Activity */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <QuickActions />
+        <RecentActivity summary={summary} />
+      </div>
     </div>
   );
 }

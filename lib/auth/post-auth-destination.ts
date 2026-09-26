@@ -11,7 +11,7 @@ export const postAuthDestinations = {
   pricing: '/pricing',
   account: '/account',
   paymentPending: '/payment-pending',
-  dashboard: '/dashboard',
+  dashboard: '/workspace/dashboard',
 } as const;
 
 export type AccountRoutingState = {

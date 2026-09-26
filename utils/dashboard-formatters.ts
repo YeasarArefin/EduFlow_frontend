@@ -3,7 +3,14 @@ import type {
   DashboardStatusVisual,
   DashboardSummary,
 } from '@/types/dashboard';
-import { CalendarCheck, Settings, UserRoundCog, Users } from 'lucide-react';
+import {
+  BellPlus,
+  CalendarCheck,
+  GraduationCap,
+  ReceiptText,
+  UserPlus,
+  WalletCards,
+} from 'lucide-react';
 
 const accessVisuals: Record<string, DashboardStatusVisual> = {
   active: 'success',
@@ -31,30 +38,50 @@ const accessLabels: Record<string, string> = {
 
 export const dashboardQuickActions: DashboardQuickAction[] = [
   {
-    title: 'Students',
-    description: 'Manage student records, profiles, and enrollments.',
-    href: '/dashboard/students',
-    icon: Users,
+    title: 'Add student',
+    description: 'Create a student record.',
+    href: '/workspace/students',
+    icon: UserPlus,
   },
   {
-    title: 'Attendance',
-    description: 'Create sessions and record daily attendance.',
-    href: '/dashboard/attendance',
+    title: 'Take attendance',
+    description: 'Start today’s class record.',
+    href: '/workspace/attendance',
     icon: CalendarCheck,
   },
   {
-    title: 'Staff',
-    description: 'Manage workspace members and roles from your staff area.',
-    href: '/dashboard/staff',
-    icon: UserRoundCog,
+    title: 'Collect fee',
+    description: 'Record a student payment.',
+    href: '/workspace/fees',
+    icon: ReceiptText,
   },
   {
-    title: 'Settings',
-    description: 'Review your workspace preferences and configuration.',
-    href: '/dashboard/settings',
-    icon: Settings,
+    title: 'Create batch',
+    description: 'Set up a new class batch.',
+    href: '/workspace/batches',
+    icon: GraduationCap,
+  },
+  {
+    title: 'Create notice',
+    description: 'Prepare a student announcement.',
+    href: '/workspace/notices',
+    icon: BellPlus,
+  },
+  {
+    title: 'Record expense',
+    description: 'Add a coaching cost.',
+    href: '/workspace/expenses',
+    icon: WalletCards,
   },
 ];
+
+export function formatDashboardMoney(value: string) {
+  return new Intl.NumberFormat('en-BD', {
+    style: 'currency',
+    currency: 'BDT',
+    maximumFractionDigits: 0,
+  }).format(Number(value));
+}
 
 export function formatDashboardDate(value: string | null) {
   if (!value) return 'Not set';
@@ -77,4 +104,38 @@ export function getEntitlementSummary(summary: DashboardSummary) {
   const enabled = summary.entitlements.filter((item) => item.enabled);
   if (!summary.entitlements.length) return 'No plan features configured';
   return `${enabled.length} of ${summary.entitlements.length} features enabled`;
+}
+
+const featureNames: Record<string, string> = {
+  students: 'Student Directory & Profiles',
+  batches: 'Batch & Routine Scheduling',
+  teachers: 'Teacher & Faculty Management',
+  attendance: 'Live Attendance Tracking',
+  fees: 'Tuition Fee Billing & Receipts',
+  salaries: 'Teacher Salary Payroll',
+  sms_wallet: 'SMS Notifications Wallet',
+  custom_roles: 'Custom Roles & Permissions',
+  audit_logs: 'Security & Audit Logs',
+  expenses: 'Expense Tracking',
+  notices: 'Notice Board & Alerts',
+};
+
+export function formatFeatureName(key: string): string {
+  if (featureNames[key]) return featureNames[key];
+  return key
+    .split('_')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+}
+
+export function getDaysRemaining(dateStr: string | null): number | null {
+  if (!dateStr) return null;
+  try {
+    const target = new Date(dateStr).getTime();
+    if (isNaN(target)) return null;
+    const now = Date.now();
+    return Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  } catch {
+    return null;
+  }
 }

@@ -19,6 +19,7 @@ export function AppShell({
   productName = 'EduFlow',
   isAdmin = false,
   user,
+  workspace,
 }: AppShellProps) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
@@ -37,7 +38,7 @@ export function AppShell({
       <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 border-r border-sidebar-border bg-sidebar lg:flex lg:flex-col">
         <ShellBrand productName={productName} isAdmin={isAdmin} />
         <div className="flex-1 overflow-y-auto px-3 py-4">{nav}</div>
-        <ShellFooter user={user} isAdmin={isAdmin} />
+        <ShellFooter user={user} isAdmin={isAdmin} workspace={workspace} />
       </aside>
 
       {/* Mobile Backdrop */}
@@ -70,7 +71,7 @@ export function AppShell({
           </Button>
         </div>
         <div className="flex-1 overflow-y-auto px-3 py-4">{nav}</div>
-        <ShellFooter user={user} isAdmin={isAdmin} />
+        <ShellFooter user={user} isAdmin={isAdmin} workspace={workspace} />
       </aside>
 
       {/* Main Content Area */}

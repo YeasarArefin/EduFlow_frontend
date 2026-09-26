@@ -4,6 +4,7 @@ import type {
   PlatformPlan,
   PlatformPlanFeature,
   PlatformPlanInput,
+  PlatformPlanDeleteResult,
 } from '@/types/platform';
 export type {
   PlatformFeatureCatalogItem,
@@ -35,4 +36,8 @@ export function setPlatformPlanActive(planId: string, isActive: boolean) {
   return apiRequest<PlatformPlan>(`/plans/${planId}/${isActive ? 'activate' : 'deactivate'}`, {
     method: 'POST',
   });
+}
+
+export function deletePlatformPlan(planId: string) {
+  return apiRequest<PlatformPlanDeleteResult>(`/plans/${planId}`, { method: 'DELETE' });
 }

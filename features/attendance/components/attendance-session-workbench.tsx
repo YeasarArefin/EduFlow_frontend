@@ -20,6 +20,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { useMemo, useState } from 'react';
+import { useDebouncedValue } from '@/utils/use-debounced-value';
 import { AttendanceRosterCard } from './attendance-roster-card';
 import { AttendanceRosterRow } from './attendance-roster-row';
 
@@ -35,6 +36,7 @@ export function AttendanceSessionWorkbench({
   isDirty,
 }: AttendanceSessionWorkbenchProps) {
   const [searchQuery, setSearchQuery] = useState('');
+  const debouncedSearchQuery = useDebouncedValue(searchQuery);
   const [filterTab, setFilterTab] = useState<'all' | 'present' | 'absent'>('all');
 
   const records = session.records ?? [];
@@ -58,15 +60,15 @@ export function AttendanceSessionWorkbench({
       if (filterTab === 'present' && status !== 'present') return false;
       if (filterTab === 'absent' && status !== 'absent') return false;
 
-      if (!searchQuery.trim()) return true;
-      const query = searchQuery.toLowerCase().trim();
+      if (!debouncedSearchQuery.trim()) return true;
+      const query = debouncedSearchQuery.toLowerCase().trim();
       return (
         record.student.fullName.toLowerCase().includes(query) ||
         record.student.studentCode.toLowerCase().includes(query) ||
         (record.student.phone && record.student.phone.includes(query))
       );
     });
-  }, [records, draftStatuses, filterTab, searchQuery]);
+  }, [records, draftStatuses, filterTab, debouncedSearchQuery]);
 
   return (
     <div className="space-y-6">
@@ -107,9 +109,7 @@ export function AttendanceSessionWorkbench({
         <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 border-t border-border/40 pt-5">
           <div className="rounded-2xl border border-border/60 bg-muted/20 p-3">
             <p className="text-[11px] font-medium text-muted-foreground">Attendance Rate</p>
-            <p className="mt-0.5 text-lg sm:text-xl font-bold text-foreground">
-              {attendanceRate}%
-            </p>
+            <p className="mt-0.5 text-lg sm:text-xl font-bold text-foreground">{attendanceRate}%</p>
           </div>
           <div className="rounded-2xl border border-primary/20 bg-primary/5 p-3">
             <p className="text-[11px] font-medium text-primary">Present</p>

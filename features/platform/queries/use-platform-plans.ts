@@ -4,6 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import {
   createPlatformPlan,
+  deletePlatformPlan,
   getPlatformFeatureCatalog,
   getPlatformPlans,
   setPlatformPlanActive,
@@ -54,6 +55,18 @@ export function useSetPlatformPlanActive() {
     },
     onError: (error) =>
       toast.error(error instanceof Error ? error.message : 'Could not update the plan state.'),
+  });
+}
+
+export function useDeletePlatformPlan() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletePlatformPlan,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: platformPlanQueryKeys.all });
+      toast.success('Plan deleted.');
+    },
+    onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not delete the plan.'),
   });
 }
 

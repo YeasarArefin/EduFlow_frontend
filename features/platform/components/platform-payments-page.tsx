@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { ExternalLink } from 'lucide-react';
 import {
@@ -155,27 +155,8 @@ function LegacyPaymentActions({ payment }: { payment: PlatformPayment }) {
 
 export function PlatformPaymentsPage() {
   const [search, setSearch] = useState('');
-  const paymentQuery = usePendingPlatformPayments();
+  const paymentQuery = usePendingPlatformPayments(search || undefined);
   const payments = paymentQuery.data ?? EMPTY_PAYMENTS;
-  const normalizedSearch = search.trim().toLocaleLowerCase();
-  const filteredPayments = useMemo(
-    () =>
-      payments.filter(
-        (payment) =>
-          !normalizedSearch ||
-          [
-            payment.workspace?.name,
-            payment.workspace?.slug,
-            payment.plan?.name,
-            payment.transactionId,
-            payment.senderNumber,
-            payment.requestedByUserId,
-          ]
-            .filter(Boolean)
-            .some((value) => value!.toLocaleLowerCase().includes(normalizedSearch))
-      ),
-    [normalizedSearch, payments]
-  );
 
   return (
     <div className="flex flex-col gap-6">
@@ -209,13 +190,13 @@ export function PlatformPaymentsPage() {
       {!paymentQuery.isLoading &&
       !paymentQuery.isError &&
       payments.length > 0 &&
-      filteredPayments.length === 0 ? (
+      payments.length === 0 ? (
         <EmptyState
           title="No matching payments"
           description="Try a different workspace, plan, sender number, or transaction ID."
         />
       ) : null}
-      {!paymentQuery.isLoading && !paymentQuery.isError && filteredPayments.length > 0 ? (
+      {!paymentQuery.isLoading && !paymentQuery.isError && payments.length > 0 ? (
         <DataTable>
           <TableHeader>
             <TableRow>
@@ -231,7 +212,7 @@ export function PlatformPaymentsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredPayments.map((payment) => (
+            {payments.map((payment) => (
               <TableRow key={payment.id}>
                 <TableCell>
                   {payment.workspace ? (

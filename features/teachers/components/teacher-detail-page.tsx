@@ -176,7 +176,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
         <Button
           variant="outline"
           size="sm"
-          render={<Link href="/dashboard/teachers" />}
+          render={<Link href="/workspace/teachers" />}
           className="rounded-full shadow-xs"
         >
           <ChevronLeft data-icon="inline-start" /> Back to Teachers
@@ -276,7 +276,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
             <Button
               variant="outline"
               size="sm"
-              render={<Link href="/dashboard/salaries" />}
+              render={<Link href="/workspace/salaries" />}
               className="rounded-full shadow-xs"
             >
               <Coins data-icon="inline-start" /> View Salary Payroll
@@ -429,7 +429,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
               <Button
                 variant="outline"
                 size="sm"
-                render={<Link href="/dashboard/batches" />}
+                render={<Link href="/workspace/batches" />}
                 className="rounded-full shadow-xs"
               >
                 <BookOpen data-icon="inline-start" /> Manage Batches
@@ -453,7 +453,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
                 <Button
                   variant="outline"
                   size="sm"
-                  render={<Link href="/dashboard/batches" />}
+                  render={<Link href="/workspace/batches" />}
                   className="mt-4 rounded-full"
                 >
                   Go to Batches
@@ -521,7 +521,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
                       <Button
                         variant="outline"
                         size="sm"
-                        render={<Link href={`/dashboard/batches/${batch.id}`} />}
+                        render={<Link href={`/workspace/batches/${batch.id}`} />}
                         className="h-7 rounded-full px-2.5 text-xs"
                       >
                         <Eye className="size-3" /> View Batch
@@ -545,7 +545,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
               <Button
                 variant="outline"
                 size="sm"
-                render={<Link href="/dashboard/salaries" />}
+                render={<Link href="/workspace/salaries" />}
                 className="rounded-full shadow-xs"
               >
                 <Coins data-icon="inline-start" /> Open Salary Payroll
@@ -572,7 +572,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
                 <Button
                   variant="outline"
                   size="sm"
-                  render={<Link href="/dashboard/salaries" />}
+                  render={<Link href="/workspace/salaries" />}
                   className="mt-4 rounded-full"
                 >
                   Go to Salary Management
@@ -662,7 +662,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
                             <Button
                               variant="outline"
                               size="sm"
-                              render={<Link href="/dashboard/salaries" />}
+                              render={<Link href="/workspace/salaries" />}
                               className="h-7 rounded-full px-2.5 text-xs"
                             >
                               <Eye className="size-3" />

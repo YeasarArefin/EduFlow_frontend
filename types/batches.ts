@@ -74,14 +74,6 @@ export type Enrollment = {
   updatedAt: string;
 };
 
-export type BatchEnrollmentStudent = {
-  id: string;
-  studentCode: string;
-  fullName: string;
-  phone: string | null;
-  status: string;
-};
-
 export type BatchEnrollStudentSheetProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -90,8 +82,6 @@ export type BatchEnrollStudentSheetProps = {
   batchName: string;
   defaultMonthlyFeeMinor: string;
   existingEnrollments: Enrollment[];
-  allStudents: BatchEnrollmentStudent[];
-  isLoadingStudents: boolean;
 };
 
 export type BatchSheetValues = {

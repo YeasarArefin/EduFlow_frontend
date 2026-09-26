@@ -285,7 +285,7 @@ export function PermissionManagementPage({ workspaceId }: PermissionManagementPa
           <Button
             variant="outline"
             className="gap-2"
-            render={<Link href="/dashboard/staff" />}
+            render={<Link href="/workspace/staff" />}
           >
             <ArrowLeft className="size-4 text-muted-foreground" />
             <span>Back to staff</span>

@@ -24,8 +24,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
-import { useStudentsQuery } from '@/features/students/queries/use-students-query';
 import type { BatchStudentsCardProps, Enrollment } from '@/types/batches';
+import { useDebouncedValue } from '@/utils/use-debounced-value';
 import { BatchEnrollStudentSheet } from './batch-enroll-student-sheet';
 import {
   useArchiveEnrollment,
@@ -43,11 +43,6 @@ export function BatchStudentsCard({
   batchName,
 }: BatchStudentsCardProps) {
   const enrollmentsQuery = useBatchEnrollments(workspaceId, batchId);
-  const studentsQuery = useStudentsQuery(workspaceId, {
-    page: 1,
-    limit: 100,
-    status: 'active',
-  });
   const enrollMutation = useEnrollStudent();
   const archiveMutation = useArchiveEnrollment();
   const reactivateMutation = useReactivateEnrollment();
@@ -55,6 +50,7 @@ export function BatchStudentsCard({
 
   const [enrollSheetOpen, setEnrollSheetOpen] = useState(false);
   const [searchRoster, setSearchRoster] = useState('');
+  const debouncedRosterSearch = useDebouncedValue(searchRoster);
   const [archiving, setArchiving] = useState<Enrollment | null>(null);
   const [unenrolling, setUnenrolling] = useState<Enrollment | null>(null);
 
@@ -67,15 +63,15 @@ export function BatchStudentsCard({
   // Filter the current roster by search
   const filteredRoster = useMemo(() => {
     const list = enrollmentsQuery.data ?? [];
-    if (!searchRoster.trim()) return list;
-    const q = searchRoster.toLowerCase().trim();
+    if (!debouncedRosterSearch.trim()) return list;
+    const q = debouncedRosterSearch.toLowerCase().trim();
     return list.filter(
       (item) =>
         item.name.toLowerCase().includes(q) ||
         item.studentCode.toLowerCase().includes(q) ||
         (item.phone && item.phone.includes(q))
     );
-  }, [enrollmentsQuery.data, searchRoster]);
+  }, [debouncedRosterSearch, enrollmentsQuery.data]);
 
   const activeCount = useMemo(
     () => (enrollmentsQuery.data ?? []).filter((x) => x.status === 'active').length,
@@ -206,7 +202,7 @@ export function BatchStudentsCard({
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <Link
-                      href={`/dashboard/students/${enrollment.studentId}`}
+                      href={`/workspace/students/${enrollment.studentId}`}
                       className="font-semibold text-foreground hover:text-primary transition-colors"
                     >
                       {enrollment.name}
@@ -315,8 +311,6 @@ export function BatchStudentsCard({
         batchName={batchName}
         defaultMonthlyFeeMinor={defaultMonthlyFeeMinor}
         existingEnrollments={enrollmentsQuery.data ?? []}
-        allStudents={studentsQuery.data?.data ?? []}
-        isLoadingStudents={studentsQuery.isPending}
       />
 
       {/* Archive Enrollment Confirmation Dialog */}
