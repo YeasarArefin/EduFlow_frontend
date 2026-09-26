@@ -77,7 +77,7 @@ export function FaqSection() {
                 <button
                   type="button"
                   onClick={() => toggle(index)}
-                  className="flex w-full items-center justify-between p-5 text-left text-sm font-semibold text-foreground font-heading cursor-pointer transition-colors"
+                  className="flex min-h-13 w-full items-center justify-between p-5 text-left text-sm font-semibold text-foreground font-heading cursor-pointer transition-colors"
                   aria-expanded={isOpen}
                 >
                   <span className="pr-4 text-base">{faq.question}</span>

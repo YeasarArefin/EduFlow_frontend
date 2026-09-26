@@ -27,7 +27,7 @@ export function CtaSection() {
           <Button
             size="lg"
             variant="default"
-            className="w-full sm:w-auto rounded-full px-8 font-semibold shadow-[0_0_25px_rgba(190,242,100,0.3)] hover:shadow-[0_0_35px_rgba(190,242,100,0.5)] transition-all cursor-pointer"
+            className="min-h-11 w-full sm:w-auto rounded-full px-8 font-semibold shadow-[0_0_25px_rgba(190,242,100,0.3)] hover:shadow-[0_0_35px_rgba(190,242,100,0.5)] transition-all cursor-pointer"
             render={<Link href="/signup" />}
           >
             <span>Get Started</span>
@@ -37,7 +37,7 @@ export function CtaSection() {
           <Button
             size="lg"
             variant="glass"
-            className="w-full sm:w-auto rounded-full px-7 text-muted-foreground hover:text-foreground cursor-pointer"
+            className="min-h-11 w-full sm:w-auto rounded-full px-7 text-muted-foreground hover:text-foreground cursor-pointer"
             render={<Link href="/pricing" />}
           >
             <span>View Pricing</span>

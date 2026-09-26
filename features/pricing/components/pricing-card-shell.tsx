@@ -77,7 +77,7 @@ export function PricingCardShell({
       <CardFooter className="p-6 pb-8 pt-0 sm:px-8">
         <Button
           size="lg"
-          className={`w-full cursor-pointer rounded-full font-semibold ${
+          className={`min-h-11 w-full cursor-pointer rounded-full font-semibold ${
             isPopular ? 'shadow-[0_0_20px_rgba(190,242,100,0.25)]' : ''
           }`}
           variant={isPopular ? 'default' : 'glass'}

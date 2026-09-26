@@ -21,7 +21,7 @@ export function ThemeToggle() {
       type="button"
       aria-label={`Switch to ${nextTheme} theme`}
       onClick={() => setTheme(nextTheme)}
-      className="inline-flex size-9 shrink-0 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+      className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <Icon
         key={nextTheme}

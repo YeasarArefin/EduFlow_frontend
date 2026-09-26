@@ -56,7 +56,7 @@ export function PricingPreviewSection({
         <div className="mt-12 text-center">
           <Button
             variant="ghost"
-            className="rounded-full text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+            className="min-h-11 w-full max-w-sm whitespace-normal rounded-full px-4 py-3 text-xs leading-5 text-muted-foreground hover:text-foreground sm:w-auto cursor-pointer"
             render={<Link href="/pricing" />}
           >
             <span>View dedicated Pricing Page &amp; full feature comparison</span>

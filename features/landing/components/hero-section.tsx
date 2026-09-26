@@ -35,7 +35,7 @@ export function HeroSection() {
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row w-full sm:w-auto">
           <Button
             size="lg"
-            className="w-full sm:w-auto rounded-full px-8 font-semibold shadow-[0_0_20px_rgba(190,242,100,0.2)] hover:shadow-[0_0_30px_rgba(190,242,100,0.4)] transition-all cursor-pointer"
+            className="min-h-11 w-full sm:w-auto rounded-full px-8 font-semibold shadow-[0_0_20px_rgba(190,242,100,0.2)] hover:shadow-[0_0_30px_rgba(190,242,100,0.4)] transition-all cursor-pointer"
             render={<Link href="/signup" />}
           >
             <span>Start Free</span>
@@ -45,7 +45,7 @@ export function HeroSection() {
           <Button
             variant="glass"
             size="lg"
-            className="w-full sm:w-auto rounded-full px-7 text-muted-foreground hover:text-foreground cursor-pointer"
+            className="min-h-11 w-full sm:w-auto rounded-full px-7 text-muted-foreground hover:text-foreground cursor-pointer"
             render={<Link href="#features" />}
           >
             <PlayCircle className="size-4 text-primary" data-icon="inline-start" />

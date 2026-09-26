@@ -109,7 +109,7 @@ export function HowItWorksSection() {
           <Button
             size="lg"
             variant="default"
-            className="rounded-full px-8 font-semibold shadow-[0_0_20px_rgba(190,242,100,0.25)] cursor-pointer"
+            className="min-h-11 rounded-full px-8 font-semibold shadow-[0_0_20px_rgba(190,242,100,0.25)] cursor-pointer"
             render={<Link href="/signup" />}
           >
             <span>Start Free 14-Day Trial</span>

@@ -32,7 +32,7 @@ export function HeroInteractiveDashboard() {
               type="button"
               onClick={() => setActiveTab(tab.id as HighlightCategory)}
               className={cn(
-                'inline-flex cursor-pointer select-none items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200',
+                'inline-flex min-h-11 cursor-pointer select-none items-center gap-1.5 rounded-full border px-4 py-1.5 text-xs font-medium transition-all duration-200',
                 isActive
                   ? 'scale-105 border-primary bg-primary text-primary-foreground font-semibold shadow-[0_0_20px_var(--glow-lime)]'
                   : 'border-border bg-card text-muted-foreground hover:border-border-strong hover:text-foreground backdrop-blur-md'

@@ -41,7 +41,7 @@ export async function PublicHeader() {
       <PublicContainer className="flex h-16 items-center justify-between">
         <Link
           href="/"
-          className="flex items-center gap-2.5 rounded-full text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 group"
+          className="flex min-h-11 items-center gap-2.5 rounded-full text-foreground outline-none focus-visible:ring-3 focus-visible:ring-ring/50 group"
           aria-label="EduFlow home"
         >
           <span className="flex size-8 items-center justify-center rounded-full bg-primary text-xs font-bold tracking-tight text-primary-foreground shadow-[0_0_14px_rgba(190,242,100,0.35)] transition-transform group-hover:scale-105">
@@ -56,7 +56,7 @@ export async function PublicHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              className="min-h-11 rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
             >
               {link.label}
             </Link>
@@ -69,7 +69,7 @@ export async function PublicHeader() {
               <Button
                 variant="default"
                 size="sm"
-                className="rounded-full gap-1.5"
+                className="min-h-11 rounded-full gap-1.5"
                 render={<Link href={dashboardHref} />}
               >
                 {isAdmin ? (
@@ -91,7 +91,7 @@ export async function PublicHeader() {
               <Button
                 variant="ghost"
                 size="sm"
-                className="rounded-full"
+                className="min-h-11 rounded-full"
                 render={<Link href="/signin" />}
               >
                 Sign In
@@ -99,7 +99,7 @@ export async function PublicHeader() {
               <Button
                 variant="default"
                 size="sm"
-                className="rounded-full cursor-pointer"
+                className="min-h-11 rounded-full cursor-pointer"
                 render={<Link href="/signup" />}
               >
                 Start Free
