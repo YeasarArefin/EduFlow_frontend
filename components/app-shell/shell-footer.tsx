@@ -11,6 +11,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
 import { useSignOut } from '@/lib/auth/sign-out';
 import { formatDashboardDate, getDaysRemaining } from '@/utils/dashboard-formatters';
 import type { ShellFooterProps } from '@/types/app-shell';
@@ -30,7 +31,7 @@ import {
   User,
 } from 'lucide-react';
 
-export function ShellFooter({ user, isAdmin, workspace }: ShellFooterProps) {
+export function ShellFooter({ user, isAdmin, workspace, isCollapsed = false }: ShellFooterProps) {
   const router = useRouter();
   const signOut = useSignOut();
 
@@ -77,7 +78,10 @@ export function ShellFooter({ user, isAdmin, workspace }: ShellFooterProps) {
     <div className="flex flex-col border-t border-sidebar-border p-3">
       <DropdownMenu>
         <DropdownMenuTrigger
-          className="group flex w-full items-center gap-3 rounded-xl border border-sidebar-border/80 bg-sidebar/60 p-2 text-left transition-all hover:border-sidebar-border hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className={cn(
+            'group flex w-full items-center gap-3 rounded-xl border border-sidebar-border/80 bg-sidebar/60 p-2 text-left transition-all hover:border-sidebar-border hover:bg-sidebar-accent/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+            isCollapsed && 'justify-center'
+          )}
           aria-label="Workspace and account menu"
         >
           {/* Avatar / Icon */}
@@ -94,7 +98,13 @@ export function ShellFooter({ user, isAdmin, workspace }: ShellFooterProps) {
           </div>
 
           {/* Label text */}
-          <div className="min-w-0 flex-1">
+          <div
+            className={cn(
+              'min-w-0 overflow-hidden transition-[max-width,opacity] duration-200 ease-out',
+              isCollapsed ? 'max-w-0 flex-none opacity-0' : 'max-w-40 flex-1 opacity-100'
+            )}
+            aria-hidden={isCollapsed}
+          >
             <p className="truncate text-xs font-semibold text-foreground">
               {isAdmin
                 ? user?.name || 'Platform Admin'
@@ -122,7 +132,12 @@ export function ShellFooter({ user, isAdmin, workspace }: ShellFooterProps) {
           </div>
 
           {/* Chevron */}
-          <ChevronsUpDown className="size-4 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-foreground" />
+          <ChevronsUpDown
+            className={cn(
+              'size-4 shrink-0 text-muted-foreground/70 transition-colors group-hover:text-foreground',
+              isCollapsed && 'hidden'
+            )}
+          />
         </DropdownMenuTrigger>
 
         <DropdownMenuContent

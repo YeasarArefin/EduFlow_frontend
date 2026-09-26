@@ -44,12 +44,16 @@ export type AppShellProps = {
 
 export type ShellBrandProps = Pick<AppShellProps, 'productName' | 'isAdmin'> & {
   productName: string;
+  isCollapsed?: boolean;
 };
 
-export type ShellFooterProps = Pick<AppShellProps, 'isAdmin' | 'user' | 'workspace'>;
+export type ShellFooterProps = Pick<AppShellProps, 'isAdmin' | 'user' | 'workspace'> & {
+  isCollapsed?: boolean;
+};
 
 export type ShellNavigationProps = {
   groups: AppShellNavGroup[];
   pathname: string;
   onNavigate: () => void;
+  isCollapsed?: boolean;
 };

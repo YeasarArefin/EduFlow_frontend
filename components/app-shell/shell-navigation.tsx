@@ -2,13 +2,23 @@ import { cn } from '@/lib/utils';
 import type { ShellNavigationProps } from '@/types/app-shell';
 import Link from 'next/link';
 
-export function ShellNavigation({ groups, pathname, onNavigate }: ShellNavigationProps) {
+export function ShellNavigation({
+  groups,
+  pathname,
+  onNavigate,
+  isCollapsed = false,
+}: ShellNavigationProps) {
   return (
     <nav className="flex flex-col gap-6" aria-label="Application navigation">
       {groups.map((group, index) => (
         <div key={group.label ?? index} className="flex flex-col gap-0.5">
           {group.label && (
-            <p className="px-3.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-subtle-foreground">
+            <p
+              className={cn(
+                'px-3.5 pb-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-subtle-foreground',
+                isCollapsed && 'sr-only'
+              )}
+            >
               {group.label}
             </p>
           )}
@@ -26,12 +36,15 @@ export function ShellNavigation({ groups, pathname, onNavigate }: ShellNavigatio
                 href={item.href}
                 onClick={onNavigate}
                 className={cn(
-                  'group relative flex h-9 items-center gap-3 rounded-lg px-3 text-sm font-medium transition-all duration-150 ease-in-out',
+                  'group relative flex h-9 items-center rounded-lg text-sm font-medium transition-all duration-150 ease-in-out',
+                  isCollapsed ? 'justify-center px-0' : 'gap-3 px-3',
                   isActive
                     ? 'bg-sidebar-accent text-sidebar-accent-foreground font-semibold'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 )}
                 aria-current={isActive ? 'page' : undefined}
+                aria-label={isCollapsed ? item.label : undefined}
+                title={isCollapsed ? item.label : undefined}
               >
                 {item.icon && (
                   <span
@@ -45,7 +58,15 @@ export function ShellNavigation({ groups, pathname, onNavigate }: ShellNavigatio
                     {item.icon}
                   </span>
                 )}
-                <span>{item.label}</span>
+                <span
+                  className={cn(
+                    'max-w-36 overflow-hidden whitespace-nowrap transition-[max-width,opacity] duration-200 ease-out',
+                    isCollapsed ? 'max-w-0 opacity-0' : 'opacity-100'
+                  )}
+                  aria-hidden={isCollapsed}
+                >
+                  {item.label}
+                </span>
               </Link>
             );
           })}
