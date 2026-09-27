@@ -778,7 +778,7 @@ export function PermissionManagementPage({ workspaceId }: PermissionManagementPa
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2">
               <ShieldAlert className="size-5 text-destructive" />
-              Delete role "{selectedRole?.name}"?
+              Delete role &quot;{selectedRole?.name}&quot;?
             </AlertDialogTitle>
             <AlertDialogDescription>
               Any members currently assigned to this role will lose their granted permissions until

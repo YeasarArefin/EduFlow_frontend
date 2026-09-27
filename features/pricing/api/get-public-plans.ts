@@ -1,11 +1,11 @@
-import { env } from '@/config/env';
+import { serverEnv } from '@/config/server-env';
 import type { PublicPlan, PublicPlansResponse } from '@/types/pricing';
 
 export type { PublicPlan } from '@/types/pricing';
 
 export async function getPublicPlans(): Promise<PublicPlan[] | null> {
   try {
-    const response = await fetch(`${env.apiBaseUrl}/public/plans`, {
+    const response = await fetch(`${serverEnv.apiBaseUrl}/public/plans`, {
       cache: 'no-store',
       headers: { Accept: 'application/json' },
     });

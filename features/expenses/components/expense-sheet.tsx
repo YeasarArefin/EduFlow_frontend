@@ -42,6 +42,7 @@ export function ExpenseSheet({
   const [description, setDescription] = useState('');
   const [error, setError] = useState('');
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- reset the controlled Sheet from the selected expense when it opens.
     setTitle(expense?.title ?? '');
     setAmount(expense?.amount ?? '');
     setCategoryId(expense?.categoryId ?? categories.find((item) => item.isActive)?.id ?? '');

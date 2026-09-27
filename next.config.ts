@@ -1,5 +1,8 @@
 import type { NextConfig } from 'next';
 
+const backendApiBaseUrl = process.env.BACKEND_API_BASE_URL?.replace(/\/$/, '');
+const backendOrigin = backendApiBaseUrl?.replace(/\/api\/v1$/, '');
+
 const nextConfig: NextConfig = {
   async redirects() {
     return [
@@ -90,6 +93,12 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
+      ...(backendApiBaseUrl && backendOrigin
+        ? [
+            { source: '/api/auth/:path*', destination: `${backendOrigin}/api/auth/:path*` },
+            { source: '/api/v1/:path*', destination: `${backendApiBaseUrl}/:path*` },
+          ]
+        : []),
       { source: '/workspace/dashboard', destination: '/dashboard' },
       { source: '/workspace/:path*', destination: '/dashboard/:path*' },
     ];

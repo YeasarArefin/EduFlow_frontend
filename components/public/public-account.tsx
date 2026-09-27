@@ -1,8 +1,8 @@
 'use client';
 
-import { LogOut, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSignOut } from '@/lib/auth/sign-out';
+import { LogOut, Shield } from 'lucide-react';
 
 export function PublicAccount({
   name,
@@ -16,7 +16,7 @@ export function PublicAccount({
   const initial = displayName.slice(0, 1).toUpperCase();
 
   return (
-    <div className="flex items-center gap-1.5 rounded-full border border-border bg-surface-soft py-1 pl-1 pr-1.5 transition-colors">
+    <div className="flex items-center gap-1.5 rounded-full bg-surface-soft py-1 pl-1 pr-1.5 transition-colors">
       <span
         className="flex size-7 items-center justify-center rounded-full bg-primary text-xs font-semibold text-primary-foreground"
         aria-hidden="true"

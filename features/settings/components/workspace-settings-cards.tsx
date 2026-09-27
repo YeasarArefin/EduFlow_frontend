@@ -10,7 +10,6 @@ import {
   FieldContent,
   FieldDescription,
   FieldGroup,
-  FieldLabel,
   FieldTitle,
 } from '@/components/ui/field';
 import {
@@ -92,23 +91,6 @@ export function WorkspaceSettingsCards({ workspaceId, tab }: WorkspaceSettingsCa
           No separate workspace salary defaults are stored in the current model.
         </p>
       </SectionCard>
-    );
-  if (tab === 'general')
-    return (
-      <form onSubmit={form.handleSubmit(submit)}>
-        <SectionCard
-          title="Center information"
-          description="Shown on workspace records and receipts."
-          action={saveButton}
-        >
-          <div className="grid gap-4 md:grid-cols-2">
-            <Input placeholder="Center name" {...form.register('name')} />
-            <Input placeholder="Phone" {...form.register('phone')} />
-            <Input type="email" placeholder="Email" {...form.register('email')} />
-            <Input placeholder="Address" {...form.register('address')} />
-          </div>
-        </SectionCard>
-      </form>
     );
   if (tab === 'billing')
     return (

@@ -4,7 +4,7 @@ import { Moon, Sun } from 'lucide-react';
 import { useSyncExternalStore } from 'react';
 import { useTheme } from '@/components/theme/theme-provider';
 
-export function ThemeToggle() {
+export function useThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
   const isMounted = useSyncExternalStore(
     () => () => undefined,
@@ -16,11 +16,17 @@ export function ThemeToggle() {
   const nextTheme = isDark ? 'light' : 'dark';
   const Icon = isDark ? Moon : Sun;
 
+  return { Icon, nextTheme, toggleTheme: () => setTheme(nextTheme) };
+}
+
+export function ThemeToggle() {
+  const { Icon, nextTheme, toggleTheme } = useThemeToggle();
+
   return (
     <button
       type="button"
       aria-label={`Switch to ${nextTheme} theme`}
-      onClick={() => setTheme(nextTheme)}
+      onClick={toggleTheme}
       className="inline-flex size-11 shrink-0 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-colors hover:bg-muted hover:text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
     >
       <Icon

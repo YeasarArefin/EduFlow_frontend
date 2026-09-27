@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PageHeader, EmptyState, LoadingState } from '@/components/dashboard/dashboard-primitives';
 import { apiRequest } from '@/lib/api/client';
-import { getAccountRoutingState } from '@/lib/auth/post-auth-destination';
+import type { AccountRoutingState } from '@/types/auth';
 type Message = {
   id: string;
   source: string;
@@ -75,6 +75,9 @@ function History({ workspaceId }: { workspaceId: string }) {
   );
 }
 export default function HistoryRoute() {
-  const account = useQuery({ queryKey: ['account-history'], queryFn: getAccountRoutingState });
+  const account = useQuery({
+    queryKey: ['account-history'],
+    queryFn: () => apiRequest<AccountRoutingState>('/account/state'),
+  });
   return account.data?.workspaceId ? <History workspaceId={account.data.workspaceId} /> : null;
 }

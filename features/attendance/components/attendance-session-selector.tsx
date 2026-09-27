@@ -31,7 +31,7 @@ import {
   GraduationCap,
   Sparkles,
 } from 'lucide-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
@@ -52,33 +52,29 @@ export function AttendanceSessionSelector({
   const today = getTodayDate();
 
   // Selected date day of week
-  const selectedDayIndex = useMemo(() => {
+  const selectedDayIndex = (() => {
     if (!sessionDate) return null;
     const date = new Date(`${sessionDate}T00:00:00`);
     return Number.isNaN(date.getTime()) ? null : date.getDay();
-  }, [sessionDate]);
+  })();
 
-  const isClassDay = useMemo(() => {
+  const isClassDay = (() => {
     if (!selectedBatch || selectedDayIndex === null) return true;
     return selectedBatch.classDays.includes(selectedDayIndex);
-  }, [selectedBatch, selectedDayIndex]);
+  })();
 
-  // If there is no class today for this batch, intelligently adapt the date to the latest class date
+  // When today is not scheduled for the selected batch, start from its latest class date.
   useEffect(() => {
     if (!selectedBatch || !selectedBatch.classDays.length) return;
-    const todayIndex = new Date().getDay();
-    const meetsToday = selectedBatch.classDays.includes(todayIndex);
-
-    // If current sessionDate is today but today is NOT a class day, adapt to latest class day
+    const meetsToday = selectedBatch.classDays.includes(new Date().getDay());
     if (sessionDate === today && !meetsToday) {
-      const latestDate = getLatestClassDateForBatch(selectedBatch.classDays);
-      onDateChange(latestDate);
+      onDateChange(getLatestClassDateForBatch(selectedBatch.classDays));
     }
   }, [selectedBatch, sessionDate, today, onDateChange]);
 
-  const latestClassDate = useMemo(() => {
-    return selectedBatch ? getLatestClassDateForBatch(selectedBatch.classDays) : today;
-  }, [selectedBatch, today]);
+  const latestClassDate = selectedBatch
+    ? getLatestClassDateForBatch(selectedBatch.classDays)
+    : today;
 
   return (
     <div className="rounded-3xl border border-border/80 bg-card/40 p-5 sm:p-6 backdrop-blur-md space-y-4">

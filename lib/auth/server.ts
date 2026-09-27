@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { env } from '@/config/env';
+import { serverEnv } from '@/config/server-env';
 
 export type ServerSession = {
   user?: { id: string; name?: string | null; email?: string | null; emailVerified?: boolean };
@@ -8,7 +8,7 @@ export type ServerSession = {
 export async function getServerSession(): Promise<ServerSession | null> {
   const cookie = (await headers()).get('cookie');
   if (!cookie) return null;
-  const response = await fetch(`${env.authBaseUrl}/get-session`, {
+  const response = await fetch(`${serverEnv.backendBaseUrl}/api/auth/get-session`, {
     headers: { cookie },
     cache: 'no-store',
   });

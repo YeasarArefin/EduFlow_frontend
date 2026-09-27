@@ -75,6 +75,7 @@ export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchShee
 
   useEffect(() => {
     if (open) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- reset the controlled Sheet when its record or opening state changes.
       setValues(initialValues(batch));
       setSubmitted(false);
     }

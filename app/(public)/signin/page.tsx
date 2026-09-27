@@ -6,9 +6,10 @@ import { validateSelectedPlanSlug } from '@/lib/selected-plan';
 export default async function SignInPage({
   searchParams,
 }: {
-  searchParams: Promise<{ plan?: string | string[] }>;
+  searchParams: Promise<{ plan?: string | string[]; passwordReset?: string | string[] }>;
 }) {
-  const rawPlan = (await searchParams).plan;
+  const params = await searchParams;
+  const rawPlan = params.plan;
   const selectedPlanSlug = await validateSelectedPlanSlug(
     typeof rawPlan === 'string' ? rawPlan : undefined
   );
@@ -16,5 +17,11 @@ export default async function SignInPage({
     redirect(
       selectedPlanSlug ? `/post-auth?plan=${encodeURIComponent(selectedPlanSlug)}` : '/post-auth'
     );
-  return <AuthForm mode="signin" selectedPlanSlug={selectedPlanSlug ?? undefined} />;
+  return (
+    <AuthForm
+      mode="signin"
+      selectedPlanSlug={selectedPlanSlug ?? undefined}
+      passwordReset={params.passwordReset === 'success'}
+    />
+  );
 }

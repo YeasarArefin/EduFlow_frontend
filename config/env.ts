@@ -1,7 +1,15 @@
 import { z } from 'zod';
 
+const apiBaseUrlSchema = z
+  .string()
+  .trim()
+  .refine(
+    (value) => value === '/api/v1' || z.string().url().safeParse(value).success,
+    'NEXT_PUBLIC_API_BASE_URL must be /api/v1 or an absolute URL.'
+  );
+
 const envSchema = z.object({
-  NEXT_PUBLIC_API_BASE_URL: z.string().url().default('http://localhost:4000/api/v1'),
+  NEXT_PUBLIC_API_BASE_URL: apiBaseUrlSchema.default('/api/v1'),
 });
 
 const apiBaseUrl = envSchema.parse({
@@ -11,5 +19,4 @@ const apiBaseUrl = envSchema.parse({
 export const env = {
   apiBaseUrl: apiBaseUrl.replace(/\/$/, ''),
   backendBaseUrl: apiBaseUrl.replace(/\/api\/v1\/?$/, ''),
-  authBaseUrl: `${apiBaseUrl.replace(/\/api\/v1\/?$/, '')}/api/auth`,
 } as const;

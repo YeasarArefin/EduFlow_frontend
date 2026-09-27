@@ -6,34 +6,32 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { useSignOut } from '@/lib/auth/sign-out';
+import { useThemeToggle } from '@/components/theme/theme-toggle';
 import { formatDashboardDate, getDaysRemaining } from '@/utils/dashboard-formatters';
 import type { ShellFooterProps } from '@/types/app-shell';
 import {
   Building2,
   Calendar,
-  CheckCircle2,
   ChevronsUpDown,
   Clock,
   CreditCard,
   LogOut,
   Settings,
   Shield,
-  ShieldAlert,
   ShieldCheck,
   Sparkles,
-  User,
 } from 'lucide-react';
 
 export function ShellFooter({ user, isAdmin, workspace, isCollapsed = false }: ShellFooterProps) {
   const router = useRouter();
   const signOut = useSignOut();
+  const { Icon: ThemeIcon, nextTheme, toggleTheme } = useThemeToggle();
 
   const handleSignOut = async () => {
     if (user?.onSignOut) {
@@ -242,6 +240,16 @@ export function ShellFooter({ user, isAdmin, workspace, isCollapsed = false }: S
               </DropdownMenuItem>
             </DropdownMenuGroup>
           )}
+
+          <DropdownMenuGroup className="py-1">
+            <DropdownMenuItem
+              className="cursor-pointer gap-2.5 rounded-lg py-2 text-xs font-medium"
+              onClick={toggleTheme}
+            >
+              <ThemeIcon data-icon="inline-start" />
+              <span>Switch to {nextTheme} theme</span>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
 
           <DropdownMenuSeparator />
 

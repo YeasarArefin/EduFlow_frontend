@@ -89,6 +89,7 @@ export function AttendancePage({ workspaceId }: AttendancePageProps) {
 
   useEffect(() => {
     if (!batchId && activeBatches.length > 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- initialize selection after the async batch query resolves.
       setBatchId(activeBatches[0].id);
     }
   }, [activeBatches, batchId]);
@@ -99,6 +100,7 @@ export function AttendancePage({ workspaceId }: AttendancePageProps) {
   // Reactively sync loaded session whenever lookup query succeeds
   useEffect(() => {
     if (batchId && sessionDate && !lookupQuery.isFetching) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror the completed server lookup into the active workbench state.
       setHasLookedUpSession(true);
       setLoadedSessionId(matchingSession?.id ?? null);
     }

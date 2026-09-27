@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { env } from '@/config/env';
+import { serverEnv } from '@/config/server-env';
 import type { LatestPaymentResponse, ServerLatestPaymentResult } from '@/types/payments';
 
 export type { ServerLatestPaymentResult } from '@/types/payments';
@@ -10,7 +10,7 @@ export async function getLatestPaymentRequestServer(
   const cookie = (await headers()).get('cookie') ?? '';
 
   try {
-    const response = await fetch(`${env.apiBaseUrl}/payment-requests/latest`, {
+    const response = await fetch(`${serverEnv.apiBaseUrl}/payment-requests/latest`, {
       headers: {
         Accept: 'application/json',
         cookie,

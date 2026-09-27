@@ -1,6 +1,5 @@
 'use client';
 
-import { ThemeToggle } from '@/components/theme/theme-toggle';
 import { ShellBrand } from '@/components/app-shell/shell-brand';
 import { ShellFooter } from '@/components/app-shell/shell-footer';
 import { ShellNavigation } from '@/components/app-shell/shell-navigation';
@@ -126,14 +125,6 @@ export function AppShell({
             <span>{isAdmin ? 'Platform Admin' : 'Workspace'}</span>
           </div>
 
-          <div className="ml-auto flex items-center gap-3">
-            <ThemeToggle />
-            {user && (
-              <span className="hidden text-xs font-medium text-muted-foreground sm:inline">
-                {user.name}
-              </span>
-            )}
-          </div>
         </header>
 
         <main className="mx-auto w-full flex-1 px-4 py-8 sm:px-6 lg:px-8">{children}</main>

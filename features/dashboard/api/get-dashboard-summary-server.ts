@@ -1,5 +1,5 @@
 import { headers } from 'next/headers';
-import { env } from '@/config/env';
+import { serverEnv } from '@/config/server-env';
 import type { DashboardSummary, DashboardSummaryResponse } from '@/types/dashboard';
 
 export async function getDashboardSummaryServer(
@@ -7,7 +7,7 @@ export async function getDashboardSummaryServer(
 ): Promise<DashboardSummary | null> {
   const cookie = (await headers()).get('cookie') ?? '';
   try {
-    const response = await fetch(`${env.apiBaseUrl}/workspaces/dashboard-summary`, {
+    const response = await fetch(`${serverEnv.apiBaseUrl}/workspaces/dashboard-summary`, {
       headers: { Accept: 'application/json', cookie, 'X-Workspace-Id': workspaceId },
       cache: 'no-store',
     });

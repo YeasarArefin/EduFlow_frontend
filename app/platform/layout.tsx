@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { env } from '@/config/env';
+import { serverEnv } from '@/config/server-env';
 import { AppShell, type AppShellNavGroup } from '@/components/app-shell/app-shell';
 import { getServerSession } from '@/lib/auth/server';
 import type { ReactNode } from 'react';
@@ -73,7 +73,10 @@ export default async function PlatformLayout({ children }: { children: ReactNode
   const session = await getServerSession();
   if (!session?.user?.id) redirect('/signin');
   const cookie = (await headers()).get('cookie') ?? '';
-  const access = await fetch(`${env.apiBaseUrl}/plans`, { headers: { cookie }, cache: 'no-store' });
+  const access = await fetch(`${serverEnv.apiBaseUrl}/plans`, {
+    headers: { cookie },
+    cache: 'no-store',
+  });
   if (access.status === 403) redirect('/onboarding');
   if (!access.ok) redirect('/signin');
   return (

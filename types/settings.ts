@@ -41,6 +41,18 @@ export type WorkspaceSettings = {
 };
 export type UpdateWorkspaceSettingsInput = Partial<Omit<WorkspaceSettings, 'workspaceId'>>;
 
+export type CoachingCenterInformationFormValues = {
+  name: string;
+  phone: string;
+  email: string;
+  address: string;
+};
+
+export type SettingsFormFeedback = {
+  type: 'success' | 'error';
+  message: string;
+};
+
 export const ACADEMIC_RESOURCES = ['class-levels', 'mediums', 'academic-groups'] as const;
 export type AcademicResource = (typeof ACADEMIC_RESOURCES)[number];
 export type AcademicReference = { id: string; name: string; isActive: boolean };
@@ -69,7 +81,12 @@ export type AcademicReferenceCardProps = {
   title: string;
   description: string;
 };
-export type WorkspaceSettingsCardsProps = { workspaceId: string; tab: WorkspaceSettingsTab };
+export type WorkspaceSettingsCardsProps = {
+  workspaceId: string;
+  tab: Exclude<WorkspaceSettingsTab, 'general'>;
+};
+export type GeneralSettingsProps = { workspaceId: string };
+export type CoachingCenterInformationCardProps = { workspaceId: string };
 export type ActiveSession = {
   id: string;
   createdAt: string;

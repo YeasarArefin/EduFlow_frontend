@@ -1,13 +1,13 @@
-import Link from 'next/link';
-import { headers } from 'next/headers';
-import { LayoutDashboard, Shield } from 'lucide-react';
-import { env } from '@/config/env';
-import { ThemeToggle } from '@/components/theme/theme-toggle';
-import { Button } from '@/components/ui/button';
+import { PublicAccount } from '@/components/public/public-account';
 import { PublicContainer } from '@/components/public/public-container';
 import { PublicMobileNav } from '@/components/public/public-mobile-nav';
-import { PublicAccount } from '@/components/public/public-account';
+import { ThemeToggle } from '@/components/theme/theme-toggle';
+import { Button } from '@/components/ui/button';
+import { serverEnv } from '@/config/server-env';
 import { getServerSession } from '@/lib/auth/server';
+import { LayoutDashboard, Shield } from 'lucide-react';
+import { headers } from 'next/headers';
+import Link from 'next/link';
 
 const links = [
   { label: 'Features', href: '/#features' },
@@ -24,7 +24,7 @@ export async function PublicHeader() {
   if (user?.id) {
     try {
       const cookie = (await headers()).get('cookie') ?? '';
-      const platformAccess = await fetch(`${env.apiBaseUrl}/plans`, {
+      const platformAccess = await fetch(`${serverEnv.apiBaseUrl}/plans`, {
         headers: { cookie },
         cache: 'no-store',
       });
@@ -68,19 +68,19 @@ export async function PublicHeader() {
             <>
               <Button
                 variant="default"
-                size="sm"
-                className="min-h-11 rounded-full gap-1.5"
+                size="lg"
+                className="rounded-full gap-1.5"
                 render={<Link href={dashboardHref} />}
               >
                 {isAdmin ? (
                   <>
                     <Shield className="size-3.5" data-icon="inline-start" />
-                    <span>Dashboard</span>
+                    <span>Admin</span>
                   </>
                 ) : (
                   <>
                     <LayoutDashboard className="size-3.5" data-icon="inline-start" />
-                    <span>Dashboard</span>
+                    <span>Workspace</span>
                   </>
                 )}
               </Button>
@@ -90,19 +90,19 @@ export async function PublicHeader() {
             <>
               <Button
                 variant="ghost"
-                size="sm"
-                className="min-h-11 rounded-full"
+                size="lg"
+                className="rounded-full"
                 render={<Link href="/signin" />}
               >
                 Sign In
               </Button>
               <Button
                 variant="default"
-                size="sm"
-                className="min-h-11 rounded-full cursor-pointer"
+                size="lg"
+                className="rounded-full cursor-pointer"
                 render={<Link href="/signup" />}
               >
-                Start Free
+                Get Started
               </Button>
             </>
           )}

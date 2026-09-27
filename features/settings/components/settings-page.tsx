@@ -5,9 +5,10 @@ import { PageHeader } from '@/components/dashboard/dashboard-primitives';
 import { cn } from '@/lib/utils';
 import { SETTING_TABS, type SettingsPageProps, type SettingsTab } from '@/types/settings';
 import { AcademicSetup } from './academic-setup';
-import { WorkspaceSettingsCards } from './workspace-settings-cards';
-import { SecuritySettings } from './security-settings';
 import { CsvImportPanel } from './csv-import-panel';
+import { GeneralSettings } from './general-settings';
+import { SecuritySettings } from './security-settings';
+import { WorkspaceSettingsCards } from './workspace-settings-cards';
 
 const tabs = SETTING_TABS;
 const labels = {
@@ -61,7 +62,9 @@ export function SettingsPage({ workspaceId }: SettingsPageProps) {
           ))}
         </div>
       </nav>
-      {tab === 'academic' ? (
+      {tab === 'general' ? (
+        <GeneralSettings workspaceId={workspaceId} />
+      ) : tab === 'academic' ? (
         <AcademicSetup workspaceId={workspaceId} />
       ) : tab === 'security' ? (
         <SecuritySettings />

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { env } from '@/config/env';
+import { serverEnv } from '@/config/server-env';
 import { getPublicPlans } from '@/features/pricing/api/get-public-plans';
 import { postAuthDestinations, resolvePostAuthDestination } from '@/lib/auth/post-auth-destination';
 import { SELECTED_PLAN_COOKIE } from '@/lib/selected-plan';
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       400
     );
 
-  const backendResponse = await fetch(`${env.apiBaseUrl}/payment-requests/account`, {
+  const backendResponse = await fetch(`${serverEnv.apiBaseUrl}/payment-requests/account`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',

@@ -29,13 +29,14 @@ export function WorkspaceDashboardOverview({
     );
 
   const summary = query.data;
+  const coachingCenterName = summary.workspace.name || 'your coaching center';
 
   return (
     <div className="flex flex-col gap-6">
       {/* Top Header */}
       <PageHeader
-        title={summary.workspace.name || 'Coaching Overview'}
-        description="Daily coaching operations, student attendance, tuition revenue, and schedule at a glance."
+        title={`Welcome back, ${coachingCenterName}`}
+        description={`Here’s what’s happening at ${coachingCenterName} today.`}
         actions={
           <div className="flex items-center gap-2">
             <Button

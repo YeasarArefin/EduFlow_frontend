@@ -33,9 +33,11 @@ const signInSchema = baseSchema.extend({
 export function AuthForm({
   mode,
   selectedPlanSlug,
+  passwordReset,
 }: {
   mode: 'signin' | 'signup';
   selectedPlanSlug?: string;
+  passwordReset?: boolean;
 }) {
   const signup = mode === 'signup';
   const router = useRouter();
@@ -172,6 +174,20 @@ export function AuthForm({
               </div>
               <FieldError>{form.formState.errors.password?.message}</FieldError>
             </Field>
+            {!signup ? (
+              <Link
+                className="w-fit text-sm font-medium underline underline-offset-4 transition-colors hover:text-muted-foreground"
+                href="/forgot-password"
+              >
+                Forgot password?
+              </Link>
+            ) : null}
+            {passwordReset ? (
+              <Alert>
+                <AlertTitle>Password reset</AlertTitle>
+                <AlertDescription>Your password has been changed. Sign in with your new password.</AlertDescription>
+              </Alert>
+            ) : null}
             {error ? (
               <Alert variant="destructive">
                 <AlertTitle>Unable to continue</AlertTitle>

@@ -1,7 +1,8 @@
 import { headers } from 'next/headers';
-import { env } from '@/config/env';
+import { serverEnv } from '@/config/server-env';
 import { validateSelectedPlanSlug } from '@/lib/selected-plan';
 import { getServerSession } from '@/lib/auth/server';
+import type { AccountRoutingState } from '@/types/auth';
 
 export const postAuthDestinations = {
   verifyEmail: '/verify-email',
@@ -14,15 +15,12 @@ export const postAuthDestinations = {
   dashboard: '/workspace/dashboard',
 } as const;
 
-export type AccountRoutingState = {
-  route: 'dashboard' | 'workspace_creation' | 'payment_pending' | 'account';
-  workspaceId?: string;
-};
+export type { AccountRoutingState } from '@/types/auth';
 
 export async function getAccountRoutingState(): Promise<AccountRoutingState | null> {
   const requestHeaders = await headers();
   try {
-    const response = await fetch(`${env.apiBaseUrl}/account/state`, {
+    const response = await fetch(`${serverEnv.apiBaseUrl}/account/state`, {
       headers: { cookie: requestHeaders.get('cookie') ?? '' },
       cache: 'no-store',
     });
@@ -45,7 +43,7 @@ export async function resolvePostAuthDestination({
 
   const requestHeaders = await headers();
   try {
-    const platformAccess = await fetch(`${env.apiBaseUrl}/plans`, {
+    const platformAccess = await fetch(`${serverEnv.apiBaseUrl}/plans`, {
       headers: { cookie: requestHeaders.get('cookie') ?? '' },
       cache: 'no-store',
     });
