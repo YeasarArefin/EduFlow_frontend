@@ -19,8 +19,19 @@ export type DashboardSummary = {
     today: {
       date: string;
       scheduledBatchCount: number;
-      batches?: { id: string; name: string; classDays: number[]; status: 'draft' | 'finalized' | 'not_started' }[];
-      recentActivity?: { type: string; title: string; context: string; createdAt: string; href: string }[];
+      batches?: {
+        id: string;
+        name: string;
+        classDays: number[];
+        status: 'draft' | 'finalized' | 'not_started';
+      }[];
+      recentActivity?: {
+        type: string;
+        title: string;
+        context: string;
+        createdAt: string;
+        href: string;
+      }[];
       attendance: {
         sessionCount: number;
         finalizedSessionCount: number;

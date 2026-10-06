@@ -48,12 +48,12 @@ function CustomLineTooltip({ active, payload, label }: CustomTooltipProps) {
 
 export function FinancialCharts({ summary }: FinancialChartsProps) {
   const finance = summary.operational.monthlyFinance;
-  const collections = summary.monthlyCollections ?? [];
+  const collections = summary.monthlyCollections;
   const collectedNum = Number(finance?.collectedFees || 0);
   const outstandingNum = Number(finance?.outstandingFees || 0);
 
   const chartData = useMemo(() => {
-    return collections.map((item) => ({
+    return (collections ?? []).map((item) => ({
       month: item.month,
       collectedFees: Number(item.collectedFees || 0),
     }));

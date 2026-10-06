@@ -71,12 +71,8 @@ export function TeacherProfileSection({ teacher }: TeacherProfileSectionProps) {
           <DetailRow label="Current Status">
             <StatusBadge status={statusVisual.tone}>{statusVisual.label}</StatusBadge>
           </DetailRow>
-          <DetailRow label="Profile Created">
-            {formatTeacherDate(teacher.createdAt)}
-          </DetailRow>
-          <DetailRow label="Last Updated">
-            {formatTeacherDate(teacher.updatedAt)}
-          </DetailRow>
+          <DetailRow label="Profile Created">{formatTeacherDate(teacher.createdAt)}</DetailRow>
+          <DetailRow label="Last Updated">{formatTeacherDate(teacher.updatedAt)}</DetailRow>
         </dl>
       </SectionCard>
 

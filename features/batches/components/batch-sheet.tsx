@@ -127,9 +127,7 @@ export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchShee
 
   const activePresetId = useMemo(() => {
     const currentKey = [...values.classDays].sort((a, b) => a - b).join(',');
-    const match = PRESETS.find(
-      (p) => [...p.days].sort((a, b) => a - b).join(',') === currentKey
-    );
+    const match = PRESETS.find((p) => [...p.days].sort((a, b) => a - b).join(',') === currentKey);
     return match?.id ?? null;
   }, [values.classDays]);
 
@@ -405,7 +403,8 @@ export function BatchSheet({ open, onOpenChange, workspaceId, batch }: BatchShee
                   <div className="flex flex-wrap items-center gap-2 rounded-lg border border-border/50 bg-muted/30 px-3 py-2 text-xs">
                     <span className="flex items-center gap-1 font-medium text-foreground">
                       <CalendarDays className="size-3.5 text-primary" />
-                      {selectedDaysSorted.length} {selectedDaysSorted.length === 1 ? 'day' : 'days'} / week:
+                      {selectedDaysSorted.length} {selectedDaysSorted.length === 1 ? 'day' : 'days'}{' '}
+                      / week:
                     </span>
                     <span className="text-muted-foreground">{selectedDaysLabel}</span>
                   </div>

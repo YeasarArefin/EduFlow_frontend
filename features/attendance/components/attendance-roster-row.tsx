@@ -39,4 +39,3 @@ export function AttendanceRosterRow({ record, value, disabled, onChange }: Atten
     </div>
   );
 }
-

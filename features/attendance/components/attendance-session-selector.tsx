@@ -2,11 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -141,8 +137,9 @@ export function AttendanceSessionSelector({
               Session Date *
             </span>
 
-            {selectedBatch && sessionDate && (
-              isClassDay ? (
+            {selectedBatch &&
+              sessionDate &&
+              (isClassDay ? (
                 <span className="inline-flex items-center gap-1 text-[11px] font-medium text-primary">
                   <CheckCircle2 className="size-3" />
                   Scheduled class day
@@ -152,8 +149,7 @@ export function AttendanceSessionSelector({
                   <AlertCircle className="size-3" />
                   No routine class today
                 </span>
-              )
-            )}
+              ))}
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
@@ -204,7 +200,9 @@ export function AttendanceSessionSelector({
                         onDateChange(today);
                         setCalendarOpen(false);
                       }}
-                      disabled={!selectedBatch || !selectedBatch.classDays.includes(new Date().getDay())}
+                      disabled={
+                        !selectedBatch || !selectedBatch.classDays.includes(new Date().getDay())
+                      }
                       className="rounded-full px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 disabled:opacity-40"
                     >
                       Today
@@ -285,7 +283,8 @@ export function AttendanceSessionSelector({
           </div>
 
           <span className="text-muted-foreground">
-            Viewing: <strong className="text-foreground">{formatAttendanceDate(sessionDate)}</strong>
+            Viewing:{' '}
+            <strong className="text-foreground">{formatAttendanceDate(sessionDate)}</strong>
           </span>
         </div>
       )}

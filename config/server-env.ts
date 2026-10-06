@@ -17,7 +17,8 @@ const values = envSchema.parse({
   NEXT_PUBLIC_API_BASE_URL: process.env.NEXT_PUBLIC_API_BASE_URL,
 });
 
-const backendApiBaseUrl = values.BACKEND_API_BASE_URL ??
+const backendApiBaseUrl =
+  values.BACKEND_API_BASE_URL ??
   (values.NEXT_PUBLIC_API_BASE_URL === '/api/v1' ? undefined : values.NEXT_PUBLIC_API_BASE_URL);
 
 if (!backendApiBaseUrl) {

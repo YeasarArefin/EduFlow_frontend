@@ -1,3 +1,5 @@
+import type { ActiveSession } from './settings';
+
 export type AuthFormValues = {
   name?: string;
   email: string;
@@ -33,4 +35,25 @@ export type AccountInformationFormValues = {
 export type AccountRoutingState = {
   route: 'dashboard' | 'workspace_creation' | 'payment_pending' | 'account';
   workspaceId?: string;
+};
+
+export type SessionLimitReachedErrorData = {
+  code: 'SESSION_LIMIT_REACHED';
+  message: string;
+  activeSessions: ActiveSession[];
+  sessionLimit: number;
+};
+
+export type SessionTakeoverInput = {
+  email: string;
+  password: string;
+};
+
+export type DeviceLimitDialogProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  activeSessions: ActiveSession[];
+  email: string;
+  password: string;
+  onTakeoverSuccess: () => void;
 };

@@ -59,5 +59,3 @@ export function getLatestClassDateForBatch(classDays: number[] = []): string {
   }
   return today;
 }
-
-

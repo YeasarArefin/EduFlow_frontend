@@ -5,7 +5,6 @@ import {
   Check,
   Crown,
   KeyRound,
-  Plus,
   RotateCcw,
   Shield,
   ShieldAlert,
@@ -86,8 +85,11 @@ export function PermissionManagementPage({ workspaceId }: PermissionManagementPa
   const isRoleDeleting = deleteRole.isPending;
   const isMemberSaving = updateMemberOverrides.isPending || resetMemberOverrides.isPending;
 
-  const roles = configuration.data?.roles ?? [];
-  const permissions = configuration.data?.permissions ?? [];
+  const roles = useMemo(() => configuration.data?.roles ?? [], [configuration.data?.roles]);
+  const permissions = useMemo(
+    () => configuration.data?.permissions ?? [],
+    [configuration.data?.permissions]
+  );
   const selectedRole = roles.find((role) => role.id === roleId);
   const isSelectedRoleOwner = selectedRole ? isProtectedOwner(selectedRole.name) : false;
 
@@ -282,11 +284,7 @@ export function PermissionManagementPage({ workspaceId }: PermissionManagementPa
         title="Roles & Permissions"
         description="Configure workspace roles, grant module-level permissions, and manage individual member overrides."
         actions={
-          <Button
-            variant="outline"
-            className="gap-2"
-            render={<Link href="/workspace/staff" />}
-          >
+          <Button variant="outline" className="gap-2" render={<Link href="/workspace/staff" />}>
             <ArrowLeft className="size-4 text-muted-foreground" />
             <span>Back to staff</span>
           </Button>
@@ -478,14 +476,19 @@ export function PermissionManagementPage({ workspaceId }: PermissionManagementPa
               const allGranted = grantedCount === modulePermissions.length;
 
               return (
-                <Card key={moduleName} className="rounded-2xl border border-border/80 bg-card/65 shadow-xs overflow-hidden">
+                <Card
+                  key={moduleName}
+                  className="rounded-2xl border border-border/80 bg-card/65 shadow-xs overflow-hidden"
+                >
                   <CardHeader className="flex flex-row items-center justify-between border-b border-border/50 bg-muted/20 px-5 py-3.5">
                     <div className="flex items-center gap-2.5">
                       <div className="flex size-7 items-center justify-center rounded-lg bg-primary/10 text-xs font-bold text-primary">
                         {moduleName.slice(0, 2).toUpperCase()}
                       </div>
                       <div>
-                        <CardTitle className="text-sm font-semibold text-foreground">{moduleName}</CardTitle>
+                        <CardTitle className="text-sm font-semibold text-foreground">
+                          {moduleName}
+                        </CardTitle>
                         <CardDescription className="text-[11px] text-muted-foreground">
                           {grantedCount} of {modulePermissions.length} permissions granted
                         </CardDescription>
@@ -520,7 +523,7 @@ export function PermissionManagementPage({ workspaceId }: PermissionManagementPa
                       {modulePermissions.map((permission) => {
                         const isGranted = isSelectedRoleOwner
                           ? true
-                          : values[permission.code] ?? false;
+                          : (values[permission.code] ?? false);
 
                         return (
                           <div
@@ -587,7 +590,8 @@ export function PermissionManagementPage({ workspaceId }: PermissionManagementPa
             <CardHeader className="pb-4">
               <CardTitle className="text-base font-semibold">Individual Member Overrides</CardTitle>
               <CardDescription className="text-xs">
-                Override specific permissions for an individual member without creating a dedicated role.
+                Override specific permissions for an individual member without creating a dedicated
+                role.
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -1,4 +1,11 @@
-import { Crown, MoreHorizontal, UserMinus, UserRoundCheck, UserRoundPen, UserRoundX } from 'lucide-react';
+import {
+  Crown,
+  MoreHorizontal,
+  UserMinus,
+  UserRoundCheck,
+  UserRoundPen,
+  UserRoundX,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,

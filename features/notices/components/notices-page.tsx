@@ -1,11 +1,101 @@
 'use client';
 import Link from 'next/link';
 import { BellPlus, Mail } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { DataTable, EmptyState, ErrorState, LoadingState, PageHeader } from '@/components/dashboard/dashboard-primitives';
+import {
+  DataTable,
+  EmptyState,
+  ErrorState,
+  LoadingState,
+  PageHeader,
+} from '@/components/dashboard/dashboard-primitives';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { useNotices } from '../queries/use-notices';
 import { NoticeSheet } from './notice-sheet';
-export function NoticesPage({ workspaceId }: { workspaceId: string }) { const [open, setOpen] = useState(false); const query = useNotices(workspaceId); return <div className="flex flex-col gap-6"><PageHeader title="Notices" description="Create, send, and track delivery to your coaching community." actions={<Button onClick={() => setOpen(true)} className="rounded-full"><BellPlus data-icon="inline-start" />Create notice</Button>} />{query.isPending ? <LoadingState rows={5} /> : null}{query.isError ? <ErrorState message="Could not load notices." onRetry={() => query.refetch()} /> : null}{query.data && !query.data.data.length ? <EmptyState title="No notices yet" description="Create your first notice to communicate an update." action={<Button onClick={() => setOpen(true)}><BellPlus data-icon="inline-start" />Create notice</Button>} /> : null}{query.data?.data.length ? <DataTable><TableHeader><TableRow><TableHead>Notice</TableHead><TableHead>Audience</TableHead><TableHead>Created</TableHead><TableHead /></TableRow></TableHeader><TableBody>{query.data.data.map((notice) => <TableRow key={notice.id}><TableCell><Link className="font-medium hover:text-primary" href={`/workspace/notices/${notice.id}`}>{notice.subject}</Link></TableCell><TableCell><Badge variant="outline">{notice.audience.replace('_', ' ')}</Badge></TableCell><TableCell className="text-muted-foreground">{new Date(notice.createdAt).toLocaleDateString()}</TableCell><TableCell><Link href={`/workspace/notices/${notice.id}`} aria-label={`Open ${notice.subject}`}><Mail className="size-4" /></Link></TableCell></TableRow>)}</TableBody></DataTable> : null}<NoticeSheet workspaceId={workspaceId} open={open} onOpenChange={setOpen} onCreated={(id) => { window.location.assign(`/workspace/notices/${id}`); }} /></div>; }
+
+export function NoticesPage({ workspaceId }: { workspaceId: string }) {
+  const router = useRouter();
+  const [open, setOpen] = useState(false);
+  const query = useNotices(workspaceId);
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="Notices"
+        description="Create, send, and track delivery to your coaching community."
+        actions={
+          <Button onClick={() => setOpen(true)} className="rounded-full">
+            <BellPlus data-icon="inline-start" />
+            Create notice
+          </Button>
+        }
+      />
+      {query.isPending ? <LoadingState rows={5} /> : null}
+      {query.isError ? (
+        <ErrorState message="Could not load notices." onRetry={() => query.refetch()} />
+      ) : null}
+      {query.data && !query.data.data.length ? (
+        <EmptyState
+          title="No notices yet"
+          description="Create your first notice to communicate an update."
+          action={
+            <Button onClick={() => setOpen(true)}>
+              <BellPlus data-icon="inline-start" />
+              Create notice
+            </Button>
+          }
+        />
+      ) : null}
+      {query.data?.data.length ? (
+        <DataTable>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Notice</TableHead>
+              <TableHead>Audience</TableHead>
+              <TableHead>Created</TableHead>
+              <TableHead />
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {query.data.data.map((notice) => (
+              <TableRow key={notice.id}>
+                <TableCell>
+                  <Link
+                    className="font-medium hover:text-primary"
+                    href={`/workspace/notices/${notice.id}`}
+                  >
+                    {notice.subject}
+                  </Link>
+                </TableCell>
+                <TableCell>
+                  <Badge variant="outline">{notice.audience.replace('_', ' ')}</Badge>
+                </TableCell>
+                <TableCell className="text-muted-foreground">
+                  {new Date(notice.createdAt).toLocaleDateString()}
+                </TableCell>
+                <TableCell>
+                  <Link
+                    href={`/workspace/notices/${notice.id}`}
+                    aria-label={`Open ${notice.subject}`}
+                  >
+                    <Mail className="size-4" />
+                  </Link>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </DataTable>
+      ) : null}
+      <NoticeSheet
+        workspaceId={workspaceId}
+        open={open}
+        onOpenChange={setOpen}
+        onCreated={(id) => {
+          router.push(`/workspace/notices/${id}`);
+        }}
+      />
+    </div>
+  );
+}

@@ -8,7 +8,10 @@ import { buttonVariants } from '@/components/ui/button';
 function Calendar({ className, classNames, components, ...props }: DayPickerProps) {
   return (
     <DayPicker
-      className={cn('rounded-2xl border border-border/80 bg-card/60 p-3 backdrop-blur-xs', className)}
+      className={cn(
+        'rounded-2xl border border-border/80 bg-card/60 p-3 backdrop-blur-xs',
+        className
+      )}
       classNames={{
         months: 'flex flex-col gap-3',
         month: 'space-y-3',

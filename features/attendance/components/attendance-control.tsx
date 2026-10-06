@@ -41,4 +41,3 @@ export function AttendanceControl({ value, disabled, onChange }: AttendanceContr
     </div>
   );
 }
-

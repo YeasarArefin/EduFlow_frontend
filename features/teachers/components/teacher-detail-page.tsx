@@ -131,31 +131,8 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
   // Filter salary ledger records for this specific instructor
   const teacherSalaries = useMemo(() => {
     const allSalaries = (salariesQuery.data?.data as Salary[] | undefined) ?? [];
-    return allSalaries.filter(
-      (s) => s.teacherId === teacherId || s.teacher?.id === teacherId
-    );
+    return allSalaries.filter((s) => s.teacherId === teacherId || s.teacher?.id === teacherId);
   }, [salariesQuery.data, teacherId]);
-
-  // Aggregate financial metrics for teacher
-  const salaryTotals = useMemo(() => {
-    let billed = 0;
-    let paid = 0;
-    let due = 0;
-    for (const s of teacherSalaries) {
-      const exp = parseFloat(s.expectedSalary || '0');
-      const adj = parseFloat(s.adjustmentAmount || '0');
-      const p = parseFloat(s.paidAmount || '0');
-      const d = parseFloat(s.dueAmount || '0');
-      billed += Math.max(0, exp + adj);
-      paid += p;
-      due += d;
-    }
-    return {
-      totalExpected: billed,
-      totalPaid: paid,
-      totalDue: due,
-    };
-  }, [teacherSalaries]);
 
   const batches = useMemo(() => batchesQuery.data?.data ?? [], [batchesQuery.data?.data]);
 
@@ -247,10 +224,7 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
                 {teacher.email && (
                   <span className="inline-flex items-center gap-1">
                     • <Mail className="size-3 text-muted-foreground" />
-                    <a
-                      href={`mailto:${teacher.email}`}
-                      className="text-foreground hover:underline"
-                    >
+                    <a href={`mailto:${teacher.email}`} className="text-foreground hover:underline">
                       {teacher.email}
                     </a>
                   </span>
@@ -296,7 +270,9 @@ export function TeacherDetailPage({ workspaceId, teacherId }: TeacherDetailPageP
           <div className="mt-2 font-mono text-2xl font-bold tracking-tight text-foreground">
             {formatTeacherSalaryMinor(teacher.defaultSalaryMinor)}
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">Default monthly contract compensation</p>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Default monthly contract compensation
+          </p>
         </div>
 
         {/* Specialization */}

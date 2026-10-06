@@ -14,7 +14,9 @@ export function AttendanceRosterCard({ record, value, disabled, onChange }: Atte
             {initials}
           </div>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-foreground">{record.student.fullName}</p>
+            <p className="truncate text-sm font-semibold text-foreground">
+              {record.student.fullName}
+            </p>
             <p className="font-mono text-xs text-muted-foreground">{record.student.studentCode}</p>
           </div>
         </div>
@@ -34,4 +36,3 @@ export function AttendanceRosterCard({ record, value, disabled, onChange }: Atte
     </div>
   );
 }
-

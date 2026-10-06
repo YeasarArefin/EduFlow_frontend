@@ -124,7 +124,6 @@ export function AppShell({
             </Button>
             <span>{isAdmin ? 'Platform Admin' : 'Workspace'}</span>
           </div>
-
         </header>
 
         <main className="mx-auto w-full flex-1 px-4 py-8 sm:px-6 lg:px-8">{children}</main>

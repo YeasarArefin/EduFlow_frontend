@@ -20,15 +20,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import {
-  Archive,
-  ChevronRight,
-  Eye,
-  GraduationCap,
-  Plus,
-  UserCheck,
-  UserX,
-} from 'lucide-react';
+import { Archive, ChevronRight, Eye, GraduationCap, Plus, UserCheck, UserX } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';

@@ -1,9 +1,5 @@
 import { Button } from '@/components/ui/button';
-import {
-  EmptyState,
-  ErrorState,
-  LoadingState,
-} from '@/components/dashboard/dashboard-primitives';
+import { EmptyState, ErrorState, LoadingState } from '@/components/dashboard/dashboard-primitives';
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -13,7 +9,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { AttendanceHistoryTableProps } from '@/types/attendance';
-import { Filter, History, RotateCcw } from 'lucide-react';
+import { History, RotateCcw } from 'lucide-react';
 import { AttendanceHistoryRow } from './attendance-history-row';
 
 export function AttendanceHistoryTable({
@@ -30,7 +26,8 @@ export function AttendanceHistoryTable({
   onRetry,
   isError,
 }: AttendanceHistoryTableProps) {
-  const hasActiveFilters = selectedBatchId !== 'all' || selectedDate !== '' || selectedStatus !== 'all';
+  const hasActiveFilters =
+    selectedBatchId !== 'all' || selectedDate !== '' || selectedStatus !== 'all';
 
   function resetFilters() {
     onBatchChange('all');

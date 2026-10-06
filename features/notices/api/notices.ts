@@ -1,11 +1,53 @@
 import { apiListRequest, apiRequest } from '@/lib/api/client';
-import type { Notice, NoticeDetail, NoticePagination, NoticeProgress, NoticeRecipient } from '@/types/notices';
+import type {
+  Notice,
+  NoticeDetail,
+  NoticePagination,
+  NoticeProgress,
+  NoticeRecipient,
+} from '@/types/notices';
 const headers = (workspaceId: string) => ({ 'X-Workspace-Id': workspaceId });
-export const getNotices = (workspaceId: string, signal?: AbortSignal) => apiListRequest<Notice[], NoticePagination>('/notices?page=1&limit=30', { headers: headers(workspaceId), signal });
-export const getNotice = (workspaceId: string, id: string, signal?: AbortSignal) => apiRequest<NoticeDetail>(`/notices/${id}`, { headers: headers(workspaceId), signal });
-export const getNoticeRecipients = (workspaceId: string, id: string, status: 'failed' | 'skipped', signal?: AbortSignal) => apiRequest<NoticeRecipient[]>(`/notices/${id}/recipients?status=${status}`, { headers: headers(workspaceId), signal });
-export const previewNotice = (workspaceId: string, id: string) => apiRequest<{ count: number }>(`/notices/${id}/preview`, { headers: headers(workspaceId) });
-export const createNotice = (workspaceId: string, input: { subject: string; body: string; audience: string; batchId?: string }) => apiRequest<Notice>('/notices', { method: 'POST', headers: headers(workspaceId), body: input });
-export const queueNotice = (workspaceId: string, id: string) => apiRequest<NoticeProgress>(`/notices/${id}/queue`, { method: 'POST', headers: headers(workspaceId) });
-export const processNotice = (workspaceId: string, id: string) => apiRequest<{ claimedCount: number; sentCount: number; failedCount: number; skippedCount: number }>(`/notices/${id}/process-next-batch`, { method: 'POST', headers: headers(workspaceId), body: { limit: 25 } });
-export const retryNotice = (workspaceId: string, id: string) => apiRequest<{ retriedCount: number }>(`/notices/${id}/retry-failed`, { method: 'POST', headers: headers(workspaceId) });
+export const getNotices = (workspaceId: string, signal?: AbortSignal) =>
+  apiListRequest<Notice[], NoticePagination>('/notices?page=1&limit=30', {
+    headers: headers(workspaceId),
+    signal,
+  });
+export const getNotice = (workspaceId: string, id: string, signal?: AbortSignal) =>
+  apiRequest<NoticeDetail>(`/notices/${id}`, { headers: headers(workspaceId), signal });
+export const getNoticeRecipients = (
+  workspaceId: string,
+  id: string,
+  status: 'failed' | 'skipped',
+  signal?: AbortSignal
+) =>
+  apiRequest<NoticeRecipient[]>(`/notices/${id}/recipients?status=${status}`, {
+    headers: headers(workspaceId),
+    signal,
+  });
+export const previewNotice = (workspaceId: string, id: string) =>
+  apiRequest<{ count: number }>(`/notices/${id}/preview`, { headers: headers(workspaceId) });
+export const createNotice = (
+  workspaceId: string,
+  input: { subject: string; body: string; audience: string; batchId?: string }
+) => apiRequest<Notice>('/notices', { method: 'POST', headers: headers(workspaceId), body: input });
+export const queueNotice = (workspaceId: string, id: string) =>
+  apiRequest<NoticeProgress>(`/notices/${id}/queue`, {
+    method: 'POST',
+    headers: headers(workspaceId),
+  });
+export const processNotice = (workspaceId: string, id: string) =>
+  apiRequest<{
+    claimedCount: number;
+    sentCount: number;
+    failedCount: number;
+    skippedCount: number;
+  }>(`/notices/${id}/process-next-batch`, {
+    method: 'POST',
+    headers: headers(workspaceId),
+    body: { limit: 25 },
+  });
+export const retryNotice = (workspaceId: string, id: string) =>
+  apiRequest<{ retriedCount: number }>(`/notices/${id}/retry-failed`, {
+    method: 'POST',
+    headers: headers(workspaceId),
+  });

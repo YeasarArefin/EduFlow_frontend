@@ -19,7 +19,7 @@ import {
   Users,
   XCircle,
 } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useDebouncedValue } from '@/utils/use-debounced-value';
 import { AttendanceRosterCard } from './attendance-roster-card';
 import { AttendanceRosterRow } from './attendance-roster-row';
@@ -39,16 +39,19 @@ export function AttendanceSessionWorkbench({
   const debouncedSearchQuery = useDebouncedValue(searchQuery);
   const [filterTab, setFilterTab] = useState<'all' | 'present' | 'absent'>('all');
 
-  const records = session.records ?? [];
+  const records = useMemo(() => session.records ?? [], [session.records]);
   const isFinalized = session.status === 'finalized';
 
-  function getEffectiveStatus(record: AttendanceRecord) {
-    return draftStatuses[record.studentId] ?? record.status;
-  }
+  const getEffectiveStatus = useCallback(
+    (record: AttendanceRecord) => {
+      return draftStatuses[record.studentId] ?? record.status;
+    },
+    [draftStatuses]
+  );
 
   const presentCount = useMemo(
     () => records.filter((r) => getEffectiveStatus(r) === 'present').length,
-    [records, draftStatuses]
+    [records, getEffectiveStatus]
   );
   const absentCount = records.length - presentCount;
   const attendanceRate = getAttendancePercentage(presentCount, records.length);
@@ -68,7 +71,7 @@ export function AttendanceSessionWorkbench({
         (record.student.phone && record.student.phone.includes(query))
       );
     });
-  }, [records, draftStatuses, filterTab, debouncedSearchQuery]);
+  }, [records, getEffectiveStatus, filterTab, debouncedSearchQuery]);
 
   return (
     <div className="space-y-6">

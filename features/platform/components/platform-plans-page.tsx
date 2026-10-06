@@ -397,13 +397,37 @@ export function PlatformPlansPage() {
                     <PlanStateAction plan={plan} />
                     <AlertDialog>
                       <AlertDialogTrigger
-                        render={<Button size="sm" variant="destructive" className="rounded-full" disabled={deletePlan.isPending} />}
+                        render={
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            className="rounded-full"
+                            disabled={deletePlan.isPending}
+                          />
+                        }
                       >
                         <Trash2 data-icon="inline-start" /> Delete
                       </AlertDialogTrigger>
                       <AlertDialogContent>
-                        <AlertDialogHeader><AlertDialogTitle>Delete {plan.name}?</AlertDialogTitle><AlertDialogDescription>This permanently removes the plan and its feature configuration. Plans with subscription or payment history cannot be deleted; deactivate them instead.</AlertDialogDescription></AlertDialogHeader>
-                        <AlertDialogFooter><AlertDialogCancel disabled={deletePlan.isPending}>Cancel</AlertDialogCancel><AlertDialogAction onClick={() => deletePlan.mutate(plan.id)} disabled={deletePlan.isPending}>Delete plan</AlertDialogAction></AlertDialogFooter>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete {plan.name}?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This permanently removes the plan and its feature configuration. Plans
+                            with subscription or payment history cannot be deleted; deactivate them
+                            instead.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel disabled={deletePlan.isPending}>
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deletePlan.mutate(plan.id)}
+                            disabled={deletePlan.isPending}
+                          >
+                            Delete plan
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
                   </div>

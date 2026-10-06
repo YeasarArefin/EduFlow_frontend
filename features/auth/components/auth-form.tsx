@@ -15,7 +15,9 @@ import { Spinner } from '@/components/ui/spinner';
 import { signIn, signUp } from '@/lib/auth/client';
 import { persistSelectedPlan } from '@/lib/actions/selected-plan';
 import { clearSelectedWorkspace } from '@/lib/workspace';
+import type { ActiveSession } from '@/types/settings';
 import type { AuthFormValues } from '@/types/auth';
+import { DeviceLimitDialog } from './device-limit-dialog';
 
 const baseSchema = z.object({
   email: z.string().trim().email('Enter a valid email.'),
@@ -42,6 +44,13 @@ export function AuthForm({
   const signup = mode === 'signup';
   const router = useRouter();
   const [error, setError] = useState<string>();
+  const [limitDialogState, setLimitDialogState] = useState<{
+    isOpen: boolean;
+    activeSessions: ActiveSession[];
+    email: string;
+    password: string;
+  } | null>(null);
+
   const form = useForm<AuthFormValues>({
     resolver: zodResolver(signup ? signUpSchema : signInSchema),
     mode: 'onChange',
@@ -64,6 +73,32 @@ export function AuthForm({
         });
 
     if (result.error) {
+      const errorObj = result.error as {
+        code?: string;
+        message?: string;
+        body?: { code?: string; activeSessions?: ActiveSession[] };
+        activeSessions?: ActiveSession[];
+      };
+
+      const isSessionLimit =
+        errorObj.code === 'SESSION_LIMIT_REACHED' ||
+        errorObj.body?.code === 'SESSION_LIMIT_REACHED' ||
+        errorObj.message?.includes('active session limit');
+
+      if (isSessionLimit) {
+        const sessions =
+          errorObj.activeSessions ??
+          errorObj.body?.activeSessions ??
+          [];
+        setLimitDialogState({
+          isOpen: true,
+          activeSessions: sessions,
+          email: values.email,
+          password: values.password,
+        });
+        return;
+      }
+
       setError(result.error.message ?? 'Unable to continue.');
       return;
     }
@@ -76,6 +111,12 @@ export function AuthForm({
     }
 
     router.replace(result.data?.user.emailVerified ? '/post-auth' : '/verify-email');
+  };
+
+  const handleTakeoverSuccess = async () => {
+    setLimitDialogState(null);
+    await persistSelectedPlan(selectedPlanSlug);
+    router.replace('/post-auth');
   };
 
   const switchHref = selectedPlanSlug
@@ -185,7 +226,9 @@ export function AuthForm({
             {passwordReset ? (
               <Alert>
                 <AlertTitle>Password reset</AlertTitle>
-                <AlertDescription>Your password has been changed. Sign in with your new password.</AlertDescription>
+                <AlertDescription>
+                  Your password has been changed. Sign in with your new password.
+                </AlertDescription>
               </Alert>
             ) : null}
             {error ? (
@@ -225,6 +268,17 @@ export function AuthForm({
           </Link>
         </p>
       </section>
+
+      {limitDialogState ? (
+        <DeviceLimitDialog
+          isOpen={limitDialogState.isOpen}
+          onClose={() => setLimitDialogState(null)}
+          activeSessions={limitDialogState.activeSessions}
+          email={limitDialogState.email}
+          password={limitDialogState.password}
+          onTakeoverSuccess={handleTakeoverSuccess}
+        />
+      ) : null}
     </main>
   );
 }

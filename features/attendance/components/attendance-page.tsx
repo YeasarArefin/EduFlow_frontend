@@ -107,7 +107,7 @@ export function AttendancePage({ workspaceId }: AttendancePageProps) {
   }, [batchId, sessionDate, matchingSession?.id, lookupQuery.isFetching]);
 
   // Derive high-level workspace stats
-  const historySessions = historyQuery.data?.data ?? [];
+  const historySessions = useMemo(() => historyQuery.data?.data ?? [], [historyQuery.data?.data]);
   const totalHistoryCount = historyQuery.data?.meta.total ?? historySessions.length;
 
   const averageAttendanceRate = useMemo(() => {

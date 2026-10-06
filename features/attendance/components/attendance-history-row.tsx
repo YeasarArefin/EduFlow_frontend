@@ -49,10 +49,7 @@ export function AttendanceHistoryRow({ session, onOpen }: AttendanceHistoryRowPr
           </span>
         </div>
         <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted/60">
-          <div
-            className="h-full bg-primary transition-all"
-            style={{ width: `${percentage}%` }}
-          />
+          <div className="h-full bg-primary transition-all" style={{ width: `${percentage}%` }} />
         </div>
       </div>
 
@@ -68,4 +65,3 @@ export function AttendanceHistoryRow({ session, onOpen }: AttendanceHistoryRowPr
     </button>
   );
 }
-

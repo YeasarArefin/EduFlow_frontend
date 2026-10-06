@@ -66,7 +66,8 @@ export function useDeletePlatformPlan() {
       await queryClient.invalidateQueries({ queryKey: platformPlanQueryKeys.all });
       toast.success('Plan deleted.');
     },
-    onError: (error) => toast.error(error instanceof Error ? error.message : 'Could not delete the plan.'),
+    onError: (error) =>
+      toast.error(error instanceof Error ? error.message : 'Could not delete the plan.'),
   });
 }
 
