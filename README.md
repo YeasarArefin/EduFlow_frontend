@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="https://eduflowe.vercel.app"><img src="https://img.shields.io/badge/Live%20Demo-eduflowe.vercel.app-bef264?logo=vercel&logoColor=000" alt="Live Demo" /></a>
   <a href="https://github.com/YeasarArefin/EduFlow_frontend"><img src="https://img.shields.io/badge/Frontend-Next.js%2015-black?logo=nextdotjs" alt="Next.js" /></a>
   <a href="https://github.com/YeasarArefin/EduFlow_backend"><img src="https://img.shields.io/badge/Backend-Express%20%2B%20TypeScript-blue?logo=nodedotjs" alt="Node.js" /></a>
   <img src="https://img.shields.io/badge/Database-PostgreSQL%20%2B%20Drizzle-336791?logo=postgresql" alt="PostgreSQL" />
@@ -24,8 +25,23 @@
 
 ---
 
+## 🚀 Live Demo
+
+**[https://eduflowe.vercel.app](https://eduflowe.vercel.app)**
+
+| Role | Email | Password |
+|---|---|---|
+| **Platform Admin** | `admin@eduflow.app` | `12345678` |
+| **Workspace User** | `yeasararefin007@gmail.com` | `12345678` |
+
+> The Platform Admin account controls the SaaS itself (plans, workspaces, payment review).
+> The Workspace User account is a coaching center owner with a live workspace to explore.
+
+---
+
 ## Table of Contents
 
+- [🚀 Live Demo](#-live-demo)
 - [What is EduFlow?](#what-is-eduflow)
 - [Core Features](#core-features)
 - [Tech Stack](#tech-stack)
