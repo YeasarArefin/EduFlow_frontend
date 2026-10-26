@@ -18,6 +18,9 @@
 
 EduFlow is a production-grade, multi-tenant coaching-center management platform tailored for educators, tutors, and academy operators in Bangladesh. Built with **Next.js 15 (App Router)**, **TypeScript**, **shadcn/ui**, and **TanStack Query**, it offers seamless operational oversight across student admissions, batch scheduling, fee ledgers, attendance tracking, and multi-channel communication.
 
+> [!NOTE]
+> **Looking for the API & Database?** The Express 5 REST API, Drizzle ORM schemas, Better Auth hooks, and PostgreSQL RLS configuration for EduFlow are located in the companion repository: **[EduFlow_backend](https://github.com/YeasarArefin/EduFlow_backend)**.
+
 ---
 
 ## 🚀 Live Demo & Evaluator Credentials
@@ -151,6 +154,15 @@ NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:4000
 # Next.js Web Application Base URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
+
+---
+
+## 🔗 Architecture Repositories
+
+| Repository | Scope & Technologies | Link |
+|---|---|---|
+| **EduFlow Frontend** | Next.js 15, React Server Components, TanStack Query, shadcn/ui, ORBIT Design System | *This Repository* |
+| **EduFlow Backend** | Express 5, TypeScript, Drizzle ORM, PostgreSQL RLS, Better Auth, RabbitMQ | [github.com/YeasarArefin/EduFlow_backend](https://github.com/YeasarArefin/EduFlow_backend) |
 
 ---
 
