@@ -1,305 +1,174 @@
-<p align="center">
-  <img src="public/logo.png" alt="EduFlow Logo" width="120" />
+# EduFlow — Frontend Web Application
+
+<p align="left">
+  <a href="https://eduflowe.vercel.app"><img src="https://img.shields.io/badge/Live%20Demo-eduflowe.vercel.app-bef264?style=for-the-badge&logo=vercel&logoColor=000" alt="Live Demo" /></a>
+  <a href="https://github.com/YeasarArefin/EduFlow_backend"><img src="https://img.shields.io/badge/Backend%20API-EduFlow_backend-blue?style=for-the-badge&logo=github" alt="Backend Repo" /></a>
 </p>
 
-<h1 align="center">EduFlow — Coaching Center Management SaaS</h1>
-
-<p align="center">
-  <strong>A production-ready, multi-tenant SaaS platform for individual tutors and coaching centers.</strong><br/>
-  Manage students, batches, teachers, fees, attendance, communication, and subscriptions — all in one workspace.
+<p align="left">
+  <img src="https://img.shields.io/badge/Next.js%2015-App%20Router-black?style=flat-square&logo=nextdotjs" alt="Next.js" />
+  <img src="https://img.shields.io/badge/React%2019-RSC-61DAFB?style=flat-square&logo=react&logoColor=000" alt="React" />
+  <img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?style=flat-square&logo=typescript" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Tailwind%20CSS-v4-38B2AC?style=flat-square&logo=tailwindcss" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/UI-shadcn%2Fui-black?style=flat-square" alt="shadcn/ui" />
+  <img src="https://img.shields.io/badge/State-TanStack%20Query%20v5-FF4154?style=flat-square&logo=reactquery" alt="TanStack Query" />
+  <img src="https://img.shields.io/badge/Auth-Better%20Auth-orange?style=flat-square" alt="Better Auth" />
+  <img src="https://img.shields.io/badge/Validation-Zod-3E67B1?style=flat-square&logo=zod" alt="Zod" />
 </p>
 
-<p align="center">
-  <a href="https://eduflowe.vercel.app"><img src="https://img.shields.io/badge/Live%20Demo-eduflowe.vercel.app-bef264?logo=vercel&logoColor=000" alt="Live Demo" /></a>
-  <a href="https://github.com/YeasarArefin/EduFlow_frontend"><img src="https://img.shields.io/badge/Frontend-Next.js%2015-black?logo=nextdotjs" alt="Next.js" /></a>
-  <a href="https://github.com/YeasarArefin/EduFlow_backend"><img src="https://img.shields.io/badge/Backend-Express%20%2B%20TypeScript-blue?logo=nodedotjs" alt="Node.js" /></a>
-  <img src="https://img.shields.io/badge/Database-PostgreSQL%20%2B%20Drizzle-336791?logo=postgresql" alt="PostgreSQL" />
-  <img src="https://img.shields.io/badge/Auth-Better%20Auth-orange" alt="Better Auth" />
-  <img src="https://img.shields.io/badge/UI-shadcn%2Fui%20%2B%20Tailwind-06B6D4?logo=tailwindcss" alt="shadcn/ui" />
-  <img src="https://img.shields.io/badge/Deploy-Vercel%20%2B%20Render-000?logo=vercel" alt="Deployment" />
-</p>
+EduFlow is a production-grade, multi-tenant coaching-center management platform tailored for educators, tutors, and academy operators in Bangladesh. Built with **Next.js 15 (App Router)**, **TypeScript**, **shadcn/ui**, and **TanStack Query**, it offers seamless operational oversight across student admissions, batch scheduling, fee ledgers, attendance tracking, and multi-channel communication.
 
 ---
 
-> **This is the frontend repository.** The backend lives at [EduFlow_backend](https://github.com/YeasarArefin/EduFlow_backend).
+## 🚀 Live Demo & Evaluator Credentials
+
+Explore the platform directly without needing local setup:
+
+🔗 **Production URL:** [https://eduflowe.vercel.app](https://eduflowe.vercel.app)
+
+| Account Type | Email | Password | Access & Experience |
+|---|---|---|---|
+| **Platform Admin** | `admin@eduflow.app` | `12345678` | Global SaaS control plane: plan configuration, manual payment reviews, tenant lifecycle & revenue metrics. |
+| **Workspace Owner** | `yeasararefin007@gmail.com` | `12345678` | Coaching Center Owner view: student rosters, batch schedules, fee collections, attendance, SMS wallet & staff roles. |
 
 ---
 
-## 🚀 Live Demo
+## 💡 Why EduFlow?
 
-**[https://eduflowe.vercel.app](https://eduflowe.vercel.app)**
+Managing an academy or coaching center usually entails juggling fragmented WhatsApp groups, disparate Google Sheets, and error-prone paper receipt books. EduFlow unifies academic, financial, administrative, and messaging operations into an isolated, secure workspace.
 
-| Role | Email | Password |
-|---|---|---|
-| **Platform Admin** | `admin@eduflow.app` | `12345678` |
-| **Workspace User** | `yeasararefin007@gmail.com` | `12345678` |
-
-> The Platform Admin account controls the SaaS itself (plans, workspaces, payment review).
-> The Workspace User account is a coaching center owner with a live workspace to explore.
+### Key Value Pillars
+- **Strict Multi-Tenancy:** Each coaching center operates inside a completely siloed workspace. Data leakage between tenants is structurally impossible.
+- **Auditable Financials:** Immutable student fee & teacher salary ledgers with auto-sequenced official money receipts.
+- **Dual-Layer Authorization:** Distinct separation between **Platform Entitlements** (plan limits & quotas) and **Workspace Permissions** (granular role-based access).
+- **Bangladesh-Native Design:** Built specifically for Bangladesh's ecosystem — BDT currency formatting, mobile phone validation (`+8801...`), bKash/Nagad manual payment flows, and `Asia/Dhaka` time synchronization.
 
 ---
 
-## Table of Contents
+## 🌟 Core Feature Suite
 
-- [🚀 Live Demo](#-live-demo)
-- [What is EduFlow?](#what-is-eduflow)
-- [Core Features](#core-features)
-- [Tech Stack](#tech-stack)
-- [System Architecture](#system-architecture)
-- [Frontend Structure](#frontend-structure)
-- [Design System — ORBIT](#design-system--orbit)
-- [Getting Started (Local Dev)](#getting-started-local-dev)
-- [Environment Variables](#environment-variables)
-- [Key Engineering Decisions](#key-engineering-decisions)
+### 1. 🎓 Academic & Student Operations
+- **Student Profiles & Directories:** Fast search, filtering, tags, guardian details, and full chronological academic/payment records.
+- **Batch & Schedule Engine:** Custom recurring batch schedules (e.g. STT, MWF presets) integrated directly with attendance calendar sessions.
+- **Teacher Directory & Compensation:** Teacher profiles, batch assignments, and salary payout ledgers.
+- **Bulk CSV Import:** Dedicated onboarding pipeline with duplicate detection, row-level validation, and tenant quota checks.
 
----
+### 2. 💳 Financials & Money Receipts
+- **Monthly Fee Ledger:** Tracks expected, paid, and overdue balances. Supports partial collections, waivers, and discounts.
+- **Instant Printable Receipts:** Auto-generates unique receipt numbers (`{WORKSPACE}-{YYYYMM}-{SEQ}`) with printable/downloadable vouchers.
+- **Expense Book:** Categorized expense tracking with reversal records and aggregated net cash-flow graphs.
 
-## What is EduFlow?
+### 3. 📅 Attendance Tracking
+- **Smart Class-Day Calendar:** Automatically detects scheduled batch class days to prevent accidental marking on off-days.
+- **Draft & Finalize Workflow:** Allows staff to mark and review drafts before executing an immutable finalization lock.
+- **Automated Absence Alerts:** Finalization triggers asynchronous notifications to parents via email and SMS.
 
-EduFlow is a **full-stack, multi-tenant SaaS** built for individual tutors and small-to-medium coaching centers in Bangladesh. It replaces scattered spreadsheets, WhatsApp groups, and paper ledgers with a single, role-controlled workspace.
+### 4. 📲 Multi-Channel Communication
+- **SMS Wallet & Ledger:** Real-time credit balance backed by an immutable transaction ledger.
+- **Dynamic Templates:** Bilingual (Bangla & English) templates with safe variable interpolation and GSM-7 segment counters.
+- **Notice Board:** Workspace-wide or batch-specific announcements rendered through React Email.
 
-**Who uses it:**
-
-| Role | What they do |
-|---|---|
-| **Platform Owner** | Manages the SaaS itself — plans, payments, workspace lifecycle, entitlements, revenue |
-| **Workspace Owner** | Runs their coaching center — students, teachers, fees, attendance, communication |
-| **Admin / Teacher / Staff** | Day-to-day academic, financial, or communication work — access gated by fine-grained permissions |
-
-**Key design goals:**
-- Every coaching center is a **fully isolated workspace** — data never crosses tenant boundaries
-- **Entitlements** (platform plan limits) and **permissions** (workspace role access) are completely separate systems
-- Financial history is **immutable** — audit trails are first-class citizens
-- Bangladesh-first: BDT currency, `+880` phone validation, `Asia/Dhaka` time, bKash/Nagad payment methods
+### 5. 🛡️ Session Security & Device Limiting
+- **Strict 2-Device Limit:** Prevents account credential sharing by capping active sessions to 2 concurrent devices.
+- **Device Takeover Dialog:** Attempting a 3rd login triggers a modal displaying all active sessions (device type, IP, last active) with a one-click session takeover.
+- **Active Sessions Control:** Users can individually inspect and revoke other device sessions from `Settings → Security`.
 
 ---
 
-## Core Features
+## 🎨 Design System — ORBIT
 
-### 🏫 Workspace Operations
-- **Student Management** — profile, guardian info, tags, status (active / inactive / archived), enrollment & fee history, bulk CSV import with quota + duplicate checks
-- **Batch Management** — create batches with schedules, assign teachers, enroll students with fee overrides/discounts, history preserved even after removal
-- **Teacher Management** — profiles, salary info, batch assignments, specialties, notes
-- **Schedule Management** — recurring class schedules per batch + teacher, feeds into attendance
+EduFlow is built on **ORBIT**, a custom high-performance design language engineered for data-dense, mission-critical SaaS applications:
 
-### 💰 Financial Management
-- **Student Fee Ledger** — monthly expected/paid/due tracking, partial payments, discounts, scholarships, grace periods, statuses (Unpaid / Partially Paid / Paid / Overpaid / Waived / Overdue)
-- **Payment Receipts** — auto-generated on every payment with workspace prefix, printable/downloadable
-- **Teacher Salary Ledger** — monthly salary tracking, partial pay, yearly totals, notes
-- **Expense Management** — categorized expense records with reversal/audit history
-
-### 📋 Attendance
-- Per-session recording (Present / Absent / Late / Excused) with smart calendar (auto-selects latest class day, adapts to batch schedule)
-- Draft → Finalize workflow with immutability after finalization
-- Batch attendance reports, attendance %, low-attendance flags
-- Async absence notifications to guardians/students via RabbitMQ worker
-
-### 📣 Communication & Notices
-- **Workspace Notices** — workspace-wide, batch-specific, or targeted; triggers optional email/SMS delivery
-- **SMS Wallet** — per-workspace credit balance with ledger transactions; bulk SMS with balance checks
-- **SMS Templates** — reusable Bangla/English templates with safe variable substitution
-- **Email Delivery** — React Email + Nodemailer, templated with the ORBIT design system
-
-### 🔐 Security & Sessions
-- **Session Device Limit** — max 2 active sessions per user; 3rd login triggers a `DeviceLimitDialog` showing active devices with takeover flow
-- **Individual Session Revocation** — Settings → Security shows all active sessions, allows per-device logout
-- **Password Management** — change password, forgot/reset with time-limited tokens, 5-attempt throttling
-- **Role-Based Permissions** — 8 permission modules (`students`, `teachers`, `batches`, `attendance`, `fees`, `salaries`, `members`, `settings`) with per-member overrides
-
-### 🏢 Platform Administration
-- **Plan Management** — create/edit plans with student/teacher/batch/SMS limits, feature flags, durations
-- **Payment Review** — manual bKash payment verification queue with approve/reject workflow
-- **Workspace Lifecycle** — activate, suspend, scheduled deletion with recovery actions
-- **Revenue & Analytics** — platform-wide subscription monitoring, revenue overview, deletion queue
-
-### 📊 Dashboards
-- **Workspace Dashboard** — active students/batches, fees collected/due, upcoming classes, attendance overview, financial charts (6-month trend)
-- **Platform Dashboard** — active/trial/expired tenants, pending payments, revenue distribution, subscription lifecycle
+- **Aesthetic:** Dark-mode-first aesthetic with deep obsidian canvases (`#020402`), electric lime accents (`#bef264`), translucent glass surfaces, and hairline borders (`rgba(255,255,255,0.06)`).
+- **Light Theme Support:** First-class light mode with warm off-white tones (`#f6f8f3`), crisp typography, and readable emerald/lime contrast.
+- **Typography:** Set in **Manrope** — modern, geometric, and optimized for numeric readability.
+- **Primitives:** Built on top of accessible Radix UI & shadcn primitives, with customized responsive Sheets, Popovers, and Dialogs.
 
 ---
 
-## Tech Stack
+## 🧱 Architectural Patterns & Best Practices
 
-| Layer | Technology |
-|---|---|
-| **Framework** | Next.js 15 (App Router, React Server Components) |
-| **Language** | TypeScript (strict) |
-| **Styling** | Tailwind CSS v4 + shadcn/ui component library |
-| **State — Server** | TanStack Query v5 (all server data fetching, caching, mutation) |
-| **State — Client** | Zustand (UI-only state, never server data) |
-| **Forms** | React Hook Form + Zod validation |
-| **Auth** | Better Auth client (`@better-auth/client`) |
-| **Charts** | Recharts |
-| **Icons** | Lucide React |
-| **Notifications** | Sonner toasts |
-| **Deployment** | Vercel |
-
----
-
-## System Architecture
-
-```
-┌─────────────────────────────────────────────────────────┐
-│  Next.js Frontend (Vercel)                              │
-│  App Router · RSC · TanStack Query · shadcn/ui          │
-└────────────────────────┬────────────────────────────────┘
-                         │ HTTPS /api/v1/*
-┌────────────────────────▼────────────────────────────────┐
-│  Express API (Render)                                   │
-│  Auth → Workspace → Entitlement → Permission →          │
-│  Controller → Service → Drizzle → PostgreSQL            │
-└──────┬─────────────────┬───────────────────────────────┘
-       │                 │
-  Supabase          RabbitMQ
-  PostgreSQL  ──▶   Worker (Render)
-  + RLS            ├─▶ Nodemailer / Gmail
-  + Storage        └─▶ SMS Provider
-```
-
-**Multi-tenancy is enforced at three layers:**
-1. Application-level `workspace_id` resolution from authenticated session (never from client input)
-2. Drizzle query scoping — every query filters by `workspace_id`
-3. PostgreSQL Row-Level Security — enforced at the database level
-
----
-
-## Frontend Structure
-
-```
+```text
 frontend/
-├── app/                  # Next.js App Router — pages, layouts, routes
-├── features/             # Feature-owned modules
-│   ├── auth/             # Sign-in, sign-up, device-limit dialog
-│   ├── students/         # Student directory, profile, fees, enrollment
-│   ├── teachers/         # Teacher directory, profiles, salary
-│   ├── batches/          # Batch management, schedules, enrollment
-│   ├── attendance/       # Session management, roster, history
-│   ├── fees/             # Fee collection, receipts, ledger
-│   ├── salaries/         # Teacher salary management
-│   ├── notices/          # Notice creation, delivery, queue
-│   ├── settings/         # Workspace settings, security, CSV import
-│   ├── staff/            # Member management, roles, permissions
-│   ├── platform/         # Platform Owner administration
-│   └── dashboard/        # Workspace + platform dashboards
-├── components/
-│   ├── ui/               # shadcn primitives
-│   ├── app-shell/        # Collapsible sidebar, header
-│   ├── dashboard/        # Shared dashboard display primitives
-│   └── dialogs/          # Shared dialogs/alerts
-├── types/                # Central TypeScript types (never local to features)
-├── utils/                # Shared formatting helpers (money, dates, status)
-├── lib/                  # Auth client, API client, configuration
-└── public/               # Static assets
+├── app/                  # Next.js App Router (RSC-first routes & layouts)
+├── features/             # Business domains (strictly isolated)
+│   └── <feature>/
+│       ├── api/          # Pure asynchronous HTTP client requests
+│       ├── queries/      # TanStack Query read hooks (useQuery)
+│       ├── mutations/    # TanStack Query write hooks (useMutation + invalidations)
+│       └── components/   # Feature-scoped UI components (one component per file)
+├── components/           # Shared reusable cross-feature UI
+│   ├── app-shell/        # Collapsible desktop sidebar & navigation
+│   ├── ui/               # shadcn/ui primitives (Sheet, Dialog, Table, etc.)
+│   └── dashboard/        # Generic metric cards & charts
+├── types/                # Centralized TypeScript definitions (no loose feature types)
+├── utils/                # Pure formatting helpers (currency, phone, dates)
+└── lib/                  # Auth clients, API fetcher abstractions, theme providers
 ```
 
-Each feature follows a strict 4-layer convention:
-
-```
-features/<name>/
-├── api/          # Raw fetch functions — no React hooks
-├── queries/      # TanStack Query read hooks (useQuery)
-├── mutations/    # TanStack Query write hooks (useMutation + invalidation)
-└── components/   # UI components — one component per file
-```
+### Key Engineering Decisions
+1. **Server Components Default:** App Router routes start as React Server Components to minimize initial client JavaScript payloads.
+2. **Server-State vs Client-State Discipline:** All server data is exclusively managed via **TanStack Query v5**. Client state management (Zustand) is strictly quarantined to transient UI states (e.g. sidebar collapse, active modals).
+3. **Strict Feature Boundaries:** Components in `features/students/` cannot directly import internal components from `features/teachers/`. Shared logic is elevated to global `components/` or `utils/`.
+4. **Zero Frontend Trust for Tenant Identity:** The client never passes `workspaceId` as a trusted parameter. Tenant context is inferred server-side from the authenticated session.
 
 ---
 
-## Design System — ORBIT
-
-EduFlow uses the **ORBIT** design system — a dark-mode-first premium SaaS visual language with a full light-mode counterpart.
-
-| Token | Value |
-|---|---|
-| Primary accent | Electric lime `#bef264` |
-| Dark canvas | Near-black green `#020402` |
-| Light canvas | Warm off-white `#f6f8f3` |
-| Typography | Manrope (geometric sans) |
-| Surfaces | Translucent glass with backdrop blur |
-| Geometry | Oversized rounded corners (`rounded-2xl` / `rounded-full`) |
-| Motion | Restrained ambient transitions, reduced-motion aware |
-
-The system supports **dark / light / system** themes, persisted in localStorage. Components consume semantic CSS tokens — no per-theme markup duplication.
-
----
-
-## Getting Started (Local Dev)
+## 💻 Local Development Setup
 
 ### Prerequisites
-
 - Node.js 20+
-- The backend running at `http://localhost:4000` — see [EduFlow_backend](https://github.com/YeasarArefin/EduFlow_backend)
+- The backend running locally on port 4000 ([EduFlow_backend](https://github.com/YeasarArefin/EduFlow_backend))
 
-### Install & Run
+### Installation
 
 ```bash
-# Clone
+# 1. Clone repository
 git clone https://github.com/YeasarArefin/EduFlow_frontend.git
 cd EduFlow_frontend
 
-# Install dependencies
+# 2. Install dependencies
 npm install
 
-# Set up environment
+# 3. Configure environment
 cp .env.example .env.local
-# Edit .env.local — see Environment Variables below
 
-# Start dev server
+# 4. Start Next.js development server
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
----
-
-## Environment Variables
-
-Create `.env.local` in the project root:
+### Environment Configuration (`.env.local`)
 
 ```env
-# Backend API base URL
+# Backend API Base URL
 NEXT_PUBLIC_API_URL=http://localhost:4000
 
-# Better Auth base URL
+# Better Auth Authentication Endpoint
 NEXT_PUBLIC_BETTER_AUTH_URL=http://localhost:4000
 
-# Next.js public app URL
+# Next.js Web Application Base URL
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
-> For production, set `NEXT_PUBLIC_API_URL` to your Render backend URL and `NEXT_PUBLIC_APP_URL` to your Vercel frontend URL.
-
 ---
 
-## Key Engineering Decisions
+## 👨‍💻 Author & Engineering Contact
 
-### Server Components First
-Pages default to React Server Components. Client components are introduced only at interaction boundaries — data-fetching, form state, real-time UI. This keeps bundles small and pages fast.
+Built with dedication to clean code, robust architecture, and high-fidelity UX by **Yeasar Arefin**.
 
-### TanStack Query for All Server State
-Every piece of server-fetched data lives in TanStack Query with intentional `staleTime` and `gcTime`. Mutations invalidate only the relevant query keys — no broad cache busts. Zustand is reserved for pure client UI state (modal open/close, selected tab).
-
-### Strict Feature Ownership
-Code used by one feature lives inside `features/<name>/` and is never imported by other features. Shared code lives in `components/`, `utils/`, or `types/`. This prevents the "big ball of mud" problem as the codebase grows.
-
-### Central Types Only
-All TypeScript interfaces and types live in `frontend/types/`. Features never declare their own types — only local implementation details may be defined locally.
-
-### Zod on Both Ends
-Every form validates with Zod on the frontend. The same schema shapes are mirrored on the backend (`backend/src/validation/`). No silent type drift between layers.
-
-### Session Security
-- Sessions limited to 2 active devices per user (flat limit, enforced by Better Auth hook + PostgreSQL trigger)
-- Device takeover flow: verify credentials server-side → revoke all sessions → issue fresh session with `Set-Cookie`
-- Session tokens never exposed to the frontend; all revocation is server-side
-
----
-
-## Related Repositories
-
-| Repository | Description |
-|---|---|
-| [EduFlow_backend](https://github.com/YeasarArefin/EduFlow_backend) | Express + TypeScript API, Drizzle ORM, PostgreSQL, Better Auth, RabbitMQ |
-
----
-
-<p align="center">Built with ❤️ by <a href="https://github.com/YeasarArefin">Yeasar Arefin</a></p>
+<table border="0">
+  <tr>
+    <td width="100" align="center" valign="middle">
+      <img src="https://github.com/YeasarArefin.png" width="90" height="90" style="border-radius: 50%;" alt="Yeasar Arefin" />
+    </td>
+    <td>
+      <strong>Yeasar Arefin</strong><br/>
+      <em>Full-Stack & Systems Software Engineer</em><br/><br/>
+      🌐 <strong>Portfolio:</strong> <a href="https://yeasararefin.vercel.app">yeasararefin.vercel.app</a><br/>
+      📬 <strong>Direct Contact:</strong> <a href="mailto:yeasar.arefin.contact@gmail.com">yeasar.arefin.contact@gmail.com</a><br/>
+      🐙 <strong>GitHub Profile:</strong> <a href="https://github.com/YeasarArefin">@YeasarArefin</a>
+    </td>
+  </tr>
+</table>
